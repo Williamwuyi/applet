@@ -1,0 +1,36 @@
+@import '../../custom.scss';
+.title{
+    font-size: 36px;
+    font-weight: bolder;
+    max-width: 500px;
+    padding-top: 20px;
+}
+.salary{
+
+}
+.content{
+    max-width: 500px;
+}
+.starttime{
+    padding-top: 20px;
+}
+.endline{
+    padding-top: 20px;
+}
+.button_style{
+    width: 400px;
+    border-radius: 1px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+.border-radius-10{
+    border-radius: 10px;
+}
+.icon{
+    position: absolute;
+    margin-left: 600px;
+    margin-top: 20px;
+    padding: 30px;
+}

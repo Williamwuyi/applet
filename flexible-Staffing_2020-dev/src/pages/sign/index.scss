@@ -1,0 +1,48 @@
+$cF8: #F8AF18;
+.signature {
+  height: 100%;
+  width: 100%;
+}
+.canvas-box {
+  border: 1Px solid #e4e4e4;
+  margin-bottom: 30Px;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+  width: 350Px;
+  height: 350Px;
+}
+.canvas {
+  width: 350Px;
+  height: 350Px;
+}
+
+.buttons {
+  margin-bottom: 20Px;
+  margin-top: 20Px;
+}
+Button {
+  width: 320px;
+  height: 80px;
+  line-height: 80px;
+  margin: 0;
+  text-align: center;
+  border: 1Px solid $cF8;
+  font-size: 30px;
+}
+.confirm {
+  color: #fff;
+  background: $cF8;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 50px;
+}
+.cancel {
+  color: $cF8;
+  background: #fff;
+  margin-left: auto;
+  margin-right: auto;
+}
+.word-break {
+  word-break: break-all;
+}

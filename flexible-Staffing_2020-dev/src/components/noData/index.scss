@@ -1,0 +1,16 @@
+@import '../../custom.scss';
+.nodata_style{
+    height: 200px;
+    font-size: 32px;
+    color: #fff;
+    padding: 270px
+}
+.nodata_title{
+}
+.nodata_pic{
+    width: 160px;
+    height: 160px;
+    // background-image: url('../../../images/nodata.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+}

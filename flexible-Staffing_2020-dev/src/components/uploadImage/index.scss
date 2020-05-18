@@ -1,0 +1,9 @@
+@import '../../custom.scss';
+@import "~taro-ui/dist/style/components/icon.scss";
+.closeButton{
+    position: absolute;
+    display: inline-block;
+    color: black;
+    margin-left: -48px;
+    font-size: 48px;
+}

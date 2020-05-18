@@ -1,0 +1,30 @@
+@import "../../custom.scss";
+.tab-bg{
+    background-color: #dfdfdf;
+    min-height: 1500px;
+}
+.recVideo{
+    border: 0;
+}
+.components-page{
+    text-align: center;
+}
+.textHint{
+    font-size: 30px;
+    margin-left: 40px;
+    color:#aaa;
+}
+.width-400{
+    width: 675px;
+    // margin-right: auto;
+    // margin-left: auto;
+    // margin-top: 10px;
+    margin: 20px auto;
+    padding-bottom: 50px;
+    height: auto;
+}
+.updateVideo{
+    margin-top: 40px;
+    background-color: #b5dafc;
+    width: 400px;
+}

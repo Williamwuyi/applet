@@ -1,0 +1,15 @@
+@import "../../custom.scss";
+.login-header{
+    background-image: url('../../../images/login_background.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.login-button{
+    width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.login-tip{
+    padding-top: 150px;
+}
