@@ -1,0 +1,8 @@
+/* pages/contract/sign/sign.wxss */
+
+.canvas {
+    width: 100%;
+    min-height: 800rpx;
+    box-sizing: border-box;
+    background: #fff;
+}

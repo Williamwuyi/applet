@@ -1,0 +1,12 @@
+<cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
+    <view slot="content">合同签署</view>
+</cu-custom>
+
+<view class="padding-sm">
+    <canvas class="canvas" id="canvas" canvas-id="canvas" disable-scroll="true" bindtouchstart="bindtouchstart" bindtouchmove="bindtouchmove"></canvas>
+</view>
+
+<view class="cu-bar btn-group">
+    <button class="cu-btn round bg-red lg" bindtap="clearDraw">清除重写</button>
+    <button class="cu-btn round bg-blue lg" bindtap="getImage">提交签名</button>
+</view>

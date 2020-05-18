@@ -1,0 +1,17 @@
+<cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
+    <view slot="content">用户登录</view>
+</cu-custom>
+
+<view class="cu-form-group margin-top">
+    <view class="title">手机号</view>
+    <input type="number" placeholder="请输入您的手机号码" bindinput="mobile" maxlength="11"></input>
+</view>
+<view class="cu-form-group">
+    <view class="title">验证码</view>
+    <input type="number" placeholder="请点击获取验证码" bindinput="verifyCode" maxlength="6"></input>
+    <button class="cu-btn bg-blue shadow" disabled="{{countDownStart}}" bindtap="send">{{countDownText}}</button>
+</view>
+
+<view class="padding-xl">
+    <button class="cu-btn block bg-blue lg" bindtap="login">登录</button>
+</view>

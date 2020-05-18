@@ -1,0 +1,38 @@
+<cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
+    <view slot="content">用户认证</view>
+</cu-custom>
+
+<view class="padding">
+
+    <view class="text-black">您的身份信息将仅用于用户认证的身份识别，请务必上传您<text class="text-red">本人</text>真实有效的身份证正反面照片！</view>
+
+    <view class="padding-sm bg-white radius margin-top">
+        <view class="flex justify-between">
+            <view class="text-black text-bold">上传人像面</view>
+            <!-- <button class="cu-btn round bg-blue sm">重新上传</button> -->
+        </view>
+        <view class="idcard-simple" bindtap="uploadFront" wx:if="{{!frontUploaded}}">
+            <image src="/images/idcard_simple_front.png" mode="aspectFit"></image>
+        </view>
+        <view class="idcard-preview" wx:if="{{frontUploaded}}">
+            <image src="{{idCardFront}}" mode="scaleToFill"></image>
+        </view>
+    </view>
+
+    <view class="padding-sm bg-white radius margin-top">
+        <view class="flex justify-between">
+            <view class="text-black text-bold">上传国徽面</view>
+            <!-- <button class="cu-btn round bg-blue sm">重新上传</button> -->
+        </view>
+        <view class="idcard-simple" bindtap="uploadBack" wx:if="{{!backUploaded}}">
+            <image src="/images/idcard_simple_back.png" mode="aspectFit"></image>
+        </view>
+        <view class="idcard-preview" wx:if="{{backUploaded}}">
+            <image src="{{idCardBack}}" mode="scaleToFill"></image>
+        </view>
+    </view>
+
+    <view class="margin-top-xl">
+        <button class="cu-btn block bg-blue lg" type="" disabled="{{!idCardFront || !idCardBack}}" bindtap="submit">上传</button>
+    </view>
+</view>

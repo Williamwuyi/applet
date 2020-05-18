@@ -1,0 +1,7 @@
+{
+    "usingComponents": {
+        "pub": "/pages/pub/index/index",
+        "order": "/pages/order/index/index",
+        "labor": "/pages/labor/index/index"
+    }
+}

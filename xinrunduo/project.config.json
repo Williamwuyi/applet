@@ -1,0 +1,124 @@
+{
+	"description": "项目配置文件",
+	"packOptions": {
+		"ignore": []
+	},
+	"setting": {
+		"urlCheck": false,
+		"es6": false,
+		"postcss": true,
+		"minified": true,
+		"newFeature": true,
+		"coverView": true,
+		"autoAudits": false,
+		"showShadowRootInWxmlPanel": true,
+		"scopeDataCheck": false,
+		"checkInvalidKey": true,
+		"checkSiteMap": true,
+		"uploadWithSourceMap": true,
+		"babelSetting": {
+			"ignore": [],
+			"disablePlugins": [],
+			"outputPath": ""
+		}
+	},
+	"compileType": "miniprogram",
+	"libVersion": "2.11.0",
+	"appid": "wx187b790eabb08901",
+	"projectname": "xinrunduo",
+	"debugOptions": {
+		"hidedInDevtools": []
+	},
+	"isGameTourist": false,
+	"simulatorType": "wechat",
+	"simulatorPluginLibVersion": {},
+	"condition": {
+		"search": {
+			"current": -1,
+			"list": []
+		},
+		"conversation": {
+			"current": -1,
+			"list": []
+		},
+		"plugin": {
+			"current": -1,
+			"list": []
+		},
+		"game": {
+			"currentL": -1,
+			"list": []
+		},
+		"gamePlugin": {
+			"current": -1,
+			"list": []
+		},
+		"miniprogram": {
+			"current": -1,
+			"list": [
+				{
+					"id": 0,
+					"name": "pages/contract/sign/sign",
+					"pathName": "pages/contract/sign/sign",
+					"query": "contractId= 40b8a51ed6fe40bdafa6b2e99e180e9e",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "pages/order/index/index",
+					"pathName": "pages/order/index/index",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "pages/contract/sign/sign",
+					"pathName": "pages/contract/sign/sign",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "pages/contract/contract",
+					"pathName": "pages/contract/contract",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "pages/labor/identify/identify",
+					"pathName": "pages/labor/identify/identify",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "pages/labor/register/register",
+					"pathName": "pages/labor/register/register",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "pages/labor/contract/contract",
+					"pathName": "pages/labor/contract/contract",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "pages/labor/info/info",
+					"pathName": "pages/labor/info/info",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "pages/order/detail/detail",
+					"pathName": "pages/order/detail/detail",
+					"scene": null
+				}
+			]
+		}
+	}
+}

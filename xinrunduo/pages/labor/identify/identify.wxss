@@ -1,0 +1,24 @@
+/* pages/labor/identify/identify.wxss */
+
+.idcard-simple {
+    max-height: 340rpx;
+    border: 1px dashed #ccc;
+    text-align: center;
+    line-height: 340rpx;
+    margin: 20rpx 0;
+}
+
+.idcard-simple image{
+    height: 280rpx;
+}
+
+.idcard-preview {
+    max-height: 340rpx;
+    text-align: center;
+    line-height: 340rpx;
+    margin: 20rpx 0;
+}
+
+.idcard-preview image {
+    height: 330rpx;
+}

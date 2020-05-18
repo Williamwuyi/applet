@@ -1,0 +1,4 @@
+/* pages/pub/index/index.wxss */
+.screen-swiper {
+    min-height: 425rpx;
+}

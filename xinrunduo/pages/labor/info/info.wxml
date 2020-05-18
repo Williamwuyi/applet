@@ -1,0 +1,40 @@
+<cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
+    <view slot="content">个人资料</view>
+</cu-custom>
+
+<view class="bg-white">
+    <view class="flex padding solid-bottom justify-between">
+        <text>姓名</text>
+        <text>{{labor.realname}}</text>
+    </view>
+    <view class="flex padding solid-bottom justify-between">
+        <text>身份证号</text>
+        <text>{{labor.paper_number}}</text>
+    </view>
+    <view class="flex padding solid-bottom justify-between">
+        <text>性别</text>
+        <text>{{labor.sex == 0 ? "女" : "男"}}</text>
+    </view>
+    <view class="flex padding solid-bottom justify-between">
+        <text>年龄</text>
+        <text>{{labor.age}}</text>
+    </view>
+</view>
+<view class="bg-white margin-top">
+    <view class="flex padding solid-bottom justify-between">
+        <text>民族</text>
+        <text>{{labor.nation_desc}}</text>
+    </view>
+    <view class="flex padding solid-bottom justify-between">
+        <text>政治面貌</text>
+        <text>{{labor.politics_desc}}</text>
+    </view>
+    <view class="flex padding solid-bottom justify-between">
+        <text>学历</text>
+        <text>{{labor.edu_level_desc}}</text>
+    </view>
+    <view class="flex padding solid-bottom justify-between">
+        <text>工作地区</text>
+        <text>{{labor.area_desc}}</text>
+    </view>
+</view>

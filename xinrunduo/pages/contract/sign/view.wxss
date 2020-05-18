@@ -1,0 +1,11 @@
+/* pages/contract/sign/view.wxss */
+.file {
+    width: 100%;
+}
+
+.sign {
+    position: fixed;
+    width: 100%;
+    padding: 20rpx;
+    bottom: 0;
+}

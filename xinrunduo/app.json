@@ -1,0 +1,25 @@
+{
+    "pages": [
+        "pages/index/index",
+        "pages/order/index/index",
+        "pages/pub/index/index",
+        "pages/labor/index/index",
+        "pages/labor/register/register",
+        "pages/labor/identify/identify",
+        "pages/labor/contract/contract",
+        "pages/labor/info/info",
+        "pages/order/detail/detail",
+        "pages/labor/agreement/agreement",
+        "pages/contract/contract",
+        "pages/labor/info/edit",
+        "pages/contract/sign/sign",
+        "pages/contract/sign/view"
+    ],
+    "window": {
+        "navigationStyle": "custom"
+    },
+    "usingComponents": {
+        "cu-custom": "/colorui/components/cu-custom"
+    },
+    "sitemapLocation": "sitemap.json"
+}

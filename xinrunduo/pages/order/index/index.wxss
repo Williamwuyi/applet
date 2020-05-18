@@ -1,0 +1,25 @@
+/* pages/order/index/index.wxss */
+
+.order-list {
+    margin-top: 90rpx;
+}
+
+.cu-card.article>.cu-item {
+    padding-bottom: 15rpx;
+}
+
+.cu-card.article>.cu-item .title {
+    line-height: 80rpx;
+}
+
+.cu-card.article>.cu-item .content .text-content {
+    height: inherit;
+}
+
+.cu-card.article>.cu-item .content .text-content [class*="cuIcon-"] {
+    margin-right: 10rpx;
+}
+
+.mission-name {
+    max-width: 350rpx;
+}

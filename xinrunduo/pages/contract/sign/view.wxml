@@ -1,0 +1,15 @@
+<cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
+    <view slot="content">合同签署</view>
+</cu-custom>
+
+<view class="padding-sm" style="padding-bottom: 120rpx;">
+
+    <view class="margin-xs padding-xs radius shadow bg-white " wx:for="{{fileList}}" wx:key="*this" wx:for-item="file">
+        <image src="{{file}}" mode="widthFix" class="file" bindtap="Scale" data-index="{{index}}"></image>
+    </view>
+
+</view>
+
+<view class="sign">
+    <button class="cu-btn block bg-blue lg" bindtap="Sign">确认签署</button>
+</view>

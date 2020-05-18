@@ -1,0 +1,59 @@
+<cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
+    <view slot="content">信息完善</view>
+</cu-custom>
+
+<view class="cu-form-group margin-top">
+    <view class="title">姓名</view>
+    <input value="{{idCardInfo.realname}}" disabled></input>
+</view>
+<view class="cu-form-group">
+    <view class="title">身份证号</view>
+    <input value="{{idCardInfo.number}}" disabled></input>
+</view>
+<view class="cu-form-group">
+    <view class="title">性别</view>
+    <input value="{{idCardInfo.sex}}" disabled></input>
+</view>
+<view class="cu-form-group">
+    <view class="title">年龄</view>
+    <input value="{{idCardInfo.age}}" disabled></input>
+</view>
+
+
+<view class="cu-form-group margin-top">
+    <view class="title">民族</view>
+    <picker bindchange="PickerLaborNationChange" value="{{laborNationIndex}}" range="{{rangeLaborNation}}" range-key="value">
+        <view class="picker">
+            {{laborNationIndex?rangeLaborNation[laborNationIndex].value:"请选择所属民族"}}
+        </view>
+    </picker>
+</view>
+<view class="cu-form-group">
+    <view class="title">政治面貌</view>
+    <picker bindchange="PickerLaborPoliticsChange" value="{{laborPoliticsIndex}}" range="{{rangeLaborPolitics}}" range-key="value">
+        <view class="picker">
+            {{laborPoliticsIndex?rangeLaborPolitics[laborPoliticsIndex].value:"请选择政治面貌"}}
+        </view>
+    </picker>
+</view>
+<view class="cu-form-group">
+    <view class="title">学历</view>
+    <picker bindchange="PickerLaborEduLevelChange" value="{{laborEduLevelIndex}}" range="{{rangeLaborEduLevel}}" range-key="value">
+        <view class="picker">
+            {{laborEduLevelIndex?rangeLaborEduLevel[laborEduLevelIndex].value:"请选择最高学历"}}
+        </view>
+    </picker>
+</view>
+
+<view class="cu-form-group">
+    <view class="title">工作地区</view>
+    <picker mode="multiSelector" bindchange="AreaChange" bindcolumnchange="AreaColumnChange" value="{{areaIndex}}" range="{{areaArray}}">
+        <view class="picker">
+            {{areaName}}
+        </view>
+    </picker>
+</view>
+
+<view class="margin-top-xl padding">
+    <button class="cu-btn block bg-blue lg" type="" bindtap="Submit">提交</button>
+</view>

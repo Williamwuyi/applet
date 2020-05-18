@@ -1,0 +1,159 @@
+<cu-custom bgColor="bg-gradual-blue">
+    <view slot="content">我的任务</view>
+</cu-custom>
+
+<scroll-view scroll-x class="bg-white nav text-center fixed" style="top:{{CustomBar}}px">
+    <view class="flex text-center">
+        <view class="cu-item flex-sub {{index == TabIndex?'text-blue cur':''}}" wx:for="{{TabNav}}" wx:key="*this" bindtap='tabSelect' data-id="{{index}}">
+            {{TabNav[index]}}
+        </view>
+    </view>
+</scroll-view>
+
+<view class="order-list" wx:if="{{TabIndex == 0}}">
+    <view class="cu-card" wx:if="{{confirmPage.list.length == 0}}">
+        <view class="text-center text-black padding-lg">暂无订单任务记录</view>
+    </view>
+    <view class="cu-card article" wx:for="{{confirmPage.list}}" wx:for-item="order" wx:key="order_id">
+        <view class="cu-item shadow">
+            <view class="title flex justify-between">
+                <view class="text-cut text-xl mission-name">{{order.mission_name}}</view>
+                <view class="text-lg text-red">{{order.s_pay}}积分</view>
+            </view>
+            <view class="content">
+                <view class="desc">
+                    <view class="text-content">
+                        <view class="text-lg margin-top-xs">
+                            <text class="cuIcon-crown"></text>
+                            <text>{{order.co_full_name}}</text>
+                        </view>
+                        <view class="text-lg margin-top-xs">
+                            <text class="cuIcon-time"></text>
+                            <text>2020-05-05 ~ 2020-05-05 10:00-12:00</text>
+                        </view>
+                        <view class="text-lg margin-top-xs">
+                            <text class="cuIcon-location"></text>
+                            <text>湖南省-长沙市-开福区</text>
+                        </view>
+                    </view>
+                    <view class="flex margin-top-sm justify-end">
+                        <view>
+                            <button class="cu-btn round bg-blue" bindtap="Confirm" data-index="{{index}}">确认接单</button>
+                        </view>
+                    </view>
+                </view>
+            </view>
+        </view>
+    </view>
+</view>
+
+<view class="order-list" wx:if="{{TabIndex == 1}}">
+    <view class="cu-card" wx:if="{{pendedPage.list.length == 0}}">
+        <view class="text-center text-black padding-lg">暂无订单任务记录</view>
+    </view>
+    <view class="cu-card article" wx:for="{{pendedPage.list}}" wx:for-item="order" wx:key="order_id">
+        <view class="cu-item shadow">
+            <view class="title flex justify-between">
+                <view class="text-cut text-xl mission-name">{{order.mission_name}}</view>
+                <view class="text-lg text-red">{{order.s_pay}}积分</view>
+            </view>
+            <view class="content">
+                <view class="desc">
+                    <view class="text-content">
+                        <view class="text-lg margin-top-xs">
+                            <text class="cuIcon-crown"></text>
+                            <text>{{order.co_full_name}}</text>
+                        </view>
+                        <view class="text-lg margin-top-xs">
+                            <text class="cuIcon-time"></text>
+                            <text>2020-05-05 ~ 2020-05-05 10:00-12:00</text>
+                        </view>
+                        <view class="text-lg margin-top-xs">
+                            <text class="cuIcon-location"></text>
+                            <text>湖南省-长沙市-开福区</text>
+                        </view>
+                    </view>
+                    <view class="flex margin-top-sm justify-end">
+                        <view>
+                            <text class="text-red">待开始</text>
+                        </view>
+                    </view>
+                </view>
+            </view>
+        </view>
+    </view>
+</view>
+
+<view class="order-list" wx:if="{{TabIndex == 2}}">
+    <view class="cu-card" wx:if="{{activePage.list.length == 0}}">
+        <view class="text-center text-black padding-lg">暂无订单任务记录</view>
+    </view>
+    <view class="cu-card article" wx:for="{{activePage.list}}" wx:for-item="order" wx:key="order_id">
+        <view class="cu-item shadow">
+            <view class="title flex justify-between">
+                <view class="text-cut text-xl mission-name">{{order.mission_name}}</view>
+                <view class="text-lg text-red">{{order.s_pay}}积分</view>
+            </view>
+            <view class="content">
+                <view class="desc">
+                    <view class="text-content">
+                        <view class="text-lg margin-top-xs">
+                            <text class="cuIcon-crown"></text>
+                            <text>{{order.co_full_name}}</text>
+                        </view>
+                        <view class="text-lg margin-top-xs">
+                            <text class="cuIcon-time"></text>
+                            <text>2020-05-05 ~ 2020-05-05 10:00-12:00</text>
+                        </view>
+                        <view class="text-lg margin-top-xs">
+                            <text class="cuIcon-location"></text>
+                            <text>湖南省-长沙市-开福区</text>
+                        </view>
+                    </view>
+                    <view class="flex margin-top-sm justify-end">
+                        <view>
+                            <button class="cu-btn round bg-blue">完成任务</button>
+                        </view>
+                    </view>
+                </view>
+            </view>
+        </view>
+    </view>
+</view>
+
+<view class="order-list" wx:if="{{TabIndex == 3}}">
+    <view class="cu-card" wx:if="{{finishPage.list.length == 0}}">
+        <view class="text-center text-black padding-lg">暂无订单任务记录</view>
+    </view>
+    <view class="cu-card article" wx:for="{{finishPage.list}}" wx:for-item="order" wx:key="order_id">
+        <view class="cu-item shadow">
+            <view class="title flex justify-between">
+                <view class="text-cut text-xl mission-name">{{order.mission_name}}</view>
+                <view class="text-lg text-red">{{order.s_pay}}积分</view>
+            </view>
+            <view class="content">
+                <view class="desc">
+                    <view class="text-content">
+                        <view class="text-lg margin-top-xs">
+                            <text class="cuIcon-crown"></text>
+                            <text>{{order.co_full_name}}</text>
+                        </view>
+                        <view class="text-lg margin-top-xs">
+                            <text class="cuIcon-time"></text>
+                            <text>2020-05-05 ~ 2020-05-05 10:00-12:00</text>
+                        </view>
+                        <view class="text-lg margin-top-xs">
+                            <text class="cuIcon-location"></text>
+                            <text>湖南省-长沙市-开福区</text>
+                        </view>
+                    </view>
+                    <view class="flex margin-top-sm justify-end">
+                        <text class="text-red">已完成</text>
+                    </view>
+                </view>
+            </view>
+        </view>
+    </view>
+</view>
+
+<view class="cu-tabbar-height"></view>

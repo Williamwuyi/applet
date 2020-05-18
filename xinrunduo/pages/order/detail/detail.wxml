@@ -1,0 +1,88 @@
+<cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
+    <view slot="content">任务详情</view>
+</cu-custom>
+
+<view class="box solid-bottom">
+    <view class="cu-bar bg-white">
+        <view class="action">
+            <text class="text-xl text-bold">{{detail.mission_name}}</text>
+        </view>
+    </view>
+    <view class="cu-bar bg-white">
+        <view class="action">
+            <text class="text-red text-df cuIcon-choiceness"></text>
+            <text class="text-lg text-red">{{detail.s_pay}}积分</text>
+        </view>
+    </view>
+</view>
+
+<view class="detail">
+    <view class="cu-bar bg-white">
+        <view class="action">
+            <text class="cuIcon-titles text-blue"></text>人员要求
+        </view>
+    </view>
+    <view class="padding flex flex-wrap bg-white solid-bottom">
+        <view class="cu-tag line-black">性别{{detail.req_sex_desc}}</view>
+        <view class="cu-tag line-black">{{detail.req_age_min}} - {{detail.req_age_max}}</view>
+        <view class="cu-tag line-black">{{detail.req_edu_level_desc}}</view>
+    </view>
+
+    <view class="cu-bar bg-white">
+        <view class="action">
+            <text class="cuIcon-titles text-blue"></text>任务时间
+        </view>
+    </view>
+    <view class="padding flex flex-wrap bg-white solid-bottom">
+        <text class="text-lg">{{detail.start_time}}</text>
+    </view>
+
+    <view class="cu-bar bg-white">
+        <view class="action">
+            <text class="cuIcon-titles text-blue"></text>任务地点
+        </view>
+    </view>
+    <view class="padding flex flex-wrap bg-white solid-bottom">
+        <text class="text-lg">北辰三角洲</text>
+    </view>
+
+    <view class="cu-bar bg-white">
+        <view class="action">
+            <text class="cuIcon-titles text-blue"></text>任务描述
+        </view>
+    </view>
+    <view class="padding flex flex-wrap bg-white solid-bottom">
+        <text class="text-lg mission-content">{{detail.mission_content}}</text>
+    </view>
+
+    <view class="cu-bar bg-white">
+        <view class="action">
+            <text class="cuIcon-titles text-blue"></text>专业技能
+        </view>
+    </view>
+    <view class="padding flex flex-wrap bg-white solid-bottom">
+        <text class="text-lg mission-content">{{detail.req_skill}}</text>
+    </view>
+
+    <view class="cu-bar bg-white">
+        <view class="action">
+            <text class="cuIcon-titles text-blue"></text>相关经验
+        </view>
+    </view>
+    <view class="padding flex flex-wrap bg-white solid-bottom">
+        <text class="text-lg mission-content">{{detail.req_exp}}</text>
+    </view>
+
+    <view class="cu-bar bg-white">
+        <view class="action">
+            <text class="cuIcon-titles text-blue"></text>个性特点
+        </view>
+    </view>
+    <view class="padding flex flex-wrap bg-white solid-bottom">
+        <text class="text-lg mission-content">{{detail.req_nature}}{{detail.req_nature}}{{detail.req_nature}}{{detail.req_nature}}</text>
+    </view>
+</view>
+
+<view class="confirm">
+    <button class="cu-btn block bg-blue lg" bindtap="Confirm">确认接单</button>
+</view>

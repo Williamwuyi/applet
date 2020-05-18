@@ -1,0 +1,24 @@
+<pub id="pub" wx:if="{{PageCur=='pub'}}"></pub>
+<order id="order" wx:if="{{PageCur=='order'}}"></order>
+<labor id="labor" wx:if="{{PageCur=='labor'}}"></labor>
+
+<view class="cu-bar tabbar bg-white shadow foot">
+    <view class="action" bindtap="NavChange" data-cur="pub">
+        <view class='cuIcon-cu-image'>
+            <image src="/images/tabbar/home{{PageCur=='pub'?'_cur':''}}.png"></image>
+        </view>
+        <view class="{{PageCur=='pub'?'text-blue':'text-gray'}}">首页</view>
+    </view>
+    <view class="action" bindtap="NavChange" data-cur="order">
+        <view class='cuIcon-cu-image'>
+            <image src="/images/tabbar/order{{PageCur=='order'?'_cur':''}}.png"></image>
+        </view>
+        <view class="{{PageCur=='order'?'text-blue':'text-gray'}}">任务</view>
+    </view>
+    <view class="action" bindtap="NavChange" data-cur="labor">
+        <view class='cuIcon-cu-image'>
+            <image src="/images/tabbar/labor{{PageCur=='labor'?'_cur':''}}.png"></image>
+        </view>
+        <view class="{{PageCur=='labor'?'text-blue':'text-gray'}}">我的</view>
+    </view>
+</view>
