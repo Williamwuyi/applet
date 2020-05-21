@@ -1,10 +1,10 @@
 import Taro, { Component } from "@tarojs/taro";
-import { View, Text, Input, Button, Image } from "@tarojs/components";
+import { View} from "@tarojs/components";
 import { AtButton, AtTabs, AtTabsPane ,AtToast,AtMessage} from "taro-ui";
 import { NoData } from "../../components/noData/index"
 import api from "../../service/api"
 import { hasMobile, hasID } from "../../util/util"
-import { order_list, agreement_confirm,order_confirm} from "../../config/base"
+import { order_list,order_confirm} from "../../config/base"
 import Skeleton from '../../components/skeleton'
 
 const util = require("../../util/util")

@@ -1,14 +1,11 @@
 import Taro, { Component } from "@tarojs/taro";
 import { View, Text, Swiper, SwiperItem } from "@tarojs/components";
-import { AtSearchBar, AtNoticebar ,AtToast} from "taro-ui";
-import { order_pub, order_list } from "../../config/base"
+import { AtToast} from "taro-ui";
+import { order_pub} from "../../config/base"
 import { hasMobile, hasID } from "../../util/util"
 import './index.scss'
 import Skeleton from '../../components/skeleton'
 import api from "../../service/api";
-
-
-
 
 export default class Home extends Component {
   constructor() {
@@ -63,7 +60,6 @@ export default class Home extends Component {
     console.log('打印数据', e)
     // Taro.navigateTo({
     //  url:'../../pages/order/index?orderID=' + orderID,
-
     //  success:function(res){
       //  通过eventChannel来发送数据
     //   res.eventChannel.emit('acceptDataFromOpenedPage',{data:'test'})

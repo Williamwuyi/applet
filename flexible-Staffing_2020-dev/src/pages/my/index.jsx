@@ -1,6 +1,6 @@
 import Taro, { Component } from "@tarojs/taro";
 import { View, OpenData } from "@tarojs/components";
-import { AtAvatar, AtList, AtListItem, AtButton } from "taro-ui";
+import {AtList, AtListItem} from "taro-ui";
 import {hasID} from "../../util/util"
 import "./index.scss";
 import api from "../../service/api"

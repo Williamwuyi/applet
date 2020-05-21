@@ -1,5 +1,5 @@
-import Taro, { Component,Events } from "@tarojs/taro";
-import { View, Text, Input, Button, Image } from "@tarojs/components";
+import Taro, { Component} from "@tarojs/taro";
+import { View} from "@tarojs/components";
 import { AtButton ,AtToast} from "taro-ui";
 import { labor_edit } from "../../config/base"
 import api  from "../../service/api"

@@ -1,7 +1,7 @@
 import Taro, { Component } from "@tarojs/taro";
 import { View } from "@tarojs/components";
-import { AtTabBar, AtDivider,AtNoticebar } from "taro-ui";
-import { hasMobile,hasID } from "../../util/util"
+import { AtTabBar} from "taro-ui";
+import { hasMobile} from "../../util/util"
 import NavBar from 'taro-navigationbar'
 import "./index.scss";
 import Home from "../home";
