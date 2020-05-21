@@ -65,7 +65,7 @@ export default class Home extends Component {
     //  url:'../../pages/order/index?orderID=' + orderID,
 
     //  success:function(res){
-    //   //  通过eventChannel来发送数据
+      //  通过eventChannel来发送数据
     //   res.eventChannel.emit('acceptDataFromOpenedPage',{data:'test'})
     //  } 
     // })
