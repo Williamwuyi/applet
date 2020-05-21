@@ -1,9 +1,8 @@
 import Taro, { Component } from "@tarojs/taro";
-import { View, Text, Input, Button } from "@tarojs/components";
-import { AtButton, AtInput, AtModal, AtModalHeader, AtModalContent, AtModalAction, AtCheckbox,AtToast } from "taro-ui";
+import { View} from "@tarojs/components";
+import { AtButton,  AtCheckbox,AtToast } from "taro-ui";
 import NavBar from 'taro-navigationbar'
 import { agreement, agreement_confirm } from "../../config/base"
-import { setLaborIntoStorage } from "../../util/util"
 import api from '../../service/api'
 
 const util = require("../../util/util")

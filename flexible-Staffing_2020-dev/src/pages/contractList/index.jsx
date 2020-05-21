@@ -1,6 +1,5 @@
 import Taro, { Component } from "@tarojs/taro";
 import { View } from "@tarojs/components";
-import { AtTabBar } from "taro-ui";
 import NavBar from 'taro-navigationbar'
 import api from "../../service/api"
 import { NoData } from "../../components/noData/index"

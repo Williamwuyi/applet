@@ -1,6 +1,6 @@
 import Taro, { Component } from "@tarojs/taro";
-import { View, Picker, Text, Label } from "@tarojs/components";
-import { AtForm, AtInput, AtButton } from "taro-ui";
+import { View } from "@tarojs/components";
+import { AtButton } from "taro-ui";
 import NavBar from 'taro-navigationbar'
 import "./index.scss";
 

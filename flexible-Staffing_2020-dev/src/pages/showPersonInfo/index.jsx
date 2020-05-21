@@ -1,8 +1,5 @@
 import Taro, { Component } from "@tarojs/taro";
-import { View, Picker, Text, Label, Input } from "@tarojs/components";
-import { AtForm, AtInput, AtButton } from "taro-ui";
-import {pub_dict ,labor_edit,labor_info,} from "../../config/base"
-import {setLaborIntoStorage} from "../../util/util"
+import { View,Text} from "@tarojs/components";
 import NavBar from 'taro-navigationbar'
 
 
