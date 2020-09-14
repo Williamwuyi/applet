@@ -1,0 +1,6 @@
+{
+  "rootIP": "http://www.yoder.cn",
+  "imgView":"http://www.yoder.cn/org/person/show?fileName=",
+  "api6001":"",
+  "webSockt": "http://org.yoder.cn:6001/sock-js?user="
+}
