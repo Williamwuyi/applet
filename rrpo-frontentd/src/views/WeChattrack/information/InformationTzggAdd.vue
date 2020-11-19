@@ -7,14 +7,14 @@
     @cancel="() => { onClose() }"
     @ok="() => { handleSubmit() }"
     :visible="InformationTzggVisiable"
-    style="height: calc(100% - 55px);overflow: auto;padding-bottom: 53px;">
+    >
     <a-form :form="form">
       <a-form-item label='公告内容' v-bind="formItemLayout">
         <a-textarea
-          :autosize=true
+          :autoSize={maxRows:6}
           v-decorator="['content',
                    {rules: [
-                    { required: true, message: '不能为空'}
+                    { required: true, max: 160, message: '值不能为空且最大值不能超过160字符'}
                   ]}]"
           placeholder="请输入公告" allow-clear />
       </a-form-item>
@@ -37,19 +37,16 @@ export default {
     return {
       loading: false,
       formItemLayout,
-      form: this.$form.createForm(this),
-      cond: {}
+      form: this.$form.createForm(this)
     }
   },
   methods: {
     reset () {
       this.loading = false
       this.form.resetFields()
-      this.cond = {}
     },
     onClose () {
       this.reset()
-      this.cond = {}
       this.form.resetFields()
       this.$emit('close')
     },
@@ -58,9 +55,8 @@ export default {
       this.form.validateFields((err, values) => {
         if (!err) {
           this.loading = true
-          let newCond = {...this.cond, ...this.form.getFieldsValue()}
-          console.log(newCond)
-          this.$post('/check/menus-year/add', newCond).then(() => {
+          let newCond = {...this.form.getFieldsValue()}
+          this.$post('/wx/notice/save', newCond).then(() => {
             this.reset()
             this.$emit('success')
           }).catch(() => {

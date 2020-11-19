@@ -221,7 +221,6 @@ export default {
       this.yearCon.pageNum = pagination.current
       this.yearCon.pageSize = pagination.pageSize
       this.yearCon.menusId = this.dwpnId
-      console.log(this.yearCon)
       this.faech({
         ...this.yearCon,
         ...filters
@@ -231,7 +230,6 @@ export default {
     onChangeyear (value) {
       if (value.length > 0) {
         this.dwpnId = value[0]
-        console.log(value[0])
         this.faech()
       } else {
         this.fach()

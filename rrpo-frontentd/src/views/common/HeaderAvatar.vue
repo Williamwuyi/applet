@@ -15,6 +15,10 @@
           <a-icon type="key"/>
           <span>密码修改</span>
         </a-menu-item>
+        <a-menu-item>
+          <a-icon type="link"/>
+          <span><a href="http://114.116.174.5:888/" target="_blank" style="color: black">门户网站</a></span>
+        </a-menu-item>
         <a-menu-divider></a-menu-divider>
         <a-menu-item @click="handleSettingClick">
           <a-icon type="setting"/>

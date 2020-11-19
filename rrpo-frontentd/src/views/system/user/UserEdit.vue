@@ -7,7 +7,7 @@
     :closable="false"
     @close="onClose"
     :visible="userEditVisiable"
-    style="height: calc(100% - 55px);overflow: auto;padding-bottom: 53px;">
+    >
     <a-form :form="form">
       <a-form-item label='用户名' v-bind="formItemLayout">
         <a-input readOnly v-decorator="['username']"/>
@@ -28,7 +28,7 @@
             { pattern: '^0?(13[0-9]|15[012356789]|17[013678]|18[0-9]|14[57])[0-9]{8}$', message: '请输入正确的手机号'}
           ]}]"/>
       </a-form-item>
-      <a-form-item label='角色' v-bind="formItemLayout">
+      <a-form-item label='角色' v-bind="formItemLayout" v-hasPermission="'user:role'" v-if="userRole">
         <a-select
           mode="multiple"
           :allowClear="true"
@@ -42,11 +42,13 @@
       </a-form-item>
       <a-form-item label='组织机构' v-bind="formItemLayout">
         <a-tree-select
-          :allowClear="true"
+          tree-data-simple-mode
           :dropdownStyle="{ maxHeight: '220px', overflow: 'auto' }"
           :treeData="deptTreeData"
+          :load-data="getDept"
           @change="onDeptChange"
-          :value="userDept">
+          :placeholder="deptMsg"
+          >
         </a-tree-select>
       </a-form-item>
       <a-form-item label='状态' v-bind="formItemLayout">
@@ -81,7 +83,7 @@
 </template>
 <script>
 import {mapState, mapMutations} from 'vuex'
-
+import store from '@/store'
 const formItemLayout = {
   labelCol: { span: 3 },
   wrapperCol: { span: 18 }
@@ -96,13 +98,21 @@ export default {
   data () {
     return {
       formItemLayout,
+      // 本地存储
+      dapeId: store.state.account.user.deptId,
+      role: store.state.account.user.roleId,
       form: this.$form.createForm(this),
+      userRole: false,
       deptTreeData: [],
       roleData: [],
-      userDept: [],
+      userDept: '',
       userId: '',
+      deptMsg: '',
       loading: false
     }
+  },
+  mounted () {
+    this.getDept()
   },
   computed: {
     ...mapState({
@@ -117,6 +127,34 @@ export default {
       this.loading = false
       this.form.resetFields()
       this.$emit('close')
+      this.deptTreeData = []
+    },
+    // 分页获取
+    getDept (treeNode) {
+      if (treeNode) {
+        return new Promise(resolve => {
+          setTimeout(() => {
+            this.$get('/dept/queryDeptChile', {prentId: treeNode.dataRef.id}).then((r) => {
+              let newData = r.data.data
+              newData.forEach(t => {
+                this.deptTreeData.push(
+                  { id: t.deptId, pId: t.parentId, value: t.deptId, title: t.deptName }
+                )
+              })
+            })
+            resolve()
+          }, 300)
+        })
+      } else {
+        this.$get('/dept/queryDeptChile').then((r) => {
+          let newData = r.data.data
+          newData.forEach(t => {
+            this.deptTreeData.push(
+              { id: t.deptId, pId: t.parentId, value: t.deptId, title: t.deptName }
+            )
+          })
+        })
+      }
     },
     setFormValues ({...user}) {
       this.userId = user.userId
@@ -135,12 +173,17 @@ export default {
         let roleArr = user.roleId.split(',')
         this.form.setFieldsValue({'roleId': roleArr})
       }
+      if (user.deptName) {
+        this.deptMsg = user.deptName
+      }
       if (user.deptId) {
-        this.userDept = [user.deptId]
+        this.userDept = user.deptId
       }
     },
     onDeptChange (value) {
-      this.userDept = value
+      if (value !== undefined) {
+        this.userDept = value
+      }
     },
     handleSubmit () {
       this.form.validateFields((err, values) => {
@@ -171,12 +214,19 @@ export default {
   watch: {
     userEditVisiable () {
       if (this.userEditVisiable) {
-        this.$get('role').then((r) => {
+        this.$get('/role', {pageSize: 50}).then((r) => {
           this.roleData = r.data.rows
         })
-        this.$get('dept').then((r) => {
-          this.deptTreeData = r.data.rows.children
+        let Role = false
+        this.role.split(',').forEach(t => {
+          if (t === 1) {
+            Role = true
+          }
         })
+        //  如果当前登陆机构非省级dapeId0非管理roleId1则不能有角色选择
+        if (this.dapeId === '0' || Role) {
+          this.userRole = true
+        }
       }
     }
   }

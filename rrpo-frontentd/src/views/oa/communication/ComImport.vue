@@ -5,34 +5,25 @@
       title='文件导入'
       okText='确定'
       :footer="null"
+      :destroyOnClose="true"
       @cancel="() => {onClose() }"
-      @ok="() => { onImport() }"
     >
       <a-form layout='vertical' :form="form">
         <div>
-        <a-form-item label='' style="margin-bottom: 2rem;height:300px;overflow:auto;" >
-          <a-tree
-            :key="deptTreeKeys"
-            ref="tree"
-            :checkable="true"
-            :checkStrictly="true"
-            @check="handleCheck"
+        <a-form-item label='导入所属机构' style="margin-bottom: 2rem;" >
+          <a-tree-select
+            @change="handleCheck"
             @expand="handleExpand"
             :expandedKeys="expandedKeys"
+            :replaceFields="replaceFields"
+            :showSearch="false"
+            :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
+            :load-data="onLoadData"
             :treeData="deptTreeData">
-            </a-tree>
+          </a-tree-select>
         </a-form-item>
         </div>
         <a-form-item>
-<!--          <a-upload-->
-<!--           name="file"-->
-<!--           :multiple="false"-->
-<!--           @change="handleChange"-->
-<!--           :customRequest="customRequest"-->
-<!--           :file-list="fileList"-->
-<!--          >-->
-<!--            <a-button> <a-icon type="upload" /> 上传文件 </a-button>-->
-<!--          </a-upload>-->
           <a-upload
             name="file"
             :multiple="false"
@@ -64,7 +55,6 @@ let checkedKeysVlue = {
 }
 export default {
   name: 'ComImport',
-  // props: ['visible'],
   props: {
     visible: {
       default: false
@@ -96,26 +86,21 @@ export default {
       this.deptTreeKeys = +new Date()
     },
     onClose () {
-      this.reset()
       this.$emit('cancel')
     },
     handleCheck (checkedKeys) {
-      if (checkedKeys.checked.length >= 1) {
-        if (checkedKeys.checked.length > 1 || checkedKeys.checked.length === 0) {
-          this.$notification.warning({message: '系统提示', description: '未选中或者多选项！', duration: 4})
-        } else {
-          checkedKeysVlue.deptId = checkedKeys.checked[0]
-        }
-      } else {
-        this.$notification.warning({message: '系统提示', description: '不能不选哟！', duration: 4})
-      }
+      console.log('选中的id ', checkedKeys)
+      checkedKeysVlue.deptId = checkedKeys
+    },
+    handleExpand (expandedKeys) {
+      this.expandedKeys = expandedKeys
     },
     handleChange (info) {
-      this.loading = true
       if (checkedKeysVlue.deptId === '') {
-        this.$notification.warning({message: '系统提示', description: '至少选中一个！', duration: 4})
+        notification.error({message: '系统提示', description: '请选择所属机构！', duration: 2})
         return
       }
+      this.loading = true
       if (info.file.status) {
         const status = info.file.status
         if (status === 'done') {
@@ -125,7 +110,7 @@ export default {
             // this.fileList.push(uploadFile)
             notification.success({
               message: '系统提示',
-              description: '文件上传成功！',
+              description: info.file.response.message,
               duration: 4
             })
             this.loading = false
@@ -142,37 +127,40 @@ export default {
         }
       }
     },
-    handleExpand (expandedKeys) {
-      this.expandedKeys = expandedKeys
+    onLoadData (treeNode) {
+      return new Promise(resolve => {
+        if (treeNode.dataRef.children) {
+          resolve()
+          return
+        }
+        setTimeout(() => {
+          this.$get('/dept/queryDeptChile', {prentId: treeNode.dataRef.deptId}).then((r) => {
+            treeNode.dataRef.children = r.data.data
+            this.deptTreeData = [...this.deptTreeData]
+            resolve()
+          })
+        }, 500)
+      })
     },
     // 自定义文件上传
     customRequest1 (file) {
       const formData = new FormData()
       formData.append('file', file.file)
-      console.log(this.checkedKeys)
-      if (this.checkedKeys === undefined) {
-        this.$notification.warning({message: '系统提示', description: '请至少选中一个选项！', duration: 4})
-        return
-      }
-      if (this.checkedKeys.length > 1 || this.checkedKeys.length === 0) {
-        this.$notification.warning({message: '系统提示', description: '未选中或者多选项！', duration: 4})
-      } else {
-        axios({
-          method: 'post',
-          url: this.$constURL + '/address/importAddress',
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            'Authentication': store.state.account.token
-            // 'Content-Type': 'appliction/octet-stream'
-          },
-          data: formData
-        }).then((res) => {
-          this.$emit('success')
-          this.reset()
-        }).catch(function (error) {
-          console.log(error)
-        })
-      }
+      axios({
+        method: 'post',
+        url: this.$constURL + '/address/importAddress',
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          'Authentication': store.state.account.token
+          // 'Content-Type': 'appliction/octet-stream'
+        },
+        data: formData
+      }).then((res) => {
+        this.$emit('success')
+        this.reset()
+      }).catch(function (error) {
+        console.log(error)
+      })
     }
   },
   watch: {
@@ -180,9 +168,9 @@ export default {
       this.loading = true
       if (this.visible) {
         // /area
-        this.$get('/dept').then((r) => {
-          // this.replaceFields = {title: 'areaName', key: 'id'}
-          this.deptTreeData = r.data.rows.children
+        this.$get('/dept/queryDeptChile').then((r) => {
+          this.replaceFields = { key: 'deptId', title: 'deptName', value: 'deptId' }
+          this.deptTreeData = r.data.data
           this.loading = false
         })
       }

@@ -10,7 +10,7 @@
     <div class="banner">
     <div style="height: 200px">
       <h3 style="text-align: center">导入模板图片<span style="color: red">(注释：目前只支持XLSX后缀文件导入)</span></h3>
-      <img src="static/img/shili.png">
+      <img src="static/img/dr.png">
     </div>
     <hr />
     <div class="footer">

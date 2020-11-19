@@ -1,77 +1,120 @@
 <template>
-  <a-card :bordered="false" class="card-area">
-    <div>
+  <div style="width: 100%;min-height: 780px">
+  <div>
       <div :class="advanced ? 'search' : null">
         <!-- 搜索区域 -->
-        <a-form layout="horizontal">
+        <a-form>
           <div :class="advanced ? null: 'fold'">
-            <a-row >
-              <a-col :md="5" :sm="20">
+            <a-row>
+              <a-col :md="5" :sm="10" v-has-any-permission="'communication:fatalitiesUnit'">
                 <a-form-item
                   label="单位:"
-                  :labelCol="{span: 5}"
-                  :wrapperCol="{span: 15, offset: 1}">
-<!--                  <a-cascader  change-on-select-->
-<!--                               @change="onChangecascader"-->
-<!--                               :options="options"-->
-<!--                               placeholder="未选择"-->
-<!--                               ref="cascader"-->
-<!--                  />-->
-                  <a-select v-model="character.cityCsId" @change="citySChange">
-                    <a-select-option v-for="(n,index) in cityS" :key="index" :value="n.deptId" >
-                      {{n.deptName}}
+                  :labelCol="{span: 4}"
+                  :wrapperCol="{span: 18, offset: 1}">
+                  <a-select @change="citySChange" v-model="unitG">
+                    <a-select-option v-for="(n,index) in cityS" :key="index" :value="n.id" >
+                      {{n.dept.deptName}}
                     </a-select-option>
                   </a-select>
                 </a-form-item>
               </a-col>
-              <a-col :md="5" :sm="20">
+              <a-col :md="5" :sm="20" v-has-any-permission="'communication:fatalitiesUnit'">
+                <a-form-item
+                  label="市级单位 :"
+                  :labelCol="{span: 8}"
+                  :wrapperCol="{span: 15, offset: 1}">
+                  <a-select @change="cityQChange" v-model="unitQ">
+                    <a-select-option v-for="(n,index) in cityQ" :key="index" :value="n.dept.deptId" >
+                      {{n.dept.deptName}}
+                    </a-select-option>
+                  </a-select>
+                </a-form-item>
+              </a-col>
+              <a-col :md="5" :sm="20" v-has-any-permission="'communication:fatalitiesUnit'">
                 <a-form-item
                   label="区县单位 :"
-                  :labelCol="{span: 6}"
+                  :labelCol="{span: 8}"
                   :wrapperCol="{span: 15, offset: 1}">
-                  <a-select v-model="character.cityQxId">
-                    <a-select-option v-for="(n,index) in cityQ" :key="index" :value="n.deptId" >
+                  <a-select @change="cityXChange" v-model="unitX">
+                    <a-select-option v-for="(n,index) in cityX" :key="index" :value="n.deptId" >
                       {{n.deptName}}
                     </a-select-option>
                   </a-select>
                 </a-form-item>
               </a-col>
-              <a-col :md="8" :sm="21" >
+              <a-col :md="5" :sm="20">
                 <a-form-item
-                  label="发生时间:"
-                  :labelCol="{span: 6}"
+                  label="线路 :"
+                  :labelCol="{span: 8}"
                   :wrapperCol="{span: 15, offset: 1}">
-                  <range-date @change="onTimeChange" ref="creatTime" :allowClear="false"></range-date>
+                  <a-select v-model="line" @change="lineChange">
+                    <a-select-option v-for="(n,index) in lineData" :key="index" :value="n.dictId">
+                      {{n.fieldName}}
+                    </a-select-option>
+                  </a-select>
                 </a-form-item>
               </a-col>
+            </a-row>
+              <a-row>
+              <a-col :md="5" :sm="20" >
+                <a-form-item label="开始时间:" :labelCol="{span: 4}" :wrapperCol="{span: 18, offset: 1}">
+                  <a-month-picker placeholder="开始时间" @change="onStartChange" v-model="restStartTime" style="width: 100%" />
+                </a-form-item>
+              </a-col>
+              <a-col :md="5" :sm="20" >
+                <a-form-item label="结束时间:" :labelCol="{span: 8}" :wrapperCol="{span: 15, offset: 1}">
+                  <a-month-picker placeholder="结束时间" @change="onEndChange" v-model="resetTime" style="width: 100%" />
+                </a-form-item>
+              </a-col>
+
               <a-col :md="5" :sm="20">
-                <span style="margin-left: 20px">
+                <a-form-item
+                  label="事件类型 :"
+                  :labelCol="{span: 8}"
+                  :wrapperCol="{span: 15, offset: 1}">
+                  <a-select v-model="genre" @change="genreChange">
+                    <a-select-option value="0">击打列车</a-select-option>
+                    <a-select-option value="1">摆放障碍</a-select-option>
+                    <a-select-option value="2">提车钩</a-select-option>
+                    <a-select-option value="3">关塞门</a-select-option>
+                    <a-select-option value="4">拆盗掀盗</a-select-option>
+                    <a-select-option value="5">耕牛肇事</a-select-option>
+                    <a-select-option value="6">拦车断道</a-select-option>
+                    <a-select-option value="7">爆炸破坏</a-select-option>
+                    <a-select-option value="8">机动车肇事</a-select-option>
+                    <a-select-option value="9">高铁护网进入</a-select-option>
+                    <a-select-option value="10">高铁非正常停车</a-select-option>
+                    <a-select-option value="11">其他</a-select-option>
+                  </a-select>
+                </a-form-item>
+              </a-col>
+              <a-col :md="5" :sm="20" style="margin-top: 5px;margin-left: 60px">
                   <a-button type="primary" @click="search">查询</a-button>
-                  <a-button style="margin-left: 8px" @click="reset">重置</a-button>
-                </span>
+                  <a-button style="margin-left: 20px" @click="reset">重置</a-button>
               </a-col>
             </a-row>
           </div>
         </a-form>
       </div>
-    <a-button class="editable-add-btn" @click="handleAdd" >
+    <a-button class="btn" @click="handleAdd" type="primary">
       添加
     </a-button>
-    <a-button class="editable-add-btn" @click="handleDel">
+    <a-button class="btn" @click="handleDel" style="background-color: #FF4040;color: white">
       删除
     </a-button>
-      <a-button class="editable-add-btn" @click="handleLock">
-        锁定记录
+      <a-button class="btn" @click="handleLock" style="background-color: #CDAD00;color: white">
+        锁定
       </a-button>
-      <a-button class="editable-add-btn" @click="handleRelieve">
-        解锁记录
+      <a-button class="btn" @click="handleRelieve" style="background-color: #CD853F;color: white">
+        解锁
       </a-button>
     <a-table style="overflow: auto;width: 100%"
       :data-source="dataSource"
-      :scroll={x:100}
+      :scroll={x:100,y:580}
       :columns="columns"
       :rowKey="(record)=> record.caseId"
       :pagination="pagination"
+      :loading="loading"
       :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
       @change="handleTableChange"
     >
@@ -102,8 +145,10 @@
         <span v-else-if="record.fbStatus === '2' ">因铁路原因造成栅栏开口</span>
         <span v-else-if="record.fbStatus === '3' ">未封闭</span>
       </template>
-      <template slot="operation" slot-scope="text, record" v-if="editShow">
-        <a-icon  type="setting" style="margin-left:8px;color:#158BD2" @click="edit(record)" title="修改"></a-icon>
+      <template slot="operation" slot-scope="text, record" >
+<!--        <a-icon v-if="record.statu !== 1" type="setting" style="margin-left:8px;color:#158BD2" @click="edit(record)" title="修改"></a-icon>-->
+        <a @click="edit(record)" style="color: #158BD2" v-if="record.statu !== 1">修改</a>
+        <span v-else>锁定</span>
       </template>
     </a-table>
     <involve-event-add
@@ -118,8 +163,8 @@
       :EditVisiable="EditVisiable"
       ref="oldedit"
     />
-    </div>
-  </a-card>
+  </div>
+  </div>
 </template>
 <script>
 import InvolveEventAdd from './InvolveEventAdd'
@@ -134,12 +179,27 @@ export default {
       EditVisiable: false,
       selectedRowKeys: [],
       advanced: false,
-      editShow: true,
-      character: {},
-      cityCsId: '', // 县区单位条件查询
-      cityQsId: '', // 单位条件查询
+      editShow: null,
+      cityCsId: null, // 县区单位条件查询
+      cityQsId: null, // 单位条件查询
+      cityXsId: null, // 单位条件查询
       cityS: [],
       cityQ: [],
+      cityX: [],
+      unitG: '',
+      unitQ: '',
+      unitX: '',
+      line: '',
+      genre: '',
+      resetTime: null,
+      restStartTime: null,
+      linekey: null,
+      genrekey: null,
+      lineData: [],
+      startTime: null,
+      endTime: null,
+      sortedInfo: null,
+      character: {},
       pagination: {
         total: 0,
         pageSize: 10, // 每页中显示10条数据
@@ -149,6 +209,7 @@ export default {
       },
       dataSource: [],
       count: 2,
+      loading: false,
       columns: [
         {
           title: '发生月份',
@@ -173,7 +234,7 @@ export default {
         {
           title: '发生乡镇村',
           width: '110px',
-          dataIndex: 'cityXc'
+          dataIndex: 'deptXc.deptName'
         },
         {
           title: '派出所',
@@ -183,7 +244,7 @@ export default {
         {
           title: '线路',
           width: '100px',
-          dataIndex: 'dictXl.valuee'
+          dataIndex: 'dictXl.fieldName'
         },
         {
           title: '地点',
@@ -238,11 +299,13 @@ export default {
       ]
     }
   },
-  inject: ['reload'],
   mounted () {
     this.fetch()
-    this.$get('/dept/list', {deptId: 0}).then(res => {
-      this.cityS = res.data
+    this.$get('/accident/dept/list').then(res => {
+      this.cityS = res.data.data
+    })
+    this.$get('/dict/getListTable', {parentId: '1867989d0aaaf82f79b34070cc77d766', pageSize: 50}).then(res => {
+      this.lineData = res.data.data.records
     })
   },
   methods: {
@@ -257,50 +320,84 @@ export default {
         this.dataSource = newData.records
         this.pagination = pagination
         this.loading = false
-        for (let key in this.dataSource) {
-          let solck = this.dataSource[key].statu // 1为锁定，0为解锁
-          if (solck === 1) {
-            this.editShow = false
-          } else if (solck === 0) {
-            this.editShow = true
-          }
-        }
       })
     },
     // 选择地级市是，查找县级市
     citySChange (key) {
-      this.$get('/dept/list', {deptId: key}).then(res => {
-        this.cityQ = res.data
+      this.loading = true
+      this.$get('/accident/dept/list', {prentId: key}).then(res => {
+        console.log('查市级', res.data)
+        this.cityQ = res.data.data
+        this.loading = false
       })
-      // 选中后清空，以下联级
-      this.cityQxId = ''
+      this.cityCsId = key
+      this.unitQ = ''
+      this.unitX = ''
+    },
+    cityQChange (key) {
+      this.loading = true
+      console.log('++++', key)
+      this.$get('/dept/list', {deptId: key}).then(res => {
+        console.log('查区县', res.data)
+        this.cityX = res.data
+        this.loading = false
+      })
+      this.cityQsId = key
+      this.unitX = ''
+    },
+    cityXChange (key) {
+      this.cityXsId = key
+    },
+    lineChange (key) {
+      this.linekey = key
+    },
+    genreChange (key) {
+      this.genrekey = key
     },
     // 条件查询
     search () {
       this.fetch({
-        ...this.character
+        policeId: this.cityCsId,
+        cityLevelId: this.cityQsId,
+        quDeptId: this.cityXsId,
+        lineId: this.linekey,
+        nature: this.genrekey,
+        startDate: this.startTime,
+        endDate: this.endTime
       })
     },
     // 重置
     reset () {
-      // 重置查询参数
-      this.character = {}
+      // 清空显示
+      this.unitQ = ''
+      this.unitG = ''
+      this.unitX = ''
+      this.genre = ''
+      this.line = ''
+      // 清空值
+      this.cityQsId = null
+      this.cityCsId = null
+      this.cityXsId = null
+      this.linekey = null
+      this.genrekey = null
       // 清空时间选择
-      this.$refs.creatTime.reset()
+      this.resetTime = null
+      this.restStartTime = null
       this.fetch()
     },
-    // 状态查询
-    onChangecascader (value) {
-      this.character.status = value
+    // 选择开始时间
+    onStartChange (value, date) {
+      this.startTime = date.toString() + '-00'
+      this.restTime = null // 结束时间
     },
-    // 选中时间
-    onTimeChange (value) {
-      if (value) {
-        let start = value[0] + ` 00:00:00`
-        let end = value[1] + ` 23:59:59`
-        this.character.startTime = start
-        this.character.endTime = end
-      }
+    // 选择结束时间
+    onEndChange (value, date) {
+      console.log('结束时间', value, '--', date)
+      let year = date.toString().substring(0, 4)
+      let months = date.toString().substring(5, 7)
+      let month = parseInt(months) + 1
+      let dateTime = year + '-' + month + '-00'
+      this.endTime = dateTime
     },
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
@@ -327,7 +424,7 @@ export default {
     handleFataAdd () {
       this.AddVisiable = false
       this.$notification.success({message: '系统提示', description: '操作成功！', duration: 4})
-      this.reload()
+      this.fetch()
     },
     hanleaddclose () {
       this.AddVisiable = false
@@ -340,35 +437,33 @@ export default {
     },
     handleEdit () {
       this.EditVisiable = false
-      this.reload()
+      this.fetch()
     },
     hanleaEditclose () {
       this.EditVisiable = false
     },
     // 锁定记录
     handleLock () {
-      // this.editShow = false
       const param = {
-        accidentId: this.selectedRowKeys,
+        caseId: this.selectedRowKeys,
         status: 1
       }
       this.$post('/accident/case/lock', param).then(res => {
         if (res.data.status === 1) {
           this.$notification.success({message: '系统提示', description: '操作成功！', duration: 4})
-          this.reload()
+          this.fetch()
         }
       })
     },
     handleRelieve () {
-      // this.editShow = true
       const param = {
-        accidentId: this.selectedRowKeys,
+        caseId: this.selectedRowKeys,
         status: 0
       }
       this.$post('/accident/case/lock', param).then(res => {
         if (res.data.status === 1) {
           this.$notification.success({message: '系统提示', description: '操作成功！', duration: 4})
-          this.reload()
+          this.fetch()
         }
       })
     },
@@ -386,11 +481,10 @@ export default {
         centered: true,
         onOk () {
           let rowd = that.selectedRowKeys
-          console.log('----------------', rowd)
           that.$delete('/accident/case/deleteByLists/' + rowd.join(',')).then(res => {
             that.$notification.success({message: '系统提示', description: '操作成功！', duration: 4})
             that.selectedRowKeys = []
-            that.reload()
+            that.fetch()
           })
         },
         onCancel () {
@@ -402,8 +496,8 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-@import "../../../../static/less/Common";
-.ant-table-body {  //样式穿透
-    overflow-x: auto !important;
+  .btn{
+    margin-bottom: 5px;
+    margin-right: 10px;
   }
 </style>

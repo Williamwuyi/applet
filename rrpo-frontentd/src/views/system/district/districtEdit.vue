@@ -7,7 +7,7 @@
     :closable="false"
     @close="onClose"
     :visible="districtEdit"
-    style="height: calc(100% - 55px);overflow: auto;padding-bottom: 53px;">
+    >
     <a-form :form="form">
       <a-form-item label='地区/街道' v-bind="formItemLayout">
         <a-input v-model="region.areaName"

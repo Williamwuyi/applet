@@ -8,8 +8,10 @@
       @select="onSelect"
       :replaceFields="replaceFields"
       :selectedKeys="selectedKeys"
+      :load-data="onLoadData"
       :expandAction="false"
     ></a-directory-tree>
+    <a-spin v-if="loading" style="margin: 50% 50%"/>
   </div>
 </template>
 
@@ -27,14 +29,30 @@ export default {
   },
   mounted () {
     this.loading = true
-    // 树结构获取数据 部门dept   地区/area
-    this.$get('dept').then((r) => {
-      // this.replaceFields = {title: 'areaName', key: 'id'}
-      this.treeData = r.data.rows.children
+    // 树结构获取数据
+    this.$get('/dept/queryDeptChileNotshiro').then((r) => {
+      console.log('获取机构树：', r.data)
+      this.replaceFields = { title: 'deptName', key: 'deptId' }
+      this.treeData = r.data.data
       this.loading = false
     })
   },
   methods: {
+    onLoadData (treeNode) {
+      return new Promise(resolve => {
+        if (treeNode.dataRef.children) {
+          resolve()
+          return
+        }
+        setTimeout(() => {
+          this.$get('/dept/queryDeptChileNotshiro', {prentId: treeNode.dataRef.deptId}).then((r) => {
+            treeNode.dataRef.children = r.data.data
+            this.treeData = [...this.treeData]
+            resolve()
+          })
+        }, 500)
+      })
+    },
     // 点击，传递部门key，在人员表中显示当前部门的人员。
     onSelect (selectedKeys) {
       this.$emit('reloadStaffTable', selectedKeys[0])
@@ -51,7 +69,7 @@ export default {
     float: left;
     width: 300px;
     position:absolute;
-    height:700px;
+    height:730px;
     overflow:auto;
     padding: 10px 0;
     margin-left: 10px;

@@ -1,6 +1,6 @@
 <template>
   <a-drawer
-    title="绑定群成员"
+    title="审核"
     :maskClosable="false"
     width=40%
     placement="right"
@@ -195,8 +195,14 @@ export default {
     handleSubmit (index) {
       if (this.message !== '') {
         this.$post('/wx/sh/shWx', {status: index, massage: this.message, qunId: this.qunId}).then(res => {
-          this.reset()
-          this.$emit('success')
+          if (res.data.status !== 0) {
+            this.reset()
+            this.$emit('success')
+          } else {
+            this.$message.error(res.data.message)
+            this.reset()
+            this.$emit('close')
+          }
         })
       } else {
         this.$notification.error({message: '系统提示理由不能为空', description: '操作失败！', duration: 4})

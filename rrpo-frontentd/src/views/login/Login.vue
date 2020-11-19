@@ -1,36 +1,64 @@
 <template>
   <div class="login">
     <a-form @submit.prevent="doLogin" :autoFormCreate="(form) => this.form = form">
-      <a-tabs size="large" :tabBarStyle="{textAlign: 'center'}" style="padding: 0 2px;" :activeKey="activeKey"
-              @change="handleTabsChange">
-        <a-tab-pane tab="登录" key="1">
+<!--      <a-tabs size="large" :tabBarStyle="{textAlign: 'center'}" style="padding: 0 2px;" :activeKey="activeKey"-->
+<!--              @change="handleTabsChange">-->
+<!--        <a-tab-pane key="1">-->
           <a-alert type="error" :closable="true" v-show="error" :message="error" showIcon
                    style="margin-bottom: 24px;"></a-alert>
           <a-form-item
             fieldDecoratorId="name"
+            style="text-align: left"
             :fieldDecoratorOptions="{rules: [{ required: true, message: '请输入账户名', whitespace: true}]}">
-            <a-input size="large">
+            <a-input size="large" style="margin-top: 10px;width: 350px">
               <a-icon slot="prefix" type="user"></a-icon>
             </a-input>
           </a-form-item>
           <a-form-item
             fieldDecoratorId="password"
+            style="text-align: left"
             :fieldDecoratorOptions="{rules: [{ required: true, message: '请输入密码', whitespace: true}]}">
-            <a-input size="large" type="password">
+            <a-input size="large" type="password" style="margin-top: 10px;width: 350px">
               <a-icon slot="prefix" type="lock"></a-icon>
             </a-input>
           </a-form-item>
-        </a-tab-pane>
-      </a-tabs>
+<!--        </a-tab-pane>-->
+<!--      </a-tabs>-->
       <a-form-item>
-        <a-button :loading="loading" style="width: 100%; margin-top: 4px" size="large" htmlType="submit" type="primary">
+        <a-button :loading="loading" style="width: 100%;width: 350px; margin-top: 15px" size="large" htmlType="submit" type="primary">
           登录
         </a-button>
       </a-form-item>
+      <div style="text-align: right;margin-top: 25px;"><a href="http://114.116.174.5:888/" target="_blank">门户网站>></a></div>
       <div>
-        <a style="float: right" @click="regist">注册账户</a>
+<!--        <a style="float: right" @click="regist">注册账户</a>-->
       </div>
     </a-form>
+    <a-modal
+      :visible="visible"
+      title="绑定组织机构"
+      :afterClose="()=>isEdit=false"
+      width="500px"
+      okText="确定"
+      cancelText="取消"
+      :destroyOnClose="true"
+      :footer="null"
+      @cancel="close"
+      @ok="ok"
+    >
+      <div style="height: 280px;text-align: center">
+        <a-tree-select
+          placeholder="选择用户的组织机构"
+          style="width: 300px;"
+          :dropdown-style="{ maxHeight: '200px', overflow: 'auto' }"
+          :tree-data="deptTreeData"
+          tree-data-simple-mode
+          :load-data="onLoadData"
+          v-model="deptId">
+        </a-tree-select>
+        <a-button type="primary" @click="submit()">确认绑定</a-button>
+      </div>
+    </a-modal>
   </div>
 </template>
 
@@ -42,6 +70,9 @@ export default {
   data () {
     return {
       loading: false,
+      visible: false,
+      deptTreeData: [],
+      deptId: '',
       error: '',
       activeKey: '1'
     }
@@ -76,7 +107,33 @@ export default {
               setTimeout(() => {
                 this.loading = false
               }, 500)
-              this.$router.push('/')
+              const that = this
+              this.$get('/user/getDept').then((r) => {
+                if (!r.data) { // 为true是有组织机构,为false则没有组织机构
+                  this.$confirm({
+                    content: '您未绑定组织机构',
+                    centered: true,
+                    onOk () {
+                      that.$get('/dept/list', {deptId: -1}).then((r) => {
+                        console.log('加载数据：', r.data)
+                        let newData = r.data
+                        newData.forEach(t => {
+                          that.deptTreeData.push(
+                            { id: t.deptId, pId: t.parentId, value: t.deptId, title: t.deptName }
+                          )
+                        })
+                      })
+                      that.visible = true
+                    },
+                    onCancel () {
+                      that.visible = false
+                      that.loading = false
+                    }
+                  })
+                } else { // 为true是有组织机构,为false则没有组织机构
+                  this.$router.push('/')
+                }
+              })
             }).catch(() => {
               setTimeout(() => {
                 this.loading = false
@@ -84,6 +141,33 @@ export default {
             })
           }
         })
+      }
+    },
+    onLoadData (treeNode) {
+      return new Promise(resolve => {
+        setTimeout(() => {
+          this.$get('/dept/list', {deptId: treeNode.dataRef.id}).then((r) => {
+            let newData = r.data
+            newData.forEach(t => {
+              this.deptTreeData.push(
+                { id: t.deptId, pId: t.parentId, value: t.deptId, title: t.deptName }
+              )
+            })
+          })
+          resolve()
+        }, 500)
+      })
+    },
+    // 绑定组织机构
+    submit () {
+      if (this.deptId !== '') {
+        this.$get('/user/bandingDept', {deptId: this.deptId}).then((res) => {
+          if (res.data.status === 1) {
+            this.$router.push('/')
+          }
+        })
+      } else {
+        this.$notification.warning({message: '系统提示', description: '请选中一个组织机构绑定！', duration: 4})
       }
     },
     regist () {
@@ -94,6 +178,13 @@ export default {
     },
     handleTabsChange (val) {
       this.activeKey = val
+    },
+    close () {
+      this.visible = false
+      this.loading = false
+    },
+    ok () {
+      this.visible = false
     },
     ...mapMutations({
       setToken: 'account/setToken',
@@ -111,7 +202,7 @@ export default {
     saveLoginData (data) {
       console.log(data)
       this.setToken(data.token)
-      this.setExpireTime(data.expireTime)
+      // this.setExpireTime(data.expireTime)
       this.setUser(data.user)
       this.setPermissions(data.permissions)
       this.setRoles(data.roles)

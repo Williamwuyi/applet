@@ -1,25 +1,26 @@
 <template>
-  <a-card :bordered="false" class="card-area">
+<!--  <a-card :bordered="false" class="card-area">-->
+  <div style="width: 100%;min-height: 780px">
     <div :class="advanced ? 'search' : null">
       <!-- 搜索区域 -->
       <a-form layout="horizontal">
         <div :class="advanced ? null: 'fold'">
-          <a-row >
-            <a-col :md="12" :sm="24" >
+          <a-row>
+            <a-col :md="14" :sm="20" >
               <a-form-item
                 label="用户名"
-                :labelCol="{span: 5}"
-                :wrapperCol="{span: 18, offset: 1}">
+                :labelCol="{span: 2}"
+                :wrapperCol="{span: 14, offset: 0}">
                 <a-input v-model="queryParams.username"/>
               </a-form-item>
             </a-col>
-          </a-row>
-        </div>
-        <span style="float: right; margin-top: 3px;">
+            <span style="margin-top: 3px;">
           <a-button type="primary" @click="search">查询</a-button>
           <a-button style="margin-left: 8px" @click="reset">重置</a-button>
         </span>
-      </a-form>
+          </a-row>
+        </div>
+        </a-form>
     </div>
     <div>
       <!-- 表格区域 -->
@@ -27,7 +28,7 @@
                :dataSource="dataSource"
                :pagination="pagination"
                :loading="loading"
-               :scroll="{ x: 900 }"
+               :scroll="{ x: 900,y:580}"
                @change="handleTableChange">
         <template slot="username" slot-scope="text, record">
           <template v-if="record.id === user.id">
@@ -43,7 +44,8 @@
         </template>
       </a-table>
     </div>
-  </a-card>
+  </div>
+<!--  </a-card>-->
 </template>
 
 <script>

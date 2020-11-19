@@ -3,6 +3,7 @@
     :visible="visible"
     title='新建年度考核'
     okText='确定创建'
+    :width="700"
     @cancel="() => { onClose() }"
     @ok="() => { create() }"
   >
@@ -12,6 +13,13 @@
                    class="tit">
         <a-date-picker format='YYYY' v-model="timeValue" @change="onTimeChange" />
       </a-form-item>
+      <a-form-item label='考核模块选择'  v-bind="formItemLayout">
+        <a-checkbox-group  @change="onChange">
+          <a-checkbox :value="item.standardId" v-for="item in CheckArr" :key="item.standardId">
+            {{item.name}}
+          </a-checkbox>
+        </a-checkbox-group>
+      </a-form-item>
     </a-form>
   </a-modal>
 </template>
@@ -19,8 +27,8 @@
 <script>
 // 表单
 const formItemLayout = {
-  labelCol: { span: 8 },
-  wrapperCol: { span: 12 }
+  labelCol: { span: 6 },
+  wrapperCol: { span: 18 }
 }
 export default {
   name: 'yearRuleAdd',
@@ -31,10 +39,15 @@ export default {
     return {
       formItemLayout,
       dateTime: '',
-      timeValue: undefined
+      menusIdS: [],
+      timeValue: undefined,
+      CheckArr: []
     }
   },
   props: ['visible'],
+  mounted () {
+    this.getCheck()
+  },
   methods: {
     rest () {
       this.timeValue = undefined
@@ -43,10 +56,21 @@ export default {
     onTimeChange (date, dateTime) {
       this.dateTime = dateTime
     },
+    // 多选框数据渲染
+    getCheck () {
+      this.$get('/check/menus/list').then(res => {
+        console.log(res.data.data)
+        this.CheckArr = res.data.data
+      })
+    },
+    // 多选框
+    onChange (even) {
+      this.menusIdS = even
+    },
     create () {
       this.form.validateFields((err, values) => {
         if (!err) {
-          this.$post('/check/year/saveOrUpdate', {yearDate: this.dateTime}).then((res) => {
+          this.$post('/check/year/saveOrUpdate', {yearDate: this.dateTime, menusIdS: this.menusIdS}).then((res) => {
             if (res.data.message === '操作成功') {
               this.$emit('sucusee')
             } else {

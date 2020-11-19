@@ -2,17 +2,17 @@
   <a-drawer
     title="编辑"
     :maskClosable="false"
-    width=650
+    width=45%
     placement="right"
-    :closable="false"
+    :closable="true"
     @close="onClose"
     :visible="EditVisiable"
-    style="height: calc(100% - 55px);overflow: auto;padding-bottom: 53px;">
+    >
     <a-form :form="form">
       <a-row>
         <a-col :span="12">
           <a-form-item label='发生地市' :labelCol="{span:8}" :wrapperCol="{span:16}">
-            <a-select @change="citySChange" v-decorator="['cityCsId']">
+            <a-select @change="citySChange" v-decorator="['cityCsId',{rules:[{required: true, message: '请选择发生地市'}]}]">
               <a-select-option v-for="(n,index) in cityS" :key="index" :value="n.deptId" >
                 {{n.deptName}}
               </a-select-option>
@@ -22,7 +22,7 @@
         </a-col>
         <a-col span="12">
           <a-form-item label='发生县区' :labelCol="{span:8}" :wrapperCol="{span:16}">
-            <a-select @change="cityQonChange" v-decorator="['cityQxId']">
+            <a-select @change="cityQonChange" v-decorator="['cityQxId',{rules:[{required: true, message: '请先选择发生地市'}]}]">
               <a-select-option v-for="(n,index) in cityQ" :key="index" :value="n.deptId" >
                 {{n.deptName}}
               </a-select-option>
@@ -31,8 +31,7 @@
         </a-col>
         <a-col span="12">
           <a-form-item label='发生乡镇村' :labelCol="{span:8}" :wrapperCol="{span:16}">
-<!--            <a-input v-decorator="['cityXcId']"></a-input>-->
-            <a-select v-decorator="['cityXc']">
+            <a-select v-decorator="['cityXc',{rules:[{required: true, message: '请先选择发生县区'}]}]">
               <a-select-option v-for="(n,index) in cityJ" :key="index" :value="n.deptId">
                 {{n.deptName}}
               </a-select-option>
@@ -41,18 +40,25 @@
         </a-col>
         <a-col :span="12">
           <a-form-item label='派出所' :labelCol="{span:8}" :wrapperCol="{span:16}">
-            <a-select v-decorator="['policeId']">
-<!--              <a-select-option v-for="(n,index) in cityJ" :key="index" :value="n.deptId">-->
-<!--                {{n.deptName}}-->
-<!--              </a-select-option>-->
-            </a-select>
+            <a-tree-select
+              @change="handleCheck"
+              @expand="handleExpand"
+              :expandedKeys="expandedKeys"
+              :replaceFields="replaceFields"
+              :showSearch="false"
+              :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
+              :load-data="onLoadData"
+              :treeData="deptTreeData"
+              v-decorator="['policeId',{rules:[{required: true, message: '请选择派出所'}]}]"
+            >
+            </a-tree-select>
           </a-form-item>
         </a-col>
         <a-col span="12">
           <a-form-item label='线路' :labelCol="{span:8}" :wrapperCol="{span:16}">
             <a-select v-decorator="['lineId']">
               <a-select-option v-for="(n,index) in lineData" :key="index" :value="n.dictId">
-                {{n.valuee}}
+                {{n.fieldName}}
               </a-select-option>
             </a-select>
           </a-form-item>
@@ -127,7 +133,7 @@
       </a-row>
     </a-form>
     <div class="drawer-bootom-button">
-      <a-popconfirm title="确定放弃修改？" @confirm="onClose" okText="确定" cancelText="取消">
+      <a-popconfirm title="是否确认取消？" @confirm="onClose" okText="确定" cancelText="取消">
         <a-button style="margin-right: .8rem">取消</a-button>
       </a-popconfirm>
       <a-button @click="handleSubmit" type="primary" :loading="loading">提交</a-button>
@@ -153,6 +159,11 @@ export default {
       cityS: [], // 市级
       cityQ: [], // 县级
       cityJ: [],
+      deptTreeData: [], // 派出所
+      policeIds: '',
+      expandedKeys: [],
+      checkedKeys: [],
+      replaceFields: {},
       dateTimes: '',
       lineData: [], // 线路
       form: this.$form.createForm(this)
@@ -184,11 +195,9 @@ export default {
       this.$get('/dept/list', {deptId: key}).then(res => {
         this.cityQ = res.data
       })
-      this.$notification.warning({message: '系统提示', description: '县区已被清空,请重新选择！', duration: 2})
       // 选中后清空，以下联级
       this.form.setFieldsValue({
-        cityQxId: '',
-        policeId: ''
+        cityQxId: ''
       })
     },
     // 选择县级市，加载派出所（街道）
@@ -196,32 +205,38 @@ export default {
       this.$get('/dept/list', {deptId: key}).then(res => {
         this.cityJ = res.data
       })
-      this.$notification.warning({message: '系统提示', description: '下级被清空！', duration: 2})
-      // 清空下关联
-      this.form.setFieldsValue({
-        policeId: ''
-      })
     },
     dateTime (data, string) {
       this.dateTimes = string
     },
     // 获取数据字典对应的数据显示
     getDictionary () {
-      const field = ['t_user', 't_line', 't_train', 't_track']
-      for (let i = 0; field.length > i; i++) {
-        this.$get('dict', {tableName: field[i]}).then(res => {
-          // console.log('获取数据字典', res)
-          if (field[i] === 't_user') {
-            this.sexData = res.data.rows
-          } else if (field[i] === 't_line') {
-            this.lineData = res.data.rows
-          } else if (field[i] === 't_train') {
-            this.trainData = res.data.rows
-          } else if (field[i] === 't_track') {
-            this.trackData = res.data.rows
-          }
-        })
-      }
+      // 线路
+      this.$get('/dict/getListTable', {parentId: '1867989d0aaaf82f79b34070cc77d766', pageSize: 50}).then(res => {
+        this.lineData = res.data.data.records
+      })
+    },
+    onLoadData (treeNode) {
+      return new Promise(resolve => {
+        if (treeNode.dataRef.children) {
+          resolve()
+          return
+        }
+        setTimeout(() => {
+          this.$get('/dept/ListGA', {deptId: treeNode.dataRef.deptId}).then((r) => {
+            treeNode.dataRef.children = r.data
+            this.deptTreeData = [...this.deptTreeData]
+            resolve()
+          })
+        }, 500)
+      })
+    },
+    handleCheck (checkedKeys) {
+      console.log('选中的派出所id ', checkedKeys)
+      this.checkedKeys = checkedKeys
+    },
+    handleExpand (expandedKeys) {
+      this.expandedKeys = expandedKeys
     },
     setFormValues (user) {
       console.log('编辑;', user)
@@ -240,10 +255,11 @@ export default {
         this.form.setFieldsValue({
           cityCsId: user.deptCs.deptId,
           cityQxId: user.deptQx.deptId,
-          // cityXcId: user.deptXc.deptId,
-          // policeId: user.deptPolice.deptId,
+          cityXc: user.deptXc.deptId,
+          policeId: user.deptPolice.deptName,
           lineId: user.dictXl.dictId
         })
+        this.policeIds = user.deptPolice.deptId
         if (user.deptCs.deptId !== '') {
           this.$get('/dept/list', {deptId: user.deptCs.deptId}).then(res => {
             this.cityQ = res.data
@@ -261,8 +277,11 @@ export default {
       this.form.validateFields((err, values) => {
         if (!err) {
           this.loading = true
-          if (this.dateTimes !== null) {
+          if (this.dateTimes !== '') {
             values.date = this.dateTimes
+          }
+          if (values.policeId === '') {
+            values.policeId = this.policeIds
           }
           this.$post('/accident/case/saveOrUpdate', values).then(res => {
             if (res.data.status === 1) {
@@ -279,6 +298,20 @@ export default {
           })
         }
       })
+    }
+  },
+  watch: {
+    EditVisiable () {
+      this.loading = true
+      if (this.EditVisiable) {
+        // /area
+        this.$get('/dept/ListGA', {rank: 4}).then((r) => {
+          console.log('派出所：', r.data)
+          this.replaceFields = { key: 'deptId', title: 'deptName', value: 'deptId' }
+          this.deptTreeData = r.data
+          this.loading = false
+        })
+      }
     }
   }
 }

@@ -69,11 +69,15 @@ export default {
           this.confirmLoading = true
           this.loading = true
           let newadd = {...this.form.getFieldsValue()}
-          console.log(newadd)
-          this.$post('/wx/qun/addOrUpdate', newadd).then(() => {
-            this.reset()
-            this.confirmLoading = false
-            this.$emit('success')
+          this.$post('/wx/qun/addOrUpdate', newadd).then(res => {
+            if (res.data.status !== 0) {
+              this.reset()
+              this.confirmLoading = false
+              this.$emit('success')
+            } else {
+              this.confirmLoading = false
+              this.$notification.warning({message: '系统提示', description: res.data.message, duration: 4})
+            }
           }).catch(() => {
             this.loading = false
           })

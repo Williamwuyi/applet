@@ -8,16 +8,38 @@
     @cancel="() => { onClose() }"
     @ok="() => { handleSubmit() }"
     :visible="yearEditVisiable"
-    style="height: calc(100% - 55px);overflow: auto;padding-bottom: 53px;">
+    >
     <a-form :form="form">
       <a-form-item label='考核规则' v-bind="formItemLayout">
         <a-textarea
-          :autosize=true
+          :autoSize=true
           v-decorator="['content',
                    {rules: [
                     { required: true, message: '不能为空'}
                   ]}]"
           placeholder="请输入规则" allow-clear />
+      </a-form-item>
+      <a-form-item label='规则摘要' v-bind="formItemLayout">
+        <a-textarea
+          :autoSize=true
+          v-decorator="['summary',
+                   {rules: [
+                    { required: true, message: '不能为空'}
+                  ]}]"
+          placeholder="请输入摘要" allow-clear />
+      </a-form-item>
+      <a-form-item label='规则属性' v-bind="formItemLayout">
+        <a-radio-group v-decorator="['saveOrDelete',
+                   {rules: [
+                    { required: true, message: '不能为空'}
+                  ]}]" >
+          <a-radio :value="'加分项'">
+            加分项
+          </a-radio>
+          <a-radio :value="'减分项'">
+            减分项
+          </a-radio>
+        </a-radio-group>
       </a-form-item>
     </a-form>
   </a-modal>
@@ -59,8 +81,12 @@ export default {
     },
     // 获取表格信息
     setFormValues (value) {
+      this.form.getFieldDecorator('saveOrDelete')
+      this.form.setFieldsValue({'saveOrDelete': value.saveOrDelete})
       this.form.getFieldDecorator('content')
       this.form.setFieldsValue({'content': value.content})
+      this.form.getFieldDecorator('summary')
+      this.form.setFieldsValue({'summary': value.summary})
       this.newData = {
         menusYearId: value.menusYearId,
         parentId: value.parentId,
@@ -73,10 +99,13 @@ export default {
         if (!err) {
           this.loading = true
           let newCond = {...this.form.getFieldsValue(), ...this.newData}
-          console.log(newCond)
-          this.$post('/check/menus-year/add', newCond).then(() => {
-            this.reset()
-            this.$emit('success')
+          this.$post('/check/menus-year/add', newCond).then(res => {
+            if (res.data.status !== 0) {
+              this.reset()
+              this.$emit('success')
+            } else {
+              this.$notification.warning({message: '系统提示', description: res.data.message, duration: 4})
+            }
           }).catch(() => {
             this.loading = false
           })

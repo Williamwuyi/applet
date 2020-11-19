@@ -2,59 +2,58 @@
   <div style="width: 100%">
     <a-row>
       <!-- 功能按钮 -->
-      <a-col :span="10">
-        <a-button @click="showAddrew" v-hasPermission="'reward:add'">新增</a-button>
-        <a-button @click="soundClickm" v-hasPermission="'reward:report'">批量上报</a-button>
-        <a-button @click="onDelete" v-hasPermission="'reward:delete'">批量删除</a-button>
+      <a-col :span="6">
+        <a-button type="primary" @click="showAddrew" v-hasPermission="'reward:add'">添加</a-button>
+        <a-button @click="soundClickm" v-hasPermission="'reward:report'">上报</a-button>
       </a-col>
-      <a-col :span="14">
-          <!-- 搜索区域 -->
-          <a-form layout="horizontal" :form="form">
-            <div>
-              <a-row >
-                <a-col :span="4">
-                  <a-form-item
-                    label="编号"
-                    :labelCol="{span: 5}"
-                    :wrapperCol="{span: 18, offset: 1}">
-                    <a-input v-model="character.number"/>
-                  </a-form-item>
-                </a-col>
-                <a-col :span="10">
-                  <a-form-item label="创建时间" :labelCol="{span: 5}" :wrapperCol="{span: 13, offset: 1}">
-                    <range-date @change="handleDateChange" ref="createTime"></range-date>
-                  </a-form-item>
-                </a-col>
-                <a-col :span="6">
-                  <a-form-item
-                    label="状态查询"
-                    :labelCol="{span: 10}"
-                    :wrapperCol="{span: 12}"
+      <a-col :span="18">
+        <!-- 搜索区域 -->
+        <a-form layout="horizontal" :form="form">
+          <div>
+            <a-row >
+              <a-col :span="4">
+                <a-form-item
+                  label="编号"
+                  :labelCol="{span: 5}"
+                  :wrapperCol="{span: 18, offset: 1}">
+                  <a-input v-model="character.number"/>
+                </a-form-item>
+              </a-col>
+              <a-col :span="10">
+                <a-form-item label="创建时间" :labelCol="{span: 5}" :wrapperCol="{span: 13, offset: 1}">
+                  <range-date @change="handleDateChange" ref="createTime"></range-date>
+                </a-form-item>
+              </a-col>
+              <a-col :span="6">
+                <a-form-item
+                  label="状态查询"
+                  :labelCol="{span: 10}"
+                  :wrapperCol="{span: 12}"
+                >
+                  <a-select
+                    v-model="character.status"
                   >
-                    <a-select
-                      v-model="character.status"
-                    >
-                      <a-select-option value=1>
-                        未上报
-                      </a-select-option>
-                      <a-select-option value=3>
-                        已上报
-                      </a-select-option>
-                      <a-select-option value=2>
-                        被驳回
-                      </a-select-option>
-                    </a-select>
-                  </a-form-item>
-                </a-col>
-                <a-col :span="4">
+                    <a-select-option value=1>
+                      未上报
+                    </a-select-option>
+                    <a-select-option value=3>
+                      已上报
+                    </a-select-option>
+                    <a-select-option value=2>
+                      被驳回
+                    </a-select-option>
+                  </a-select>
+                </a-form-item>
+              </a-col>
+              <a-col :span="4">
                   <span style="float: right; margin-top: 3px;">
                     <a-button @click="search" type="primary">查询</a-button>
                     <a-button @click="reset" style="margin-left: 4px">重置</a-button>
                   </span>
-                </a-col>
-              </a-row>
-            </div>
-          </a-form>
+              </a-col>
+            </a-row>
+          </div>
+        </a-form>
       </a-col>
     </a-row>
     <a-table
@@ -72,12 +71,32 @@
         <a-tag v-else-if="record.status === 1" color="#DEE1E6" >未上报</a-tag>
         <a-tag v-else-if="record.status === 2" color="#FF0033" >被驳回</a-tag>
         <a-tag v-else-if="record.status === 5" color="#87d068" >市州已审批</a-tag>
-        <a-tag v-else-if="record.status === 6" color="#87d068" >铁护办已审批</a-tag>
+        <a-tag v-else-if="record.status === 6" color="#87d068" >公安处已审批</a-tag>
         <a-tag v-else-if="record.status === 7" color="#87d068" >省级已审批</a-tag>
       </template>
       <template slot="operation" slot-scope="text, record">
-        <a-icon v-if="record.status <2" type="setting" style="margin-right: 3px" theme="twoTone"  twoToneColor="#4a9ff5"  @click="edit(record)" v-hasPermission="'reward:modify'" title="修改"></a-icon>
-        <a-icon v-if="record.status <2" type="file-add" theme="twoTone"  style="color:#4a9ff5;margin:0" v-hasPermission="'reward:report'" @click="soundClick(record)" title="上报" />
+        <a v-if="record.status <2" style="color:#4a9ff5"  @click="edit(record)" v-hasPermission="'reward:modify'" title="修改">修改</a>
+        <a-popconfirm
+          v-if="record.status <2"
+          v-hasPermission="'reward:report'"
+          title="确定上报？上报后无法修改"
+          ok-text="确定"
+          cancel-text="取消"
+          @confirm="soundClick(record)"
+        >
+          <a style="color:#4a9ff5;margin:0">上报</a>
+        </a-popconfirm>
+        <a-popconfirm
+          v-if="record.status <2"
+          v-hasPermission="'reward:delete'"
+          title="确定移除？"
+          ok-text="确定"
+          cancel-text="取消"
+          @confirm="onDelete(record)"
+        >
+          <a-icon slot="icon" type="question-circle-o" style="color: red" />
+          <a href="#" style="color: #FF0000">移除</a>
+        </a-popconfirm>
       </template>
     </a-table>
     <!--    添加-->
@@ -113,7 +132,7 @@ import rewardLook from './rewardLook'
 import uuidv1 from 'uuid/v1'
 import {mapMutations} from 'vuex'
 export default {
-  name: 'reward',
+  name: 'rewardIn',
   components: {rewardadd, rewardEdit, rewardLook, RangeDate},
   data () {
     return {
@@ -145,8 +164,8 @@ export default {
       return [
         {
           title: '编号',
-          dataIndex: 'number',
-          width: '5%',
+          dataIndex: 'newNumber',
+          width: '100px',
           scopedSlots: { customRender: 'number' },
           align: 'center'
         },
@@ -183,7 +202,8 @@ export default {
         {
           title: '操作',
           dataIndex: 'operation',
-          width: '5%',
+          width: '8%',
+          align: 'center',
           scopedSlots: { customRender: 'operation' }
         }
       ]
@@ -226,27 +246,19 @@ export default {
     soundClick (record) {
       if (record.status !== 3) {
         let that = this
-        that.$confirm({
-          title: '确定上报?一经上报不可修改！',
-          centered: true,
-          onOk () {
-            that.$get('/prize/' + record.id).then(res => {
-              that.fach(that.character)
-              that.$message.success('上报成功')
-            }).catch(() => {
-              that.fach(that.character)
-              that.$message.error('上报失败')
-            })
-          },
-          onCancel () {
-          }
+        that.$get('/prize/' + record.id).then(res => {
+          that.fach(that.character)
+          that.$message.success('上报成功')
+        }).catch(() => {
+          that.fach(that.character)
+          that.$message.error('上报失败')
         })
       } else {
         this.$message.error('已经处于上报状态了')
       }
     },
     // 批量上报
-    soundClickm (record) {
+    soundClickm () {
       // 先通过key之传递到数据库，表明上报这个，然后再进行渲染
       if (this.selectedRowKeys.length > 0) {
         let that = this
@@ -255,7 +267,7 @@ export default {
           centered: true,
           onOk () {
             that.$get('prize/' + that.selectedRowKeys.join(',')).then(() => {
-              that.$message.success('上报成功')
+              // that.$message.success('上报成功')
               that.selectedRowKeys = []
               that.fach(that.character)
             })
@@ -269,27 +281,18 @@ export default {
       }
     },
     // 删除
-    onDelete () {
-      // 先通过key之传递到数据库，表明删除这个，然后再进行渲染
-      if (this.selectedRowKeys.length > 0) {
+    onDelete (record) {
+      if (record.status !== 3) {
         let that = this
-        console.log(that.selectedRowKeys)
-        that.$confirm({
-          title: '已上报或驳回数据无法删除，一经删除无法恢复',
-          centered: true,
-          onOk () {
-            that.$delete('/prize/' + that.selectedRowKeys.join(',')).then(() => {
-              that.$message.success('删除成功')
-              that.selectedRowKeys = []
-              that.fach(that.character)
-            })
-          },
-          onCancel () {
-            that.selectedRowKeys = []
-          }
+        that.$delete('/prize/' + record.id).then(() => {
+          that.fach(that.character)
+          that.$message.success('移除成功')
+        }).catch(() => {
+          that.fach(that.character)
+          that.$message.error('移除失败')
         })
       } else {
-        this.$message.error('选择不能为空')
+        this.$message.error('该数据已经被移除了')
       }
     },
     // 修改
@@ -326,7 +329,7 @@ export default {
       this.selectedRowKeys = selectedRowKeys
     },
     // 打开新增页面
-    showAddrew (randomId) {
+    showAddrew () {
       this.randomId = uuidv1() // 获取随机ID
       this.rewardaddVisiable = true
       this.initAppendixList()

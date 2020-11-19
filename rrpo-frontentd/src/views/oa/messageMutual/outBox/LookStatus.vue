@@ -25,7 +25,7 @@
             <a-tab-pane key="0" :tab="'未读' + statusTotal.zero + '条'">
               用户名：<a-input style="width: 200px" v-model="sendUserName" placeholder="用户名搜索"/>
               <a-button @click="search(0)">查询</a-button>
-              <a-button @click="exprotExccel(1)">导出打印</a-button>
+              <a-button @click="exprotExccel(1)" title="默认打印本页，或者勾选打印">导出打印</a-button>
                 <a-table
                   :data-source="dataSource"
                   :columns="columnsd"
@@ -39,7 +39,7 @@
             <a-tab-pane key="1" :tab="'已读' + statusTotal.one + '条'">
               用户名：<a-input style="width: 200px" v-model="sendUserName" placeholder="用户名搜索"/>
               <a-button @click="search(1)">查询</a-button>
-              <a-button @click="exprotExccel(2)">导出打印</a-button>
+              <a-button @click="exprotExccel(2)" title="默认打印本页，或者勾选打印">导出打印</a-button>
                 <a-table
                   :data-source="dataSource"
                   :columns="columnsd"
@@ -53,7 +53,7 @@
           <a-tab-pane key="2" :tab="'回复' + statusTotal.two + '条'">
             用户名：<a-input style="width: 200px" v-model="sendUserName" placeholder="用户名搜索"/>
             <a-button @click="search(2)">查询</a-button>
-            <a-button @click="exprotExccel(3)">导出打印</a-button>
+            <a-button @click="exprotExccel(3)" title="默认打印本页，或者勾选打印">导出打印</a-button>
             <a-table
               :data-source="dataSource"
               :columns="columns"
@@ -87,7 +87,7 @@
   </div>
 </template>
 <script>
-import lookFile from '../lnBox/lookFile'
+import lookFile from './lookFile'
 const CollectionCreateForm = {
   props: ['visible', 'details'],
   beforeCreate () {
@@ -130,7 +130,7 @@ export default {
       lookReplyVisiable: false,
       details: {},
       advanced: false,
-      statusTotal: {},
+      statusTotal: {zero: 0, one: 0, two: 0},
       sendUserName: null,
       releaseTime: '',
       content: '',

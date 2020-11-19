@@ -1,32 +1,32 @@
 <template>
-  <a-card :bordered="false" class="card-area">
-    <div>
+    <div style="width: 100%;min-height: 780px;">
       <div :class="advanced ? 'search' : null">
         <!-- 搜索区域 -->
-        <a-form layout="horizontal">
+        <a-form>
           <div :class="advanced ? null: 'fold'">
-            <a-row >
-              <a-col :md="5" :sm="20">
+            <a-row>
+              <a-col :md="4" :sm="20">
                 <a-form-item
                   label="标题:"
-                  :labelCol="{span: 5}"
-                  :wrapperCol="{span: 15, offset: 1}">
+                  :labelCol="{span: 4}"
+                  :wrapperCol="{span: 17, offset: -2}">
                   <a-input v-model="character.title"/>
                 </a-form-item>
               </a-col>
-              <a-col :md="8" :sm="24" >
+              <a-col :md="8" :sm="20" >
                 <a-form-item
                   label="创建时间:"
-                  :labelCol="{span: 6}"
-                  :wrapperCol="{span: 15, offset: 1}">
+                  :labelCol="{span: 5}"
+                  :wrapperCol="{span: 18, offset: 0}">
                   <range-date @change="onTimeChange" ref="creatTime" :allowClear="false"></range-date>
                 </a-form-item>
               </a-col>
-              <a-col :md="5" :sm="20" >
-                <a-form-item style="margin-left: 30px"
+              <a-col :md="4" :sm="16" >
+                <a-form-item
                   label="发送状态:"
-                  :labelCol="{span: 6}"
-                  :wrapperCol="{span: 15, offset: 1}">
+                  :labelCol="{span: 8}"
+                  style="margin-left: 10px"
+                  :wrapperCol="{span: 15, offset: 0}">
                   <a-cascader  change-on-select
                                @change="onChangecascader"
                                :options="options"
@@ -35,30 +35,30 @@
                   />
                 </a-form-item>
               </a-col>
-              <a-col :md="5" :sm="20">
-                <span style="margin-left: 20px">
-                  <a-button type="primary" @click="search">查询</a-button>
-                  <a-button style="margin-left: 8px" @click="reset">重置</a-button>
-                </span>
+              <a-col :md="6" :sm="24" style="margin-left: 10px;margin-top: 3px">
+                <a-button type="primary" @click="search">查询</a-button>
+                <a-button style="margin-left: 8px" @click="reset">重置</a-button>
               </a-col>
             </a-row>
           </div>
         </a-form>
       </div>
-      <a-button class="editable-add-btn" @click="addition">
+      <a-button class="btn" @click="addition" type="primary">
       添加
       </a-button>
-      <a-button class="editable-add-btn" @click="batchRelease">
-      批量发布
+      <a-button class="btn" @click="batchRelease" style="background-color: #87D068;color: white">
+      发布
       </a-button>
-    <a-button class="editable-add-btn" @click="batchRemove">
-      批量删除
+    <a-button class="btn" @click="batchRemove" style="background-color: #FF4040;color: white">
+      删除
     </a-button>
     <a-table
       :data-source="dataSource"
       :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
       :columns="columns"
+      :loading="loading"
       @change="handleTableChange"
+      :scroll="{ y: 580 }"
       :rowKey="(record)=> record.id"
       :pagination="pagination">
       <a slot="titlename" slot-scope="text,record" style="color:#6290FF" title="查看/发送状态" @click="lookStatus(record)">{{ text }}</a>
@@ -67,7 +67,8 @@
         <a-tag v-else-if="record.status === 1" color="#DEE1E6" >未发送</a-tag>
       </template>
       <template slot="operation" slot-scope="text, record">
-        <a-icon  type="setting" theme="twoTone" twoToneColor="#4a9ff5" style="margin-left:8px" @click="outBoxedit(record)" title="修改"></a-icon>
+<!--        <a-icon  type="setting" theme="twoTone" twoToneColor="#4a9ff5" style="margin-left:8px" @click="outBoxedit(record)" title="修改"></a-icon>-->
+        <a @click="outBoxedit(record)" style="color: #4a9ff5">修改</a>
       </template>
     </a-table>
     <!-- 修改 -->
@@ -91,7 +92,6 @@
         ref="nolookstatus"
       />
   </div>
-  </a-card>
 </template>
 <script>
 import OutShieldRoadEdit from './OutShieldRoadEdit'
@@ -108,6 +108,7 @@ export default {
       dataSource: [],
       selectedRowKeys: [],
       lookStatusVisiable: false,
+      loading: false,
       shieldId: '-1',
       // 分页
       pagination: {
@@ -135,7 +136,6 @@ export default {
       editVisiable: false
     }
   },
-  inject: ['reload'],
   computed: {
     columns () {
       let { sortedInfo } = this
@@ -261,12 +261,21 @@ export default {
       }
       let that = this
       let batch = that.selectedRowKeys
-      that.$get('/briefing/release/' + batch.join(',')).then(res => {
-        that.reload()
-        this.$notification.success({message: '系统提示', description: '发布成功！', duration: 4})
-      }).catch(err => {
-        that.reload()
-        that.$message.error(err)
+      this.$confirm({
+        content: '确认是否发布数据',
+        centered: true,
+        onOk () {
+          that.$get('/briefing/release/' + batch.join(',')).then(res => {
+            that.fetch()
+            that.$notification.success({message: '系统提示', description: '操作成功！', duration: 4})
+          }).catch(err => {
+            that.fetch()
+            that.$message.error(err)
+          })
+        },
+        onCancel () {
+          that.selectedRowKeys = []
+        }
       })
     },
     // 批量删除
@@ -285,7 +294,7 @@ export default {
           that.$delete('/briefing/' + Remove.join(',')).then(() => {
             that.$notification.success({message: '系统提示', description: '操作成功！', duration: 4})
             that.selectedRowKeys = []
-            that.reload()
+            that.fetch()
           })
         },
         onCancel () {
@@ -297,7 +306,7 @@ export default {
     handleAdd () {
       this.addVisiable = false
       this.$notification.success({message: '系统提示', description: '操作成功！', duration: 4})
-      this.reload()
+      this.fetch()
     },
     // 触发添加按钮
     addition () {
@@ -320,7 +329,7 @@ export default {
     },
     handleEdit () {
       this.editVisiable = false
-      this.reload()
+      this.fetch()
       this.$notification.success({message: '系统提示', description: '操作成功！', duration: 4})
     },
     hanleeditclose () {
@@ -339,4 +348,8 @@ export default {
 }
 </script>
 <style lang="less" scoped>
+  .btn{
+    margin-bottom: 5px;
+    margin-right: 10px;
+  }
 </style>

@@ -2,17 +2,17 @@
   <a-drawer
     title="添加"
     :maskClosable="false"
-    width=750
+    width=45%
     placement="right"
-    :closable="false"
+    :closable="true"
     @close="onClose"
     :visible="AddVisiable"
-    style="height: calc(100% - 55px);overflow: auto;padding-bottom: 53px;">
+    >
     <a-form :form="form">
       <a-row>
         <a-col :span="12">
             <a-form-item label='发生地市' :labelCol="{span:8}" :wrapperCol="{span:16}">
-              <a-select @change="citySChange" v-decorator="['cityCsId',{rules:[{required: true, message: '请先选择市级'}]}]">
+              <a-select @change="citySChange" v-decorator="['cityCsId',{rules:[{required: true, message: '请选择发生地市'}]}]">
                 <a-select-option v-for="(n,index) in cityS" :key="index" :value="n.deptId" >
                   {{n.deptName}}
                 </a-select-option>
@@ -21,7 +21,7 @@
         </a-col>
         <a-col span="12">
           <a-form-item label='发生县区' :labelCol="{span:8}" :wrapperCol="{span:16}">
-            <a-select @change="cityQonChange" v-decorator="['cityQxId',{rules:[{required: true, message: '请先选择市级，再选县区'}]}]">
+            <a-select @change="cityQonChange" v-decorator="['cityQxId',{rules:[{required: true, message: '请先选择发生地市'}]}]">
               <a-select-option v-for="(n,index) in cityQ" :key="index" :value="n.deptId" >
                 {{n.deptName}}
               </a-select-option>
@@ -30,46 +30,53 @@
         </a-col>
         <a-col span="12">
           <a-form-item label='发生乡镇村' :labelCol="{span:8}" :wrapperCol="{span:16}">
-            <a-input v-decorator="['cityXc']"></a-input>
-<!--            <a-select v-decorator="['cityXcId',{rules:[{required: true, message: '请先选择上级'}]}]">-->
-<!--              <a-select-option v-for="(n,index) in cityJ" :key="index" :value="n.deptId">-->
-<!--                {{n.deptName}}-->
-<!--              </a-select-option>-->
-<!--            </a-select>-->
+<!--            <a-input v-decorator="['cityXc',{rules:[{required: true, message: '请先选择发生县区'}]}]"></a-input>-->
+            <a-select v-decorator="['cityXc',{rules:[{required: true, message: '请先选择发生县区'}]}]">
+              <a-select-option v-for="(n,index) in cityJ" :key="index" :value="n.deptId" >
+                {{n.deptName}}
+              </a-select-option>
+            </a-select>
           </a-form-item>
         </a-col>
         <a-col :span="12">
           <a-form-item label='派出所' :labelCol="{span:8}" :wrapperCol="{span:16}">
-            <a-select v-decorator="['policeId']">
-<!--            <a-select-option v-for="(n,index) in cityJ" :key="index" :value="n.deptId">-->
-<!--              {{n.deptName}}-->
-<!--            </a-select-option>-->
-            </a-select>
+            <a-tree-select
+              @change="handleCheck"
+              @expand="handleExpand"
+              :expandedKeys="expandedKeys"
+              :replaceFields="replaceFields"
+              :showSearch="false"
+              :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
+              :load-data="onLoadData"
+              :treeData="deptTreeData"
+              v-decorator="['policeId',{rules:[{required: true, message: '请选择派出所'}]}]"
+            >
+            </a-tree-select>
           </a-form-item>
         </a-col>
         <a-col span="12">
           <a-form-item label='线路' :labelCol="{span:8}" :wrapperCol="{span:16}">
-            <a-select v-decorator="['lineId']">
+            <a-select v-decorator="['lineId',{rules:[{required: true, message: '请选择线路'}]}]">
               <a-select-option v-for="(n,index) in lineData" :key="index" :value="n.dictId">
-                {{n.valuee}}
+                {{n.fieldName}}
               </a-select-option>
             </a-select>
           </a-form-item>
         </a-col>
         <a-col :span="12">
           <a-form-item label='地点' :labelCol="{span:8}" :wrapperCol="{span:16}">
-           <a-input v-decorator="['address']"></a-input>
+           <a-input v-decorator="['address',{rules:[{required: true, message: '请填写地点'}]}]"></a-input>
           </a-form-item>
         </a-col>
         <a-col span="12">
           <a-form-item  label='时间' :labelCol="{span:8}" :wrapperCol="{span:16}">
-            <a-date-picker show-time v-decorator="['date']" @change="dateTime">
+            <a-date-picker show-time v-decorator="['date',{rules:[{required: true, message: '请选择时间'}]}]" @change="dateTime">
             </a-date-picker>
           </a-form-item>
         </a-col>
         <a-col span="12">
           <a-form-item label='案件性质分类' :labelCol="{span:8}" :wrapperCol="{span:16}">
-            <a-select v-decorator="['nature']">
+            <a-select v-decorator="['nature',{rules:[{required: true, message: '请选择案件性质分类'}]}]">
               <a-select-option value="0">击打列车</a-select-option>
               <a-select-option value="1">摆放障碍</a-select-option>
               <a-select-option value="2">提车钩</a-select-option>
@@ -87,12 +94,12 @@
         </a-col>
         <a-col :span="12">
           <a-form-item label='停车时长(分钟)' :labelCol="{span:8}" :wrapperCol="{span:16}">
-            <a-input v-decorator="['dateLength']"></a-input>
+            <a-input v-decorator="['dateLength',{rules:[{required: true, message: '请填写停车时长'}]}]"></a-input>
           </a-form-item>
         </a-col>
         <a-col :span="12">
           <a-form-item label='案件状态' :labelCol="{span:8}" :wrapperCol="{span:16}">
-            <a-select v-decorator="['status']">
+            <a-select v-decorator="['status',{rules:[{required: true, message: '请选择案件状态'}]}]">
               <a-select-option value="0">未破案</a-select-option>
               <a-select-option value="1">已破案</a-select-option>
             </a-select>
@@ -100,7 +107,7 @@
         </a-col>
         <a-col span="12">
           <a-form-item label='封闭状态' :labelCol="{span:8}" :wrapperCol="{span:16}">
-            <a-select v-decorator="['fbStatus']">
+            <a-select v-decorator="['fbStatus',{rules:[{required: true, message: '请选择封闭状态'}]}]">
               <a-select-option value="0">全封闭</a-select-option>
               <a-select-option value="1">因社会管理原因造栅栏开口</a-select-option>
               <a-select-option value="2">因铁路原因造成栅栏开口</a-select-option>
@@ -126,7 +133,7 @@
       </a-row>
     </a-form>
     <div class="drawer-bootom-button">
-      <a-popconfirm title="确定放弃编辑？" @confirm="onClose" okText="确定" cancelText="取消">
+      <a-popconfirm title="是否确认取消？" @confirm="onClose" okText="确定" cancelText="取消">
         <a-button style="margin-right: .8rem">取消</a-button>
       </a-popconfirm>
       <a-button @click="handleSubmit" type="primary" :loading="loading">提交</a-button>
@@ -152,6 +159,10 @@ export default {
       cityQ: [], // 县级
       cityJ: [],
       lineData: [], // 线路
+      deptTreeData: [], // 派出所
+      expandedKeys: [],
+      checkedKeys: [],
+      replaceFields: {},
       dateTimes: '',
       formItemLayout,
       form: this.$form.createForm(this)
@@ -186,7 +197,7 @@ export default {
       // 选中后清空，以下联级
       this.form.setFieldsValue({
         cityQxId: '',
-        cityXcId: ''
+        cityXc: ''
       })
     },
     // 选择县级市，加载派出所（街道）
@@ -196,7 +207,7 @@ export default {
       })
       // 清空下关联
       this.form.setFieldsValue({
-        cityXcId: ''
+        cityXc: ''
       })
     },
     dateTime (data, string) {
@@ -204,21 +215,32 @@ export default {
     },
     // 获取数据字典对应的数据显示
     getDictionary () {
-      const field = ['t_user', 't_line', 't_train', 't_track']
-      for (let i = 0; field.length > i; i++) {
-        this.$get('dict', {tableName: field[i]}).then(res => {
-          // console.log('获取数据字典', res)
-          if (field[i] === 't_user') {
-            this.sexData = res.data.rows
-          } else if (field[i] === 't_line') {
-            this.lineData = res.data.rows
-          } else if (field[i] === 't_train') {
-            this.trainData = res.data.rows
-          } else if (field[i] === 't_track') {
-            this.trackData = res.data.rows
-          }
-        })
-      }
+      // 线路
+      this.$get('/dict/getListTable', {parentId: '1867989d0aaaf82f79b34070cc77d766', pageSize: 50}).then(res => {
+        this.lineData = res.data.data.records
+      })
+    },
+    onLoadData (treeNode) {
+      return new Promise(resolve => {
+        if (treeNode.dataRef.children) {
+          resolve()
+          return
+        }
+        setTimeout(() => {
+          this.$get('/dept/ListGA', {deptId: treeNode.dataRef.deptId}).then((r) => {
+            treeNode.dataRef.children = r.data
+            this.deptTreeData = [...this.deptTreeData]
+            resolve()
+          })
+        }, 500)
+      })
+    },
+    handleCheck (checkedKeys) {
+      console.log('选中的id ', checkedKeys)
+      this.checkedKeys = checkedKeys
+    },
+    handleExpand (expandedKeys) {
+      this.expandedKeys = expandedKeys
     },
     // 提交
     handleSubmit () {
@@ -234,6 +256,20 @@ export default {
           })
         }
       })
+    }
+  },
+  watch: {
+    AddVisiable () {
+      this.loading = true
+      if (this.AddVisiable) {
+        // /area
+        this.$get('/dept/ListGA', {rank: 4}).then((r) => {
+          console.log('派出所：', r.data)
+          this.replaceFields = { key: 'deptId', title: 'deptName', value: 'deptId' }
+          this.deptTreeData = r.data
+          this.loading = false
+        })
+      }
     }
   }
 }

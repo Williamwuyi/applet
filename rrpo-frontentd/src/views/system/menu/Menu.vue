@@ -1,5 +1,5 @@
 <template>
-  <a-card :bordered="false" class="card-area">
+  <div style="width: 100%">
     <div :class="advanced ? 'search' : null">
       <!-- 搜索区域 -->
       <a-form layout="horizontal">
@@ -8,7 +8,7 @@
             <a-col :md="12" :sm="24" >
               <a-form-item
                 label="名称"
-                :labelCol="{span: 5}"
+                :labelCol="{span: 1}"
                 :wrapperCol="{span: 18, offset: 1}">
                 <a-input v-model="queryParams.menuName"/>
               </a-form-item>
@@ -38,9 +38,9 @@
           @cancel="() => createMenu()"
           @confirm="() => createButton()">
           <a-icon slot="icon" type="question-circle-o" style="color: orangered" />
-          <a-button type="primary" v-hasPermission="'menu:add'" ghost>新增</a-button>
+          <a-button type="primary" v-hasPermission="'menu:add'" >新增</a-button>
         </a-popconfirm>
-        <a-button v-hasPermission="'menu:delete'" @click="batchDelete">删除</a-button>
+        <a-button class="btnHoven" style="background-color: #FF4D4F; color: white; border-radius: 4px!important;" v-hasPermission="'menu:delete'" @click="batchDelete">删除</a-button>
         <a-dropdown v-hasPermission="'menu:export'">
           <a-menu slot="overlay">
             <a-menu-item key="export-data" @click="exprotExccel">导出Excel</a-menu-item>
@@ -62,7 +62,7 @@
          <a-icon :type="text" />
         </template>
         <template slot="operation" slot-scope="text, record">
-          <a-icon v-hasPermission="'menu:update'" type="setting" theme="twoTone" twoToneColor="#4a9ff5" @click="edit(record)" title="修改"></a-icon>
+          <a v-hasPermission="'menu:update'"  style="color: #4a9ff5" @click="edit(record)" title="修改">修改</a>
           <a-badge v-hasNoPermission="'menu:update'" status="warning" text="无权限"></a-badge>
         </template>
       </a-table>
@@ -93,7 +93,7 @@
       @success="handleButtonEditSuccess"
       :buttonEditVisiable="buttonEditVisiable">
     </button-edit>
-  </a-card>
+  </div>
 </template>
 
 <script>
@@ -323,4 +323,7 @@ export default {
 </script>
 <style lang="less" scoped>
 @import "../../../../static/less/Common";
+.btnHoven:hover{
+  border-color: #FF4D4F;;
+}
 </style>

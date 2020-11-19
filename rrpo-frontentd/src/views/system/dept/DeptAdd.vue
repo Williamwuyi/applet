@@ -7,7 +7,7 @@
     :closable="false"
     @close="onClose"
     :visible="deptAddVisiable"
-    style="height: calc(100% - 55px);overflow: auto;padding-bottom: 53px;">
+    >
     <a-form :form="form">
       <a-form-item label='机构名称' v-bind="formItemLayout">
         <a-input v-model="dept.deptName"
@@ -32,6 +32,15 @@
       <a-form-item label='所属机构'
                    style="margin-bottom: 2rem"
                    v-bind="formItemLayout">
+<!--        <a-tree-->
+<!--          :key="deptTreeKeys"-->
+<!--          :checkable="true"-->
+<!--          :checkStrictly="true"-->
+<!--          @check="handleCheck"-->
+<!--          @expand="handleExpand"-->
+<!--          :expandedKeys="expandedKeys"-->
+<!--          :treeData="deptTreeData">-->
+<!--        </a-tree>-->
         <a-tree
           :key="deptTreeKeys"
           :checkable="true"
@@ -39,6 +48,8 @@
           @check="handleCheck"
           @expand="handleExpand"
           :expandedKeys="expandedKeys"
+          :replaceFields="replaceFields"
+          :load-data="onLoadData"
           :treeData="deptTreeData">
         </a-tree>
       </a-form-item>
@@ -67,8 +78,10 @@ export default {
     return {
       loading: false,
       formItemLayout,
+      deptTreeKeys: +new Date(),
       form: this.$form.createForm(this),
       dept: {},
+      replaceFields: {},
       checkedKeys: [],
       expandedKeys: [],
       deptTreeData: [],
@@ -94,8 +107,7 @@ export default {
           value: '4',
           label: '公安处'
         }
-      ],
-      deptTreeKeys: +new Date()
+      ]
     }
   },
   methods: {
@@ -103,6 +115,7 @@ export default {
       this.loading = false
       this.deptTreeKeys = +new Date()
       this.expandedKeys = this.checkedKeys = []
+      this.$refs.cascader.sValue = []
       this.dept = {}
       this.form.resetFields()
     },
@@ -120,6 +133,21 @@ export default {
     onChangecascader (key) {
       this.dept.rank = key[0]
     },
+    onLoadData (treeNode) {
+      return new Promise(resolve => {
+        if (treeNode.dataRef.children) {
+          resolve()
+          return
+        }
+        setTimeout(() => {
+          this.$get('/dept/queryDeptChile', {prentId: treeNode.dataRef.deptId}).then((r) => {
+            treeNode.dataRef.children = r.data.data
+            this.deptTreeData = [...this.deptTreeData]
+            resolve()
+          })
+        }, 500)
+      })
+    },
     handleSubmit () {
       let checkedArr = Object.is(this.checkedKeys.checked, undefined) ? this.checkedKeys : this.checkedKeys.checked
       if (checkedArr.length > 1) {
@@ -133,6 +161,9 @@ export default {
             this.dept.parentId = checkedArr[0]
           } else {
             this.dept.parentId = ''
+          }
+          if (this.dept.rank === '0') {
+            this.dept.parentId = '-1'
           }
           this.$post('dept', {
             ...this.dept
@@ -149,9 +180,14 @@ export default {
   watch: {
     deptAddVisiable () {
       if (this.deptAddVisiable) {
-        this.$get('dept').then((r) => {
-          this.deptTreeData = r.data.rows.children
-          console.log(r.data.rows.children)
+        // this.$get('dept').then((r) => {
+        //   this.deptTreeData = r.data.rows.children
+        //   console.log(r.data.rows.children)
+        // })
+        this.$get('/dept/queryDeptChile').then((r) => {
+          this.replaceFields = { title: 'deptName', key: 'deptId' }
+          this.deptTreeData = r.data.data
+          this.loading = false
         })
       }
     }

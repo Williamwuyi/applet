@@ -1,19 +1,19 @@
 <template>
-  <a-card :bordered="false" class="card-area">
+  <div style="width: 100%;min-height: 690px">
     <div :class="advanced ? 'search' : null">
       <!-- 搜索区域 -->
       <a-form layout="horizontal">
         <div :class="advanced ? null: 'fold'">
           <a-row >
-            <a-col :md="12" :sm="24" >
+            <a-col :md="6" :sm="24" >
               <a-form-item
                 label="期数查询"
-                :labelCol="{span: 5}"
-                :wrapperCol="{span: 15, offset: 1}">
+                :labelCol="{span: 4}"
+                :wrapperCol="{span: 15, offset: 0}">
                 <a-input />
               </a-form-item>
             </a-col>
-            <a-col :md="12" :sm="24" >
+            <a-col :md="6" :sm="24" >
               <span style="margin-top: 3px;">
               <a-button type="primary" @click="search">查询</a-button>
               <a-button style="margin-left: 8px" @click="reset">重置</a-button>
@@ -32,6 +32,7 @@
         :data-source="dataSource"
         :columns="columns"
         :loading="loading"
+        :scroll="{ y: 450 }"
         :pagination="pagination"
         :rowKey="record => {record.wxMonthId}"
       >
@@ -42,7 +43,7 @@
       :BModalVisiable="BModalVisiable"
       @close="DMonClose"
     />
-  </a-card>
+  </div>
 </template>
 <script>
 import BModal from './BModal'
@@ -91,16 +92,6 @@ export default {
   methods: {
     // 渲染
     fach (parmse = {pageNum: 1, pageSize: 10}) {
-      this.loading = true
-      this.$get('/wx/month/list', parmse).then(res => {
-        // let newData = res.data.data
-        // 分页;
-        // const pagination = { ...this.pagination }
-        // pagination.total = newData.total
-        // this.dataSource = newData.records
-        // this.pagination = pagination
-        this.loading = false
-      })
     },
     // 选择时间
     onTimeChange (date, dateTime) {

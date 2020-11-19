@@ -6,8 +6,9 @@
     placement="right"
     :closable="false"
     @close="onClose"
+    :destroyOnClose="true"
     :visible="deptEditVisiable"
-    style="height: calc(100% - 55px);overflow: auto;padding-bottom: 53px;">
+    >
     <a-form :form="form">
       <a-form-item label='部门名称' v-bind="formItemLayout">
         <a-input v-decorator="['deptName',
@@ -22,13 +23,25 @@
       <a-form-item label='上级部门'
                    style="margin-bottom: 2rem"
                    v-bind="formItemLayout">
+<!--        <a-tree-->
+<!--          :key="deptTreeKey"-->
+<!--          :checkable="true"-->
+<!--          :checkStrictly="true"-->
+<!--          @check="handleCheck"-->
+<!--          @expand="handleExpand"-->
+<!--          :expandedKeys="expandedKeys"-->
+<!--          :defaultCheckedKeys="defaultCheckedKeys"-->
+<!--          :treeData="deptTreeData">-->
+<!--        </a-tree>-->
         <a-tree
-          :key="deptTreeKey"
+          :key="deptTreeKeys"
           :checkable="true"
           :checkStrictly="true"
           @check="handleCheck"
           @expand="handleExpand"
           :expandedKeys="expandedKeys"
+          :replaceFields="replaceFields"
+          :load-data="onLoadData"
           :defaultCheckedKeys="defaultCheckedKeys"
           :treeData="deptTreeData">
         </a-tree>
@@ -61,6 +74,8 @@ export default {
       form: this.$form.createForm(this),
       deptTreeKey: +new Date(),
       dept: {},
+      replaceFields: {},
+      deptTreeKeys: +new Date(),
       checkedKeys: [],
       expandedKeys: [],
       defaultCheckedKeys: [],
@@ -73,6 +88,7 @@ export default {
       this.deptTreeKey = +new Date()
       this.expandedKeys = this.checkedKeys = this.defaultCheckedKeys = []
       this.button = {}
+      this.deptTreeData = []
       this.form.resetFields()
     },
     onClose () {
@@ -82,20 +98,39 @@ export default {
     handleCheck (checkedKeys) {
       this.checkedKeys = checkedKeys
     },
+    onLoadData (treeNode) {
+      return new Promise(resolve => {
+        if (treeNode.dataRef.children) {
+          resolve()
+          return
+        }
+        setTimeout(() => {
+          this.$get('/dept/queryDeptChile', {prentId: treeNode.dataRef.deptId}).then((r) => {
+            treeNode.dataRef.children = r.data.data
+            this.deptTreeData = [...this.deptTreeData]
+            resolve()
+          })
+        }, 500)
+      })
+    },
     handleExpand (expandedKeys) {
       this.expandedKeys = expandedKeys
     },
     setFormValues ({...dept}) {
       this.form.getFieldDecorator('deptName')
-      this.form.setFieldsValue({'deptName': dept.text})
+      this.form.setFieldsValue({'deptName': dept.deptName})
       this.form.getFieldDecorator('orderNum')
-      this.form.setFieldsValue({'orderNum': dept.order})
-      if (dept.parentId !== '0') {
-        this.defaultCheckedKeys.push(dept.parentId)
-        this.checkedKeys = this.defaultCheckedKeys
-        this.expandedKeys = this.checkedKeys
-      }
-      this.dept.deptId = dept.id
+      this.form.setFieldsValue({'orderNum': dept.orderNum})
+      this.defaultCheckedKeys = []
+      this.defaultCheckedKeys.push(dept.deptId)
+      this.checkedKeys = this.defaultCheckedKeys
+      this.expandedKeys = this.checkedKeys
+      // if (dept.parentId !== '0') {
+      //   this.defaultCheckedKeys.push(dept.parentId)
+      //   this.checkedKeys = this.defaultCheckedKeys
+      //   this.expandedKeys = this.checkedKeys
+      // }
+      this.dept.deptId = dept.deptId
     },
     handleSubmit () {
       let checkedArr = Object.is(this.checkedKeys.checked, undefined) ? this.checkedKeys : this.checkedKeys.checked
@@ -113,7 +148,7 @@ export default {
           let dept = this.form.getFieldsValue()
           dept.parentId = checkedArr[0]
           if (Object.is(dept.parentId, undefined)) {
-            dept.parentId = 0
+            dept.parentId = -1
           }
           dept.deptId = this.dept.deptId
           this.$put('dept', {
@@ -131,9 +166,14 @@ export default {
   watch: {
     deptEditVisiable () {
       if (this.deptEditVisiable) {
-        this.$get('dept').then((r) => {
-          this.deptTreeData = r.data.rows.children
-          this.deptTreeKey = +new Date()
+        // this.$get('dept').then((r) => {
+        //   this.deptTreeData = r.data.rows.children
+        //   this.deptTreeKey = +new Date()
+        // })
+        this.$get('/dept/queryDeptChile').then((r) => {
+          this.replaceFields = { title: 'deptName', key: 'deptId' }
+          this.deptTreeData = r.data.data
+          this.loading = false
         })
       }
     }

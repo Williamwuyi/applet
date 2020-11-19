@@ -6,8 +6,7 @@
     placement="right"
     :closable="false"
     @close="onClose"
-    :visible="menuEditVisiable"
-    style="height: calc(100% - 55px);overflow: auto;padding-bottom: 53px;">
+    :visible="menuEditVisiable">
     <a-form :form="form">
       <a-form-item label='菜单名称' v-bind="formItemLayout">
         <a-input v-decorator="['menuName',

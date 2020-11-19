@@ -1,18 +1,21 @@
 <template>
-  <a-card :bordered="false" class="card-area">
-    <div style="margin-bottom: 40px">
+<!--  <a-card :bordered="false" class="card-area">-->
+  <div style="background-color: white;">
+    <a-row>
+      <div style="margin:15px 10px">
       <a-breadcrumb>
         <a-breadcrumb-item>
           <a @click="home">首页</a>
         </a-breadcrumb-item>
         <a-breadcrumb-item>通讯录</a-breadcrumb-item>
       </a-breadcrumb>
-    </div>
+      </div>
     <div>
       <div class="container">
         <com-tree
           @reloadStaffTable="findDeptStaff"
           @clearSelectrows="cleardRowKeys"
+          :loading="loading"
           @getMannerableDept="getMannerableDept"
         />
       </div>
@@ -22,24 +25,24 @@
       <a-form layout="horizontal">
         <div :class="advanced ? null: 'fold'">
           <a-row >
-            <a-col :md="8" :sm="24">
+            <a-col :md="8" :sm="20">
               <a-form-item
-                label="姓名:"
-                :labelCol="{span: 5}"
-                :wrapperCol="{span: 18, offset: 1}">
+                label="姓名"
+                :labelCol="{span: 2}"
+                :wrapperCol="{span: 14, offset:1}">
                 <a-input v-model="Comserach.CommunideName"/>
               </a-form-item>
             </a-col>
-            <a-col :md="8" :sm="24" >
+            <a-col :md="8" :sm="20" >
               <a-form-item
-                label="手机号:"
-                :labelCol="{span: 5}"
-                :wrapperCol="{span: 18, offset: 1}" style="margin-left: 25px">
+                label="手机号"
+                :labelCol="{span: 4}"
+                :wrapperCol="{span: 14, offset:0}">
                 <a-input v-model="Comserach.telphone"/>
               </a-form-item>
             </a-col>
-            <a-col :md="8" :sm="24">
-              <span style="float: right; margin: 3px;">
+            <a-col style="margin-top: 5px; display: inline-block">
+              <span style="margin: 3px;">
           <a-button type="primary" @click="search">查询</a-button>
           <a-button style="margin-left: 8px" @click="reset">重置</a-button>
         </span>
@@ -50,32 +53,30 @@
     </div>
     <!-- 表格区域 -->
     <div>
-    <a-button class="editable-add-btn" @click="handleAdd" v-hasPermission="'communication:add'">
+    <a-button class="btn" type="primary" @click="handleAdd" v-hasPermission="'communication:add'">
       添加
     </a-button>
-      <a-button class="editable-add-btn" @click="handleDel" v-hasPermission="'communication:delete'">
+    <a-button class="btn" @click="handleDel" style="background-color: #FF4D4F;color:white;" v-hasPermission="'communication:delete'">
       删除
     </a-button>
-     <a-dropdown>
-          <a-menu slot="overlay">
-            <a-menu-item key="export-data" @click="exprotExccel"  v-hasPermission="'communication:export'">导出Excel</a-menu-item>
-            <a-menu-item key="export-data1" @click="ImportExccel" v-hasPermission="'communication:import'">导入Excel</a-menu-item>
-          </a-menu>
-          <a-button>
-            更多操作 <a-icon type="down" />
-          </a-button>
-        </a-dropdown>
+    <a-button class="btn" @click="exprotExccel" style="background-color: #CDAD00;color: white" v-hasPermission="'communication:export'">
+      导出全部
+    </a-button>
+    <a-button class="btn" @click="ImportExccel" style="background-color: #CD853F;color: white" v-hasPermission="'communication:import'">
+      导入Excel
+    </a-button>
     <a-table
       :data-source="dataSource"
       :columns="columns"
       :pagination="pagination"
       :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
-      :scroll="{ x: 900 }"
+      :scroll="{ y: 540 }"
       @change="handleTableChange"
       :rowKey="record=>record.id"
       :loading="loading">
       <template slot="operation" slot-scope="text, record">
-        <a-icon  type="setting" theme="twoTone" twoToneColor="#4a9ff5" style="margin-left:8px" @click="edit(record)" title="修改" v-hasPermission="'communication:edit'"></a-icon>
+<!--        <a-icon  type="setting" theme="twoTone" twoToneColor="#4a9ff5" style="margin-left:8px" @click="edit(record)" title="修改" v-hasPermission="'communication:edit'"></a-icon>-->
+        <a @click="edit(record)" style="color: #4a9ff5">修改</a>
       </template>
     </a-table>
   </div>
@@ -102,7 +103,9 @@
         @create="handleCreate"
 />
     </div>
-    </a-card>
+    </a-row>
+  </div>
+<!--    </a-card>-->
 </template>
 <script>
 import ComEdit from './ComEdit'
@@ -122,6 +125,7 @@ export default{
       comEditVisiable: false,
       loading: false,
       dataSource: [],
+      deptID: '',
       sortedInfo: null,
       selectedRowKeys: [],
       character: {},
@@ -136,7 +140,6 @@ export default{
       count: 2
     }
   },
-  inject: ['reload'],
   computed: {
     columns () {
       return [
@@ -189,7 +192,7 @@ export default{
       this.$router.push('/home')
     },
     // 根据选择的树结构的id查询数据
-    fetch (params = {pageNum: 1, pageSize: 10}) {
+    fetch (params = {pageNum: 1, pageSize: 10, deptId: this.deptID}) {
       this.loading = true
       this.$get('/address/iPage', params).then(res => {
         let newData = res.data.data
@@ -212,7 +215,7 @@ export default{
       }
       // 获取当前列的排序和列的过滤规则
       const param = {
-        iPageAreaId: this.deptStaff,
+        deptId: this.deptID,
         telPhone: this.Comserach.telphone,
         userName: this.Comserach.CommunideName
       }
@@ -235,13 +238,14 @@ export default{
       // 通知后台
       this.character.pageNum = pagination.current
       this.character.pageSize = pagination.pageSize
+      this.character.deptId = this.deptID
       this.fetch(this.character)
     },
     // 更多操作
     // 导出
     exprotExccel () {
       this.$export('/address/excel')
-      this.$notification.success({message: '系统提示', description: '导出成功！', duration: 4})
+      this.$notification.success({message: '系统提示', description: '操作成功，数据正在下载中......', duration: 20})
     },
     // 导入
     ImportExccel: function () {
@@ -250,13 +254,12 @@ export default{
     // 取消导入
     handleCancel () {
       this.visible = false
-      this.reload()
     },
     // 导入成功
     handleCreate () {
       this.visible = false
       this.$notification.success({message: '系统提示', description: '导入成功！', duration: 4})
-      this.reload()
+      this.fetch()
     },
     // 删除
     handleDel () {
@@ -273,12 +276,15 @@ export default{
         centered: true,
         onOk () {
           let comId = that.selectedRowKeys
-          that.loading = true
-          that.$delete('/address/' + comId.join(',')).then(() => {
-            that.$notification.success({message: '系统提示', description: '操作成功！', duration: 4})
-            that.selectedRowKeys = []
-            that.reload()
-            that.loading = false
+          that.$delete('/address/' + comId.join(',')).then((res) => {
+            if (res.data.status === 1) {
+              that.$notification.success({message: '系统提示', description: '操作成功！', duration: 4})
+              that.selectedRowKeys = []
+              that.fetch()
+            } else if (res.data.status === 0) {
+              that.$notification.warning({message: '系统提示', description: res.data.message, duration: 4})
+              that.selectedRowKeys = []
+            }
           })
         },
         onCancel () {
@@ -292,8 +298,8 @@ export default{
     },
     handlecomAdd () {
       this.comAddVisiable = false
-      this.reload()
       this.$notification.success({message: '系统提示', description: '操作成功！', duration: 4})
+      this.fetch()
     },
     hanlecomclose () {
       this.comAddVisiable = false
@@ -306,8 +312,7 @@ export default{
     },
     handleEdit () {
       this.comEditVisiable = false
-      this.reload()
-      // this.$message.success('修改成功')
+      this.fetch()
       this.$notification.success({message: '系统提示', description: '操作成功！', duration: 4})
     },
     hanleeditclose () {
@@ -315,8 +320,9 @@ export default{
     },
     // 根据点击的部门节点，展示对应部门下的员工
     findDeptStaff (res) {
+      this.deptID = res
       const param = {
-        iPageDeptId: res
+        deptId: res
       }
       this.fetch(param)
     },
@@ -333,49 +339,6 @@ export default{
 }
 </script>
 <style lang="less" scoped>
-  @import "../../../../static/less/Common";
-  .editable-cell {
-    position: relative;
-  }
-
-  .editable-cell-input-wrapper,
-  .editable-cell-text-wrapper {
-    padding-right: 24px;
-  }
-
-  .editable-cell-text-wrapper {
-    padding: 5px 24px 5px 5px;
-  }
-
-  .editable-cell-icon,
-  .editable-cell-icon-check {
-    position: absolute;
-    right: 0;
-    width: 20px;
-    cursor: pointer;
-  }
-
-  .editable-cell-icon {
-    line-height: 18px;
-    display: none;
-  }
-
-  .editable-cell-icon-check {
-    line-height: 28px;
-  }
-
-  .editable-cell:hover .editable-cell-icon {
-    display: inline-block;
-  }
-
-  .editable-cell-icon:hover,
-  .editable-cell-icon-check:hover {
-    color: #108ee9;
-  }
-
-  .editable-add-btn {
-    margin-bottom: 8px;
-  }
   // 下拉
   .deptSelect {
     height: 32px;
@@ -394,5 +357,9 @@ export default{
     margin-left: 20px;
     width: calc(100% - 400px);
     height: auto;
+  }
+  .btn{
+    margin-bottom: 5px;
+    margin-right: 10px;
   }
 </style>

@@ -19,7 +19,7 @@
               :action="action"
               :headers="headers"
               :remove="remove"
-              :showUploadList="true"
+              :showUploadList="false"
               @change="handleChange"
             >
               <p class="ant-upload-drag-icon">
@@ -33,35 +33,27 @@
               </p>
             </a-upload-dragger>
         </div>
+            <a-divider orientation="left">已上传文件</a-divider>
+            <a-table
+              :data-source="dataSource"
+              :columns="columns"
+              :pagination="false">
+              <template slot="operations" slot-scope="text, record">
+                <a  style="color: red"  @click="adeleteFile(record)" >删除</a>
+              </template>
+            </a-table>
       </a-tab-pane>
       <a-tab-pane key="2" tab="站内佐证材料上传" force-render>
-        <!--   折叠框   -->
-        <a-collapse v-model="asde" @change="collapChange"  :bordered="false">
-          <a-collapse-panel key="1"  header="信息互递">
-            <div style="text-align: right; margin-bottom: 8px"><a-button @click="Xxcut">{{msgtext}}</a-button></div>
             <a-table
               :data-source="dataSource1"
               :columns="columns1"
               :rowKey="(record)=> record.id"
               :rowSelection="{selectedRowKeys: selectedRowKeys1, onChange: onSelectChange1}"
               :pagination="pagination">
-              <template slot="operation" slot-scope="text, record">
+              <template slot="operationr" slot-scope="text, record">
+                <a @click="glzz(record)">关联本条规则</a>
               </template>
             </a-table>
-          </a-collapse-panel>
-          <a-collapse-panel key="2" header="一事一奖" :disabled="false">
-            <div style="text-align: right; margin-bottom: 8px"><a-button >切换到其他</a-button></div>
-            <div>信息互递</div>
-          </a-collapse-panel>
-          <a-collapse-panel key="3" header="通知公告" :disabled="false">
-            <div style="text-align: right; margin-bottom: 8px"><a-button>切换到其他</a-button></div>
-            <div>信息互递</div>
-          </a-collapse-panel>
-          <a-collapse-panel key="4" header="公共信息" :disabled="false">
-            <div style="text-align: right; margin-bottom: 8px"><a-button>切换到其他</a-button></div>
-            <div>信息互递</div>
-          </a-collapse-panel>
-        </a-collapse>
       </a-tab-pane>
     </a-tabs>
   </a-modal>
@@ -81,16 +73,19 @@ export default {
         Authentication: this.$store.state.account.token
       },
       fileList: [],
+      // 文件列表
+      dataSource: [],
       asde: '',
       msgtext: '切换到其他',
       msgtextflag: true,
+      gradeId: '',
       // 上传
       prmas: {
         yearId: '',
         menusId: '',
         deptId: store.state.account.user.deptId
       },
-      // 信息互递
+      // 详细
       dataSource1: [],
       selectedRowKeys1: [],
       // 分页
@@ -112,32 +107,29 @@ export default {
     columns () {
       return [{
         title: '文件名',
-        dataIndex: 'oldName'
+        dataIndex: 'file.oldName'
       }, {
         title: '上传时间',
-        dataIndex: 'time'
+        dataIndex: 'file.time'
       }, {
         title: '操作',
-        dataIndex: 'operation',
-        scopedSlots: { customRender: 'operation' }
+        dataIndex: 'operations',
+        scopedSlots: { customRender: 'operations' }
       }]
     },
-    //  信息互递
+    //  详细
     columns1 () {
       return [
         {
-          title: '标题',
-          dataIndex: 'title',
-          scopedSlots: { customRender: 'titlename' }
-        },
-        {
-          title: '创建时间',
-          dataIndex: 'creatTime'
-        },
-        {
-          title: '发送时间',
-          dataIndex: 'releaseTime'
-
+          title: '文件名',
+          dataIndex: 'oldName'
+        }, {
+          title: '上传时间',
+          dataIndex: 'time'
+        }, {
+          title: '操作',
+          dataIndex: 'operationr',
+          scopedSlots: { customRender: 'operationr' }
         }
       ]
     }
@@ -145,21 +137,56 @@ export default {
   methods: {
     onClose () {
       this.asde = ''
+      this.fileList = []
       this.$emit('close')
     },
     handleSubmit () {
+      this.$emit('success')
+      this.fileList = []
+    },
+    handleSubmit1 () {
       this.prmas.xXhd = this.selectedRowKeys1
       this.prmas.filedS = this.fileList
       this.$post('/check/grade/addZz', this.prmas).then(res => {
-        this.$emit('success')
+        this.getFile()
       })
     },
     getyearId (item) {
-      console.log(item)
-      this.prmas.yearId = item.yearId
-      this.prmas.menusId = item.menusId
+      this.prmas.gradeId = item.gradeId
+      this.gradeId = item.gradeId
+      this.getFile()
+      this.fetch({deptId: item.deptId, yearId: item.yearId})
+    },
+    glzz (record) {
+      this.$post('/check/grade/addZz', {filedS: [record.fileId], gradeId: this.gradeId}).then(res => {
+        this.$message.success(`${res.data.message}`)
+        this.getFile()
+      })
     },
     callback (key) {
+    },
+    //  请求绑定的文件
+    getFile () {
+      this.$get('/asYear/list', {gradeId: this.gradeId}).then(res => {
+        this.dataSource = res.data.data
+      })
+    },
+    // 删除
+    adeleteFile (record) {
+      let that = this
+      that.$confirm({
+        title: '是否删除，一经删除永远不会恢复?',
+        centered: true,
+        onOk () {
+          that.$delete('/asYear/delete', {ids: record.id}).then(() => {
+            that.$message.success('删除成功')
+            that.getFile()
+          })
+        },
+        onCancel () {
+          that.selectedRowKeys = []
+        }
+      })
     },
     // 自定义文件上传
     handleChange (info) {
@@ -173,6 +200,7 @@ export default {
             description: '文件上传成功！',
             duration: 4
           })
+          this.handleSubmit1()
         } else {
           notification.error({
             message: '系统提示',
@@ -192,43 +220,14 @@ export default {
         })
       }
     },
-    // 折叠框
-    collapChange (key) {
-      // 查询信息互递文件
-      if (key.length > 0) {
-        key.forEach(re => {
-          // 1 信息互递 2一事一奖 3通知公告 4公共信息
-          this.fetch({status: 1, type: re * 1})
-        })
-      }
-    },
-    // 信息互递其他
-    Xxcut () {
-      if (this.msgtextflag) {
-        this.fetch({status: 2, type: 1})
-        this.msgtextflag = false
-        this.msgtext = '切换到考核'
-      } else {
-        this.fetch({status: 1, type: 1})
-        this.msgtextflag = true
-        this.msgtext = '切换到其他'
-      }
-    },
-    // 信息互递选择
+    // 详细选择
     onSelectChange1 (selectedRowKeys) {
-      console.log(selectedRowKeys)
       this.selectedRowKeys1 = selectedRowKeys
     },
     //  请求
-    fetch (params) {
-      this.$get('/check/grade-zz/getListCZ', params).then(res => {
-        console.log(res)
+    fetch (pamase) {
+      this.$get('/asYear/fileList', pamase).then(res => {
         this.dataSource1 = res.data.data
-        // 分页;
-        // const pagination = { ...this.pagination }
-        // pagination.total = newData.total
-        // this.dataSource1 = newData.rows
-        // this.pagination = pagination
       })
     }
   }

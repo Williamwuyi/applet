@@ -7,7 +7,7 @@
     :closable="true"
     @close="close"
     :visible="roleInfoVisiable"
-    style="height: calc(100% - 55px);overflow: auto;padding-bottom: 53px;">
+    >
       <p><a-icon type="crown" />&nbsp;&nbsp;角色名称：{{roleInfoData.roleName}}</p>
       <p :title="roleInfoData.remark"><a-icon type="book" />&nbsp;&nbsp;角色描述：{{roleInfoData.remark}}</p>
       <p><a-icon type="clock-circle" />&nbsp;&nbsp;创建时间：{{roleInfoData.createTime}}</p>

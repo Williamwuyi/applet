@@ -2,7 +2,7 @@
   <a-card :bordered="false" class="card-area">
     <!-- 表格区域 -->
     <div>
-      <a-button class="editable-add-btn" @click="handleAdd" v-hasPermission="'notice:add'">
+      <a-button type="primary" @click="handleAdd" v-hasPermission="'notice:add'">
         新建
       </a-button>
       <a-upload
@@ -107,13 +107,13 @@ export default {
       EditFile: true,
       // 当前实例
       current: {},
-      parentId: '',
+      parentId: 0,
       acStyle: {},
       arr: []
     }
   },
   mounted () {
-    this.fach()
+    this.getFach({manageFileId: 0})
     document.addEventListener('click', e => {
       // 鼠标点击任意非打开框的位置，隐藏操作
       if (e.target.className !== 'flag') {
@@ -123,14 +123,14 @@ export default {
   },
   methods: {
     // 渲染
-    fach () {
-      this.$get('/manageFile').then(res => {
-        console.log(res)
-        this.NullText = false
-        this.parentId = res.data.rows.id
-        this.arr = res.data.rows.children
-      })
-    },
+    // fach () {
+    //   this.$get('/manageFile').then(res => {
+    //     console.log(res)
+    //     this.NullText = false
+    //     this.parentId = res.data.rows.id
+    //     this.arr = res.data.rows.children
+    //   })
+    // },
     // 右键模态框
     rightClick (item, event) {
       // 根据文件类型不同显示不同的右键菜单
@@ -160,7 +160,8 @@ export default {
     onClick (key, index) {
       // 当点击首页时 数组为空 渲染页面
       if (index === -1) {
-        this.fach()
+        this.getFach({manageFileId: 0})
+        this.parentId = 0
         this.Breadcrumb = []
       } else {
         // 当数组不为首页时，根据id渲染数组，存储当前对象到parentId，然后根据下标截取数组
@@ -222,7 +223,6 @@ export default {
     // 点击请求
     getFach (newD) {
       this.$get('/manageFile/getByIdList', newD).then(res => {
-        console.log(res)
         if (res.data.length > 0) {
           this.NullText = false
           this.arr = res.data
@@ -251,14 +251,14 @@ export default {
       let that = this
       that.isshow = false
       if (!that.current.fileId) {
-        let errorMsg = ''
-        if (!that.current.hasChildren) {
-          errorMsg = `${that.current.name}`
-        } else {
-          errorMsg = `${that.current.name},以及${that.current.children.length}个子文件`
-        }
+        // let errorMsg = ''
+        // if (!that.current.hasChildren) {
+        //   errorMsg = `${that.current.name}`
+        // } else {
+        //   errorMsg = `${that.current.name},以及${that.current.children.length}个子文件`
+        // }
         that.$confirm({
-          title: `是否删除${errorMsg}，一经删除永远不会恢复?`,
+          title: `是否删除该文件，一经删除永远不会恢复?`,
           centered: true,
           onOk () {
             that.$delete('/manageFile/' + that.current.id).then(() => {

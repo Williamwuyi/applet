@@ -2,51 +2,57 @@
   <a-drawer
     title="新增联系人"
     :maskClosable="false"
-    width=650
+    width=45%
     placement="right"
-    :closable="false"
+    :closable="true"
     @close="onClose"
     :visible="comEditVisiable"
-    style="height: calc(100% - 55px);overflow: auto;padding-bottom: 53px;">
+    >
     <a-form :form="form">
       <a-form-item label='姓名' v-bind="formItemLayout">
-        <a-input v-decorator="['userName',{rules: [{ required: true, message: '姓名不能为空'},{ max: 20, message: '长度不能超过20个字符'}]}]"/>
-        <a-input v-decorator="['id']" type="hidden"></a-input>
+        <a-input v-decorator="['userName',{rules: [{ required: true, message: '姓名不能为空'},{ max: 20, message: '长度不能超过20个字符'} ]}]"/>
+        <a-input hidden v-decorator="['id']" />
       </a-form-item>
       <a-form-item label='单位' v-bind="formItemLayout">
-        <a-input v-decorator="['unit']"/>
+        <a-input v-decorator="['unit', {rules: [{ required: true, message: '单位不能为空'}]}]"/>
       </a-form-item>
       <a-form-item label='职务' v-bind="formItemLayout">
-        <a-input v-decorator="['position']"/>
+        <a-input v-decorator="['position', {rules: [{ required: true, message: '职务不能为空'}]}]"/>
       </a-form-item>
       <a-form-item label='手机号' v-bind="formItemLayout">
-        <a-input v-decorator="['telPhone',{initialValue:''},{rules: [{ required: true, message: '不能为空'},
-                    { pattern: new RegExp( /^1(3|4|5|6|7|8|9)\d{9}$/ ), message: '请输入正确格式'}]}]"/>
+        <a-input v-decorator="['telPhone', {rules: [{ required: true, message: '手机号码不能为空'},
+            { pattern: '^0?(13[0-9]|15[012356789]|17[013678]|18[0-9]|14[57])[0-9]{8}$', message: '请输入正确的手机号'}
+          ]}]"/>
       </a-form-item>
       <a-form-item label='电话' v-bind="formItemLayout">
-        <a-input v-decorator="['phone']"/>
+        <a-input v-decorator="['phone', {rules: [
+            {min:7, max: 50, message: '请输入正确电话号码'}
+          ]}]"/>
       </a-form-item>
       <a-form-item label='邮箱' v-bind="formItemLayout">
-        <a-input v-decorator="['email',{rules: [{ required: false},{ max: 20, message: '长度不能超过20个字符'}]}]"/>
+        <a-input v-decorator="['email',{rules: [
+            { type: 'email', message: '请输入正确的邮箱' },
+            { max: 50, message: '长度不能超过50个字符'}
+          ]}]"/>
       </a-form-item>
       <a-form-item label='所属机构'
-                   style="margin-bottom: 2rem"
+                   style="margin-bottom: 2rem;height: 390px;overflow: auto"
                    v-bind="formItemLayout">
-        <a-tree
-          :key="deptTreeKeys"
-          :checkable="true"
-          :replaceFields="replaceFields"
-          :checkStrictly="true"
-          @check="handleCheck"
+        <a-tree-select
+          v-model="defaultCheckedKeys"
+          @change="handleCheck"
           @expand="handleExpand"
           :expandedKeys="expandedKeys"
-          :defaultCheckedKeys="defaultCheckedKeys"
+          :replaceFields="replaceFields"
+          :showSearch="false"
+          :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
+          :load-data="onLoadData"
           :treeData="deptTreeData">
-        </a-tree>
+        </a-tree-select>
       </a-form-item>
     </a-form>
     <div class="drawer-bootom-button">
-      <a-popconfirm title="确定放弃修改？" @confirm="onClose" okText="确定" cancelText="取消">
+      <a-popconfirm title="是否确认取消？" @confirm="onClose" okText="确定" cancelText="取消">
         <a-button style="margin-right: .8rem">取消</a-button>
       </a-popconfirm>
       <a-button @click="handleSubmit" type="primary" :loading="loading">提交</a-button>
@@ -94,9 +100,25 @@ export default {
     },
     handleCheck (checkedKeys) {
       this.checkedKeys = checkedKeys
+      console.log('选中的id ', checkedKeys)
     },
     handleExpand (expandedKeys) {
       this.expandedKeys = expandedKeys
+    },
+    onLoadData (treeNode) {
+      return new Promise(resolve => {
+        if (treeNode.dataRef.children) {
+          resolve()
+          return
+        }
+        setTimeout(() => {
+          this.$get('/dept/queryDeptChile', {prentId: treeNode.dataRef.deptId}).then((r) => {
+            treeNode.dataRef.children = r.data.data
+            this.deptTreeData = [...this.deptTreeData]
+            resolve()
+          })
+        }, 500)
+      })
     },
     setFormValues (user) {
       // 实现拉取表单数据并且赋值 areaId
@@ -109,44 +131,40 @@ export default {
           this.form.setFieldsValue(obj)
         }
       })
-      console.log(user)
+      console.log('编辑：', user)
       // 实现自动选定上级菜单并展开
       // 如果时公共文件夹则默认不选择树状图
-      if (user.title !== '公共文件夹') {
-        if (user.deptId !== '0') {
-          this.defaultCheckedKeys = []
-          this.defaultCheckedKeys.push(user.deptId)
-          this.checkedKeys = this.defaultCheckedKeys
-          this.expandedKeys = this.checkedKeys
-        }
-      }
+      this.defaultCheckedKeys = user.deptName
+      this.checkedKeys = user.deptId
     },
     // 修改
     handleSubmit () {
-      let checkedArr = Object.is(this.checkedKeys.checked, undefined) ? this.checkedKeys : this.checkedKeys.checked
-      if (checkedArr.length === 0) {
-        this.$notification.warning({message: '系统提示', description: '所属机构不能为空！', duration: 4})
-        return
-      }
-      if (checkedArr.length > 1) {
-        this.$notification.warning({message: '系统提示', description: '最多只能选择一个所属机构！', duration: 4})
-        return
-      }
       this.form.validateFields((err, values) => {
         if (!err) {
           this.loading = true
-          if (checkedArr.length) {
-            console.log(checkedArr)
-            this.com.deptId = checkedArr[0]
+          if (this.checkedKeys.length !== 0) {
+            values.deptId = this.checkedKeys
           } else {
-            this.com.deptId = ''
-          }
-          let newcom = this.form.getFieldsValue()
-          newcom.deptId = this.com.deptId
-          this.$put('address', newcom).then(() => {
-            this.reset()
-            this.$emit('success')
+            this.$notification.warning({message: '系统提示', description: '请选择所属机构！', duration: 4})
             this.loading = false
+            return
+          }
+          if (!(/^1[3456789]\d{9}$/.test(values.telPhone))) {
+            this.$notification.warning({message: '系统提示', description: '请输入正确的手机号码！', duration: 4})
+            this.loading = false
+            return
+          }
+          console.log(values)
+          this.$put('address', values).then((res) => {
+            console.log(res)
+            if (res.data.status === 1) {
+              this.reset()
+              this.$emit('success')
+              this.loading = false
+            } else {
+              this.$notification.warning({message: '系统提示', description: '没有修改权限，操作失败！', duration: 4})
+              this.loading = false
+            }
           }).catch(() => {
             this.loading = false
           })
@@ -159,10 +177,9 @@ export default {
       // 加载部门树状图area
       this.loading = true
       if (this.comEditVisiable) {
-        this.$get('/dept').then((r) => {
-          // this.replaceFields = {title: 'areaName', key: 'id'}
-          this.deptTreeData = r.data.rows.children
-          this.deptTreeKeys = +new Date()
+        this.$get('/dept/queryDeptChile').then((r) => {
+          this.replaceFields = { key: 'deptId', title: 'deptName', value: 'deptId' }
+          this.deptTreeData = r.data.data
           this.loading = false
         })
       }

@@ -1,12 +1,12 @@
 <template>
-  <a-card :bordered="false" class="card-area">
+  <div style="width: 100%">
     <div :class="advanced ? 'search' : null">
       <!-- 搜索区域 -->
       <a-form layout="horizontal">
         <div :class="advanced ? null: 'fold'">
           <a-row >
             <a-col :md="3" :sm="24">
-              <a-button class="editable-add-btn"  @click="addClick">
+              <a-button type="primary"  @click="addClick">
                 增加
               </a-button>
             </a-col>
@@ -20,10 +20,10 @@
           <a-list-item-meta
             :description= "'创建于：' + item.date"
           >
-            <a slot="title" href="https://www.antdv.com/">{{ item.name }}</a>
+            <a slot="title" href="#">{{ item.name }}</a>
           </a-list-item-meta>
-          <a slot="actions" @click="edit(item)">修改</a>
-          <a slot="actions"  @click="more(item)">删除</a>
+          <a slot="actions" style="color: #4a9ff5" @click="edit(item)">修改</a>
+          <a slot="actions" style="color: #FF4D4F"  @click="more(item)">删除</a>
         </a-list-item>
       </a-list>
     </div>
@@ -40,7 +40,7 @@
     @success="GroupEditSuccess"
     ref="group"
     />
-  </a-card>
+  </div>
 </template>
 
 <script>
@@ -95,7 +95,7 @@ export default {
     more (item) {
       let that = this
       that.$confirm({
-        title: `是否删除${item.name}，一经删除永远不会恢复?`,
+        title: `是否删除“${item.name}”该模块?，注意！！ （删除会导致该模块的题目以及该模块的成绩都一起被删除)`,
         centered: true,
         onOk () {
           that.$delete('/check/menus/deleteById/{menusId}', {menusId: item.standardId}).then(() => {

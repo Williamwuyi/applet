@@ -27,7 +27,7 @@
         </ul>
         <div class="lookDescribe">
           <p class="title">事迹简要描述：</p>
-          <p class="content">{{lookList.content}}</p>
+          <p class="content">{{happenTimeyear}}年{{happenTimemon}}月{{happenTimedate}}日，{{lookList.content}}</p>
         </div>
         <ul class="lookOpinion clearboth">
           <li>
@@ -79,7 +79,7 @@
           </li>
         </ul>
       </div>
-      <appendix :refId="this.ids" refType="2" :is-upload="false" ref="appendix" :unique="this.ids"></appendix>
+      <appendix style="width: 755px" :refId="this.ids" refType="2" :is-upload="false" ref="appendix" :unique="this.ids"></appendix>
     </div>
     <div class="drawer-bootom-button">
       <a-button @click="rewclone" type="primary" :loading="loading">关闭</a-button>
@@ -115,7 +115,10 @@ export default {
         rejectTime: ''
       },
       ranks: 0,
-      idenList: {}
+      idenList: {},
+      happenTimeyear: '',
+      happenTimemon: '',
+      happenTimedate: ''
     }
   },
   // 预设窗口弹出关闭状态
@@ -134,7 +137,9 @@ export default {
     // 获取标题数据
     setFormValues (user) {
       this.lookList = user
-      console.log(this.lookList)
+      this.happenTimeyear = this.lookList.happenTime.substring(0, 4)
+      this.happenTimemon = this.lookList.happenTime.substring(5, 7)
+      this.happenTimedate = this.lookList.happenTime.substring(8, 10)
       this.idenList.forEach((key) => {
         if (this.lookList.identity === key.id) {
           this.lookList.identity = key.identity
@@ -158,12 +163,9 @@ export default {
           }
         })
       })
-      console.log('当前文档接收到审批意见：', this.opiData)
-      console.log('审批意见列表：', this.auditOpinion, '审批金额列表', this.money)
       // 获取当前用户rank
       this.$get('/dept/findRank').then(res => {
         this.ranks = res.data.data.rank
-        console.log('当前用户的rank:', this.ranks)
       })
       // 获取驳回数据
       this.$get('/prize/findRejectOpinion', {prizeId: user.id}).then(res => {
@@ -171,7 +173,6 @@ export default {
         this.rejectOpinion.rejectContent = res.data.data.auditOpinion
         this.rejectOpinion.rejectName = res.data.data.userName
         this.rejectOpinion.rejectTime = res.data.data.auditTime
-        console.log('当前文档的驳回意见信息：', res)
       })
     },
     rest () {
@@ -197,7 +198,7 @@ export default {
   ul,li{list-style: none;margin: 0;padding: 0;}
   .title{font-weight: bold;}
   .clearboth:after,.clearboth:before{display:block;content: '';clear: both;}
-  .looktype{width:100%;padding: 20px 0 50px 0}
+  .looktype{width:765px;padding: 20px 0 50px 0;max-height: 500px;overflow: scroll}
   .looktype .lookborder{width: 750px;margin:0 auto;border: 1px solid #4a4a48;}
   .looktype h1{height: 80px;line-height: 80px; text-align: center;color: red;}
   .clearboth li{float: left;}

@@ -1,44 +1,43 @@
 <template>
-  <a-card :bordered="false" class="card-area">
-    <div>
+    <div style="width: 100%;min-height: 780px">
     <div :class="advanced ? 'search' : null">
       <!-- 搜索区域 -->
       <a-form layout="horizontal">
         <div :class="advanced ? null: 'fold'">
           <a-row >
-            <a-col :md="8" :sm="24">
+            <a-col :md="4" :sm="20">
               <a-form-item
                 label="标题:"
-                :labelCol="{span: 5}"
-                :wrapperCol="{span: 18, offset: 1}">
+                :labelCol="{span: 4}"
+                :wrapperCol="{span: 18, offset: -2}">
                 <a-input v-model="character.title"/>
               </a-form-item>
             </a-col>
-            <a-col :md="8" :sm="24" >
+            <a-col :md="8" :sm="20" >
               <a-form-item
                 label="接收时间:"
                 :labelCol="{span: 5}"
-                :wrapperCol="{span: 18, offset: 1}">
+                :wrapperCol="{span: 18, offset: 0}">
                 <range-date @change="onTimeChange" ref="releaseTime"></range-date>
               </a-form-item>
             </a-col>
-            <a-col :md="8" :sm="24">
-              <span style="margin-left: 100px">
-                <a-button type="primary" @click="search">查询</a-button>
-                <a-button style="margin-left: 8px" @click="reset">重置</a-button>
-              </span>
+            <a-col :md="8" :sm="24" style="margin-left: 10px;margin-top: 3px">
+              <a-button type="primary" @click="search">查询</a-button>
+              <a-button style="margin-left: 8px" @click="reset">重置</a-button>
             </a-col>
           </a-row>
         </div>
       </a-form>
     </div>
-    <a-button class="editable-add-btn" @click="handleDel">
+    <a-button style="margin-right: 10px;margin-bottom: 5px;background-color: #FF4040;color: white" @click="handleDel">
       删除
     </a-button>
     <a-table
       :data-source="dataSource"
       :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
       :columns="columns"
+      :loading="loading"
+      :scroll="{ y: 580 }"
       @change="handleTableChange"
       :rowKey="(record)=> record.id"
       :pagination="pagination">
@@ -47,7 +46,8 @@
         <a-tag v-else-if="record.isRead === 1 " color="#87d068" >已阅读</a-tag>
       </template>
       <template slot="operation" slot-scope="text, record">
-        <a-icon type="eye" theme="twoTone" twoToneColor="#42b983" @click="viewLook(record)" title="查看"></a-icon>
+<!--        <a-icon type="eye" theme="twoTone" twoToneColor="#42b983" @click="viewLook(record)" title="查看"></a-icon>-->
+        <a @click="viewLook(record)" style="color: #42b983">查看</a>
       </template>
     </a-table>
       <in-road-view
@@ -57,7 +57,6 @@
         ref="oldeview"
       />
     </div>
-  </a-card>
 </template>
 <script>
 import RangeDate from '@/components/datetime/RangeDate'
@@ -72,6 +71,7 @@ export default {
       dataSource: [],
       selectedRowKeys: [],
       sortedInfo: null,
+      loading: false,
       isRead: 0,
       // 分页
       pagination: {
@@ -84,7 +84,6 @@ export default {
       viewVisiable: false
     }
   },
-  inject: ['reload'],
   computed: {
     columns () {
       let { sortedInfo } = this
@@ -126,11 +125,9 @@ export default {
     },
     handleView () {
       this.viewVisiable = false
-      this.reload()
     },
     hanleClose () {
       this.viewVisiable = false
-      this.reload()
     },
     // 查看信息
     viewLook (record) {
@@ -232,7 +229,7 @@ export default {
           that.$delete('/briefing/inbox/' + rowd.join(',')).then(() => {
             that.$notification.success({message: '系统提示', description: '操作成功！', duration: 4})
             that.selectedRowKeys = []
-            that.reload()
+            that.fetch()
           })
         },
         onCancel () {

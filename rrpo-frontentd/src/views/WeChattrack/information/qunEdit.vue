@@ -29,8 +29,12 @@
                    {rules: [{ required: true, message: '联系方式不能为空'}
                   ]}]"/>
       </a-form-item>
+      <a-form-item>
       <a-input v-decorator="['qunId']" hidden />
+      </a-form-item>
+      <a-form-item>
       <a-input v-decorator="['wxUserId']" hidden />
+      </a-form-item>
     </a-form>
   </a-modal>
 </template>
@@ -66,7 +70,6 @@ export default {
       this.form.resetFields()
     },
     getData (item) {
-      console.log(item)
       this.form.getFieldDecorator('phone')
       this.form.setFieldsValue({'phone': item.phone})
       this.form.getFieldDecorator('name')
@@ -91,7 +94,6 @@ export default {
           this.confirmLoading = true
           this.loading = true
           let newadd = {...this.form.getFieldsValue()}
-          console.log(newadd)
           this.$post('/wx/user/addOrUpdate', newadd).then(() => {
             this.reset()
             this.confirmLoading = false

@@ -118,7 +118,6 @@ export default {
     })
     // 获取所有公安处
     this.$get('/dept/findRankFour').then(res => {
-      console.log('公安处列表', res)
       this.deptNames = res.data.data
     })
   },
@@ -128,7 +127,7 @@ export default {
       return [
         {
           title: '编号',
-          dataIndex: 'number',
+          dataIndex: 'newNumber',
           width: '10%',
           scopedSlots: { customRender: 'number' },
           align: 'center'
@@ -164,17 +163,14 @@ export default {
     setTableValues (user) {
       if (user instanceof Array) {
         this.dataSource = user
-        console.log(this.dataSource)
       } else {
         this.dataSource = [user]
-        console.log(this.dataSource)
       }
     },
     deletes (index) {
       this.dataSource.splice(index, 1)
     },
     test (value, key, index) {
-      console.log(value, key, index)
       if ((this.ranks === 1 && key.status >= 5) || key.status === 2 || (this.ranks === 4 && key.status >= 6) || (this.ranks === 0 && key.status === 7)) {
         this.$message.error('已审批/驳回数据不可再次审批')
       } else if (value === '') {
@@ -204,7 +200,6 @@ export default {
             money.opinionMoney = this.moneyData[index]
             this.moneys.push(money)
           })
-          console.log(JSON.stringify(this.moneys))
           this.form.validateFields((err, values) => {
             let sendDeptId = ''
             if (this.ranks === 1) {
@@ -222,7 +217,6 @@ export default {
               prizeIds: this.prizeIds
             }
             if (!err) {
-              console.log('提交到后台的数据----', param)
               this.loading = true
               this.$post('prize/report', param).then(() => {
                 this.reset()

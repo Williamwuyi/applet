@@ -2,15 +2,14 @@
   <a-modal
     :visible="JdModalVisiable"
     title='当前进度'
-    :width= "850"
+    :width= "950"
     :footer="null"
     @cancel="() => { onClose() }"
     loading
   >
-<!--    wait process finish error-->
-    <a-steps :current="num" :status="state == 0 ? 'finish': 'error'">
-      <a-step :title="jiedao" description="发出审核申请"/>
-      <a-step v-for="(item, index) in arr" :title="item.dept.deptName" :description="item.massage" :key="index"/>
+<!--    :status="state == 0 ? 'finish': 'error'"-->
+    <a-steps :direction="num > 5 ? 'vertical': 'horizontal'">
+      <a-step :status="item.status === 0 ? 'finish': 'error'"  v-for="(item, index) in arr" :title="item.dept.deptName" :description="item.massage" :key="index"/>
     </a-steps>
   </a-modal>
 </template>
@@ -29,16 +28,16 @@ export default {
   methods: {
     onClose () {
       this.$emit('error')
+      this.arr = []
     },
     getJd (key) {
-      console.log(key)
-      this.jiedao = key.deptJc.deptName
       this.$get('/wx/sh/list', {qunid: key.wxId}).then(res => {
-        console.log(res)
-        let newArr = res.data.data.records
-        this.arr = newArr
-        this.num = newArr.length
-        this.state = this.arr[this.num - 1].status
+        if (res.data.data.records.length > 0) {
+          let newArr = res.data.data.records
+          this.arr = newArr
+          this.num = newArr.length - 1
+          this.state = this.arr[this.num].status
+        }
       })
     }
   }

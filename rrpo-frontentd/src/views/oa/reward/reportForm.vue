@@ -10,7 +10,8 @@
       <range-date @change="handleDateChange" ref="releaseTime" style="width:300px"></range-date>
       <div class="floatR" style="width:400px">
         <a-button @click="fach">查询</a-button>
-        <a-button @click="Ymoney">不带金额报表</a-button>
+        <a-button @click="Nmoney">生成报表</a-button>
+        <a-button @click="Ymoney">生成带金额报表</a-button>
         <a-button @click="reset">重置</a-button>
       </div>
     </div>
@@ -23,9 +24,9 @@
         <div class="repcode clearboth">
           <p class="floatL">湖南省铁路护路联防工作办公室编</p>
           <p class="floatR">
-            <input type="number" class="periods2 periodsNumber" v-model="year" oninput="if(value.length>4)value=value.slice(0,4)">
-            年<input type="number" class="periods3 periodsNumber" v-model="month" oninput="if(value.length>2)value=value.slice(0,2)">
-            月<input type="number" class="periods3 periodsNumber" v-model="date"  oninput="if(value.length>2)value=value.slice(0,2)">
+            <input type="number" id="yearId" class="periods2 periodsNumber" v-model="year" oninput="if(value.length>4)value=value.slice(0,4)">
+            年<input type="number" id="monthId" class="periods3 periodsNumber" v-model="month" oninput="if(value>12)value=12">
+            月<input type="number" id="dateId" class="periods3 periodsNumber" v-model="date"  oninput="if(value>31)value=31">
             日
           </p>
         </div>
@@ -84,7 +85,8 @@ export default {
       year: '',
       month: '',
       date: '',
-      period: ''
+      period: '',
+      moneyType: ''
     }
   },
   props: {
@@ -137,23 +139,40 @@ export default {
       this.reset()
       this.$emit('close')
     },
-    Ymoney () {
-      let years = this.year
-      let months = this.month
-      let days = this.date
-      let periods = this.period
-      this.moneyData = {
-        year: years,
-        month: months,
-        day: days,
-        period: periods,
-        startTime: this.character.startTime,
-        endTime: this.character.endTime
+    consoleCli () {
+      if (this.period === '') {
+        this.$message.error('期数不能为空')
+      } else if (this.year === '' || this.year === null) {
+        this.$message.error('年份不能为空')
+      } else {
+        let years = this.year
+        let months = this.month
+        let days = this.date
+        let periods = this.period
+        this.moneyData = {
+          year: years,
+          month: months,
+          day: days,
+          period: periods,
+          startTime: this.character.startTime,
+          endTime: this.character.endTime,
+          moneyType: this.moneyType
+        }
+        this.$post('/prize/briefingWord', this.moneyData).then(res => {
+          this.loading = true
+          this.onClose()
+        })
       }
-      this.$post('/prize/briefingWord', this.moneyData).then(res => {
-        this.loading = true
-        this.onClose()
-      })
+    },
+    // 生成带金额简报
+    Ymoney () {
+      this.moneyType = 1
+      this.consoleCli()
+    },
+    // 生成不带金额简报
+    Nmoney () {
+      this.moneyType = 0
+      this.consoleCli()
     }
   }
 }
@@ -168,12 +187,13 @@ export default {
   .rewardForm h1{font-size: 70px}
   .rewardForm .repNumber{text-align: center;margin-top: 30px}
   .rewardForm .repcode{width:688px;position: absolute;bottom: 0;left: 0}
-  .rewardForm .periods{width: 60px;border: transparent;border-bottom: 1px dotted #000c17;text-align: center}
-  .rewardForm .periods2{width: 40px;border: transparent;border-bottom: 1px dotted #000c17}
-  .rewardForm .periods3{width: 30px;border: transparent;border-bottom: 1px dotted #000c17}
+  .rewardForm .periods{width: 60px;border: transparent;border-bottom: 1px dotted #000c17;text-align: center;outline: none;}
+  .rewardForm .periods2{width: 40px;border: transparent;border-bottom: 1px dotted #000c17;outline: none;}
+  .rewardForm .periods3{width: 30px;border: transparent;border-bottom: 1px dotted #000c17;outline: none;}
   .periodsNumber::-webkit-outer-spin-button,
   .periodsNumber::-webkit-inner-spin-button{
     -webkit-appearance: none !important;
     margin: 0;
   }
+  .border_bottom{border-bottom: 1px dotted #ff4d4f !important;}
 </style>

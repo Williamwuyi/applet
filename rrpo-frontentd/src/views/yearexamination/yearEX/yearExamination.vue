@@ -1,5 +1,5 @@
 <template>
-  <a-card :bordered="false" class="card-area">
+  <div style="width: 100%">
     <div :class="advanced ? 'search' : null">
       <!-- 搜索区域 -->
       <a-form layout="horizontal">
@@ -18,9 +18,8 @@
                 <span>{{dape}}</span>
               </a-form-item>
             </a-col>
-            <a-col :md="4" :sm="24" >
+            <a-col :md="4" :sm="24" v-hasPermission="'year:demand'">
               <a-form-item
-                v-hasPermission="'year:demand'"
                 label="考核单位"
                 :labelCol="{span: 7}"
                 :wrapperCol="{span: 15, offset: 1}">
@@ -28,13 +27,13 @@
                              style="width: 145px;"
                              @change="onChangedanwei"
                              :options="optionsr"
-                             :fieldNames="{ label: 'title', value: 'id', children: 'children2' }"
+                             :fieldNames="{ label: 'deptName', value: 'deptId', children: 'children2' }"
                              placeholder="未选择"
                              ref="danwei"
                 />
               </a-form-item>
             </a-col>
-            <a-col :md="3" :sm="24" >
+            <a-col :md="3" :sm="24" v-hasPermission="'year:demand'">
               <span style="margin-top: 3px;">
               <a-button type="primary" @click="search">查询</a-button>
               <a-button style="margin-left: 8px" @click="reset">重置</a-button>
@@ -95,7 +94,7 @@
       @close="closeCheck"
       ref="concekd"
     />
-  </a-card>
+  </div>
 </template>
 
 <script>
@@ -164,13 +163,13 @@ export default {
         title: '初评总分',
         dataIndex: 'number'
       }, {
-        title: '复评基础得分',
+        title: '终评基础得分',
         dataIndex: 'fpJcWork'
       }, {
-        title: '复评工作得分',
+        title: '终评工作得分',
         dataIndex: 'fpXgWork'
       }, {
-        title: '复评总分',
+        title: '终评总分',
         dataIndex: 'fpNumber'
       }, {
         title: '限定重提时间',
@@ -190,8 +189,10 @@ export default {
   inject: [ 'reload' ],
   mounted () {
     this.fach()
-    this.$get('dept').then((r) => {
-      this.optionsr = r.data.rows.children
+    this.$get('/dept/list', {deptId: 0}).then((r) => {
+      this.optionsr = r.data.filter(t => {
+        return t.rank !== 4
+      })
     })
   },
   methods: {
@@ -204,20 +205,21 @@ export default {
         pagination.total = newData.total
         this.dataSource = newData.records
         // 判断每条消息得时间是否超过，超过发送改变状态请求
-        this.dataSource.forEach(t => {
-          let TimeStatus = new Date().getTime() > new Date(t.deadDate).getTime()
-          if (TimeStatus) {
-            this.getStatus(t.dept.deptId, t.yearId, 3)
-          }
-        })
+        // this.dataSource.forEach(t => {
+        //   let TimeStatus = new Date().getTime() > new Date(t.deadDate).getTime()
+        //   if (TimeStatus && t.status !== 3) {
+        //     console.log(TimeStatus)
+        //     this.getStatus(t.numId, 3)
+        //   }
+        // })
         this.pagination = pagination
         this.loading = false
       })
     },
     // 改变状态
-    getStatus (deptId, yearId, status) {
-      this.$get('/check/grade/commit', {deptId: deptId, yearId: yearId, status: status})
-    },
+    // getStatus (numId, status) {
+    //   this.$get('/check/num/changeStatus', {numId: numId, status: status})
+    // },
     search () {
       this.fach(this.yearex)
     },
@@ -225,7 +227,7 @@ export default {
       // 重置查询参数
       this.yearex = {}
       // 清空机构选择
-      // this.$refs.danwei.sValue = []
+      this.$refs.danwei.sValue = []
       // 重置考核按钮
       // this.newTdanwei = true
       this.options = []
@@ -249,12 +251,12 @@ export default {
     },
     LookSuccess () {
       this.yearExamVisible = false
-      this.reload()
+      this.fach()
       this.$notification.success({message: '系统提示', description: '操作成功！', duration: 4})
     },
     close () {
       this.yearExamVisible = false
-      this.reload()
+      this.fach()
     },
     //  考核
     yearCheckClick () {
@@ -262,11 +264,11 @@ export default {
     },
     yearexSuccess () {
       this.CheckVisible = false
-      this.reload()
+      this.fach()
       this.$notification.success({message: '系统提示', description: '操作成功！', duration: 4})
     },
     closeCheck () {
-      this.reload()
+      this.fach()
       this.CheckVisible = false
     },
     // 日期选择
@@ -299,12 +301,12 @@ export default {
     },
     MarkSuccess () {
       this.yearMarkVisible = false
-      this.reload()
+      this.fach()
       this.$notification.success({message: '系统提示', description: '操作成功！', duration: 4})
     },
     markClose () {
       this.yearMarkVisible = false
-      this.reload()
+      this.fach()
     }
   }
 }

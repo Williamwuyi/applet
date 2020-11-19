@@ -8,7 +8,7 @@
     :closable="false"
     @close="onClose"
     :visible="DailyEditVisiable"
-    style="height: calc(100% - 55px);overflow: auto;padding-bottom: 53px;">
+    >
     <a-form :form="form">
       <a-form-item
         label="月份查询"
@@ -23,6 +23,7 @@
             <a-select-option v-for="email in autoCompleteResult" @click="clickSelect(email.wxId)" :key="email.wxId">{{email.wxName}}</a-select-option>
           </template>
         </a-auto-complete>
+        <a-icon  type="question-circle"  style="color:#61C2FE;margin-left: 10px; font-size: 18px"  title="本群只接受本级或本级以下合格群搜索"/>
       </a-form-item>
       <a-form-item label='关联' v-bind="formItemLayout">
         <a-radio-group  @change="radioChange">
@@ -42,7 +43,7 @@
       </a-form-item>
     </a-form>
     <div class="drawer-bootom-button">
-         <a-popconfirm title="确定放弃修改？" @confirm="onClose" okText="确定" cancelText="取消">
+         <a-popconfirm title="是否确认取消？" @confirm="onClose" okText="确定" cancelText="取消">
         <a-button style="margin-right: .8rem">取消</a-button>
       </a-popconfirm>
        <a-button @click="handleSubmit" type="primary" :loading="loading">提交</a-button>
@@ -106,13 +107,14 @@ export default {
     },
     // 选择时间
     onTimeChange (date, dateTime) {
-      console.log(this.dateTime)
       this.dateTime = dateTime
     },
     setFormValues (user) {
       this.monthId = ''
       this.dateTime = ''
-      this.hdd = user.qun.wxName
+      if (user.qun) {
+        this.hdd = user.qun.wxName
+      }
       this.dateTime = user.month
       this.monthId = user.wxMonthId
       // content
@@ -139,6 +141,11 @@ export default {
     getAppendixFileList () {
       console.log(this.$store.state.file.appendixList)
     },
+    // 纯文本
+    ToText (HTML) {
+      var input = HTML
+      return input.replace(/<(style|script|iframe)[^>]*?>[\s\S]+?<\/\1\s*>/gi, '').replace(/<[^>]+?>/g, '').replace(/\s+/g, ' ').replace(/ /g, ' ').replace(/>/g, ' ')
+    },
     // 修改
     handleSubmit () {
       this.form.validateFields((err, values) => {
@@ -148,10 +155,7 @@ export default {
             this.$message.error('月份不能为空')
             return
           }
-          if (this.hdd === '') {
-            this.$message.error('选择群不能为空')
-            return
-          } else {
+          if (this.hdd !== '') {
             this.$get('/wx/qun/list', {name: this.hdd}).then(res => {
               let arr = res.data.data.records
               arr.forEach(t => {
@@ -174,6 +178,7 @@ export default {
           file.forEach(t => {
             newadd.fileIdS.push(t.fileId)
           })
+          newadd.fuContent = this.ToText(this.$refs.editor.content)
           this.$post('/wx/month/saveorUpdate', newadd).then(() => {
             this.reset()
             this.$emit('success')

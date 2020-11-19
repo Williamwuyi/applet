@@ -67,7 +67,10 @@ export default {
       colorArr: ['red', 'green', 'darkmagenta', 'turquoise', 'orange', 'blue', 'blueviolet', 'coral', 'deeppink', 'midnightblue'],
       loading: false,
       advanced: false,
-      statusTotal: {},
+      statusTotal: {
+        zero: 0,
+        one: 0
+      },
       sendUserName: null,
       releaseTime: '',
       content: '',

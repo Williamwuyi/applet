@@ -1,5 +1,5 @@
 <template>
-  <a-card :bordered="false" class="card-area">
+  <div style="width: 100%; min-height: 690px">
     <div :class="advanced ? 'search' : null">
       <!-- 搜索区域 -->
       <a-form layout="horizontal">
@@ -8,10 +8,21 @@
             <a-col :md="6" :sm="24" >
               <a-form-item
                 label="月份查询"
-                :labelCol="{span: 5}"
-                :wrapperCol="{span: 18, offset: 1}">
-                <a-date-picker
-                  format = 'YYYY-MM' v-model="timeValue" @change="onTimeChange" />
+                :labelCol="{span: 4}"
+                :wrapperCol="{span: 18, offset: 2}">
+                <a-month-picker @change="handleYearChange" v-model="Timer">
+                </a-month-picker>
+              </a-form-item>
+            </a-col>
+            <a-col :md="6" :sm="24">
+              <a-form-item label='状态查询' :labelCol="{span: 5}" :wrapperCol="{span: 15, offset: 1}">
+                <a-cascader  change-on-select
+                             style="width: 105px;"
+                             @change="onChangecascader"
+                             :options="options"
+                             placeholder="未选择"
+                             ref="cascader"
+                />
               </a-form-item>
             </a-col>
             <a-col :md="6" :sm="24" >
@@ -26,17 +37,21 @@
     </div>
     <!-- 表格区域 -->
     <div>
-      <a-button class="editable-add-btn" @click="handleAdd" >
+      <a-button type="primary" @click="handleAdd" v-hasPermission="'monthKey:add'" >
         添加
       </a-button>
-      <a-button class="editable-add-btn" @click="handleHz" >
+      <a-button class="editable-add-btn" @click="handleHz" v-hasPermission="'monthKey:proposal'" >
         生成汇总表
+      </a-button>
+      <a-button class="editable-add-btn" @click="handleHzBM" v-hasPermission="'monthKey:proposal'">
+        生成简报
       </a-button>
       <a-table
         :data-source="dataSource"
         :columns="columns"
         :loading="loading"
         :pagination="pagination"
+        :scroll="{ y: 450 }"
         :rowKey="record => {record.wxMonthId}"
         :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         @change="handleTableChange"
@@ -48,9 +63,9 @@
           <a-tag v-if="record.status === 0" color="#f50">{{record.deptSh.deptName}}未通过</a-tag>
         </template>
         <template slot="operation" slot-scope="text, record">
-          <a-icon  type="setting" style="margin-right: 3px" theme="twoTone"  twoToneColor="#4a9ff5"  @click="edit(record)" v-hasPermission="'notice:edit'" title="修改"></a-icon>
-          <a-icon  type="file-add" theme="twoTone"  style="color:#4a9ff5;margin:0" v-hasPermission="'notice:sound'" @click="soundClick(record)" title="上报" />
-          <a-icon  type="highlight"  style="color:#00CD00;margin:0"  @click="look(record)" title="审核" />
+          <a   style="margin-right: 3px;color:#4a9ff5;"   @click="edit(record)" v-hasPermission="'monthKey:edit'" title="修改">修改</a>
+          <a    style="color:#0FB71F;margin:3px" v-hasPermission="'monthKey:top'" @click="soundClick(record)" title="上报" >上报</a>
+          <a    style="color:#00CD00;margin:3px"  @click="look(record)" title="审核"  v-hasPermission="'monthKey:audit'" >审核</a>
         </template>
       </a-table>
     </div>
@@ -65,6 +80,7 @@
     <noticeadd
       @success="handlecomAdd"
       @close="hanlecomclose"
+      :randomId="randomId"
       :addVisiable="NoticeaddVisiable"
     />
     <!-- 查看 -->
@@ -78,16 +94,24 @@
     :DModalVisiable="DModalVisiable"
     @onClose="DMonClose"
     />
-  </a-card>
+    <!--  生成简报  -->
+    <b-modal
+      :BModalVisiable="BModalVisiable"
+      @close="DMonCloseBM"
+    />
+  </div>
 </template>
 <script>
 import Noticeadd from './DailyManagementAdd'
 import NoticeEdit from './DailyManagementEdit'
 import Dmlook from './Dmlook'
 import DModal from './DModal'
+import uuidv1 from 'uuid/v1'
+import BModal from '../monthBulletin/BModal'
+import {mapMutations} from 'vuex'
 export default {
   name: 'Notice',
-  components: {Dmlook, NoticeEdit, Noticeadd, DModal},
+  components: {Dmlook, NoticeEdit, Noticeadd, DModal, BModal},
   data () {
     return {
       character: {},
@@ -96,12 +120,14 @@ export default {
       advanced: false,
       selectedRowKeys: [],
       timeValue: undefined,
+      randomId: '-1',
       NoticeaddVisiable: false,
       DailyEditVisiable: false,
       NoticelookVisiable: false,
       DModalVisiable: false,
+      BModalVisiable: false,
       // 时间
-      dateTime: '',
+      Timer: undefined,
       refId: '',
       sortedInfo: null,
       // 分页
@@ -119,15 +145,19 @@ export default {
       options: [
         {
           value: '1',
-          label: '未发布'
+          label: '上报中'
         },
         {
           value: '2',
-          label: '已撤销'
+          label: '未审核'
         },
         {
           value: '3',
-          label: '已发布'
+          label: '已通过'
+        },
+        {
+          value: '4',
+          label: '未上报'
         }
       ]
     }
@@ -187,7 +217,8 @@ export default {
       this.selectedRowKeys = selectedRowKeys
     },
     // 选择时间
-    onTimeChange (date, dateTime) {
+    handleYearChange (date, dateTime) {
+      console.log(dateTime)
       this.character.month = dateTime
     },
     // 查询
@@ -210,12 +241,14 @@ export default {
     reset () {
       // 重置查询参数
       this.character = {}
-      // 清空时间
-      this.timeValue = undefined
+      // 清空年月
+      this.Timer = undefined
       // 清空表格选择框
       this.selectedRowKeys = []
       // 重置列排序规则
+
       this.sortedInfo = null
+      this.$refs.cascader.sValue = []
       this.refId = ''
       this.pagination.current = 1
       this.pagination.pageSize = 10
@@ -223,7 +256,7 @@ export default {
     },
     // 状态查询
     onChangecascader (value) {
-      this.character.status = value
+      this.character.status = value[0]
     },
     // 分页
     handleTableChange (pagination, filters, sorter) {
@@ -266,17 +299,22 @@ export default {
     },
     // 添加功能
     handleAdd () {
+      this.randomId = uuidv1() // 获取随机ID
       this.NoticeaddVisiable = true
+      this.initAppendixList()
     },
+    ...mapMutations({
+      initAppendixList: 'file/initAppendixList'
+    }),
     handlecomAdd () {
       this.NoticeaddVisiable = false
-      this.reload()
       this.fach(this.character)
       this.$notification.success({message: '系统提示', description: '操作成功！', duration: 4})
+      this.$store.commit('file/initAppendixList')
     },
     hanlecomclose () {
       this.NoticeaddVisiable = false
-      this.reload()
+      this.fach(this.character)
     },
     // 修改功能
     edit (key) {
@@ -287,23 +325,27 @@ export default {
       this.DailyEditVisiable = false
       this.fach(this.character)
       this.$notification.success({message: '系统提示', description: '操作成功！', duration: 4})
-      this.reload()
+      this.fach(this.character)
     },
     hanleeditclose () {
       this.DailyEditVisiable = false
-      this.reload()
+      this.fach(this.character)
     },
     // 上报
     soundClick (record) {
       if (record.status !== 3) {
         let that = this
         that.$confirm({
-          title: '确定上报《' + record.qun.wxName + '》?',
+          title: '确定上报?',
           centered: true,
           onOk () {
             that.$get('/wx/month/appear', {monthId: record.wxMonthId, status: 1}).then(res => {
-              that.fach(that.character)
-              that.$message.success('上报成功')
+              if (res.data.status !== 0) {
+                that.fach(that.character)
+                that.$message.success(res.data.message)
+              } else {
+                that.$message.error(res.data.message)
+              }
             }).catch(() => {
               that.fach(that.character)
               that.$message.error('上报失败')
@@ -319,7 +361,7 @@ export default {
     // 查看
     hanleNoticelookclose () {
       this.NoticelookVisiable = false
-      this.fach()
+      this.fach(this.character)
     },
     look (look) {
       this.NoticelookVisiable = true
@@ -331,6 +373,15 @@ export default {
     },
     DMonClose () {
       this.DModalVisiable = false
+      this.fach(this.character)
+    },
+    // 简报
+    //  汇总表
+    handleHzBM () {
+      this.BModalVisiable = true
+    },
+    DMonCloseBM () {
+      this.BModalVisiable = false
     }
   }
 }

@@ -41,6 +41,7 @@ export default {
       this.$emit('check', this.yearId)
       this.confirmLoading = false
       this.rest()
+      this.Onclose()
     },
     Onclose () {
       this.$emit('cancel')

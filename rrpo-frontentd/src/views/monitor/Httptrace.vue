@@ -1,6 +1,6 @@
 <template>
-  <a-card :bordered="false" class="card-area">
-    <div>
+<!--  <a-card :bordered="false" class="card-area">-->
+    <div style="width: 100%;min-height: 700px">
       <div class="alert">
         <a-alert type="success" :show-icon="true">
           <div slot="message">
@@ -18,7 +18,7 @@
                @change="handleTableChange">
       </a-table>
     </div>
-  </a-card>
+<!--  </a-card>-->
 </template>
 
 <script>

@@ -1,5 +1,5 @@
 <template>
-  <a-card :bordered="false" class="card-area">
+  <div style="width: 100%;">
     <div :class="advanced ? 'search' : null">
       <!-- 搜索区域 -->
       <a-form layout="horizontal">
@@ -8,7 +8,7 @@
             <a-col :md="12" :sm="24" >
               <a-form-item
                 label="用户名"
-                :labelCol="{span: 4}"
+                :labelCol="{span: 2}"
                 :wrapperCol="{span: 18, offset: 2}">
                 <a-input v-model="queryParams.username"/>
               </a-form-item>
@@ -18,16 +18,21 @@
                 label="组织机构"
                 :labelCol="{span: 4}"
                 :wrapperCol="{span: 18, offset: 2}">
-                <dept-input-tree @change="handleDeptChange"
-                                 ref="deptTree">
-                </dept-input-tree>
+                <a-tree-select
+                  :allowClear="true"
+                  tree-data-simple-mode
+                  :dropdownStyle="{ maxHeight: '220px', overflow: 'auto' }"
+                  :treeData="deptTreeData"
+                  :load-data="getDept"
+                  v-model="queryParams.deptId">
+                </a-tree-select>
               </a-form-item>
             </a-col>
           <template v-if="advanced">
             <a-col :md="12" :sm="24" >
               <a-form-item
                 label="创建时间"
-                :labelCol="{span: 4}"
+                :labelCol="{span: 2}"
                 :wrapperCol="{span: 18, offset: 2}">
                 <range-date @change="handleDateChange" ref="createTime"></range-date>
               </a-form-item>
@@ -47,8 +52,8 @@
     </div>
     <div>
       <div class="operator">
-        <a-button type="primary" ghost @click="add" v-hasPermission="'user:add'">新增</a-button>
-        <a-button @click="batchDelete" v-hasPermission="'user:delete'">删除</a-button>
+        <a-button type="primary"  @click="add" v-hasPermission="'user:add'">新增</a-button>
+<!--        <a-button class="btnHoven" @click="batchDelete" style="background-color: #FF4D4F; color: white; border-radius: 4px!important;" v-hasPermission="'user:delete'">删除</a-button>-->
         <a-dropdown v-hasAnyPermission="'user:reset','user:export'">
           <a-menu slot="overlay">
             <a-menu-item v-hasPermission="'user:reset'" key="password-reset" @click="resetPassword">密码重置</a-menu-item>
@@ -77,9 +82,9 @@
           </a-popover>
         </template>
         <template slot="operation" slot-scope="text, record">
-          <a-icon v-hasPermission="'user:update'" type="setting" theme="twoTone" twoToneColor="#4a9ff5" @click="edit(record)" title="修改用户"></a-icon>
+          <a v-hasPermission="'user:update'"  style="color: #4a9ff5" @click="edit(record)" title="修改用户">修改</a>
           &nbsp;
-          <a-icon v-hasPermission="'user:view'" type="eye" theme="twoTone" twoToneColor="#42b983" @click="view(record)" title="查看"></a-icon>
+          <a v-hasPermission="'user:view'" style="color: #42b983"  @click="view(record)" title="查看">查看</a>
           <a-badge v-hasNoPermission="'user:update','user:view'" status="warning" text="无权限"></a-badge>
         </template>
       </a-table>
@@ -103,7 +108,7 @@
       @success="handleUserEditSuccess"
       :userEditVisiable="userEdit.visiable">
     </user-edit>
-  </a-card>
+  </div>
 </template>
 
 <script>
@@ -130,6 +135,7 @@ export default {
         visiable: false
       },
       queryParams: {},
+      deptTreeData: [],
       filteredInfo: null,
       sortedInfo: null,
       paginationInfo: null,
@@ -183,7 +189,7 @@ export default {
         title: '邮箱',
         dataIndex: 'email',
         scopedSlots: { customRender: 'email' },
-        width: 100
+        width: 200
       }, {
         title: '组织机构',
         dataIndex: 'deptName'
@@ -224,8 +230,38 @@ export default {
   },
   mounted () {
     this.fetch()
+    this.getDept()
   },
+  // 引用页面刷新方法
+  inject: [ 'reload' ],
   methods: {
+    // 分页获取
+    getDept (treeNode) {
+      if (treeNode) {
+        return new Promise(resolve => {
+          setTimeout(() => {
+            this.$get('/dept/queryDeptChile', {prentId: treeNode.dataRef.id}).then((r) => {
+              let newData = r.data.data
+              newData.forEach(t => {
+                this.deptTreeData.push(
+                  { id: t.deptId, pId: t.parentId, value: t.deptId, title: t.deptName }
+                )
+              })
+            })
+            resolve()
+          }, 300)
+        })
+      } else {
+        this.$get('/dept/queryDeptChile').then((r) => {
+          let newData = r.data.data
+          newData.forEach(t => {
+            this.deptTreeData.push(
+              { id: t.deptId, pId: t.parentId, value: t.deptId, title: t.deptName }
+            )
+          })
+        })
+      }
+    },
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
     },
@@ -257,6 +293,7 @@ export default {
     },
     handleUserEditClose () {
       this.userEdit.visiable = false
+      this.reload()
     },
     handleUserEditSuccess () {
       this.userEdit.visiable = false
@@ -373,8 +410,6 @@ export default {
       this.sortedInfo = null
       // 重置查询参数
       this.queryParams = {}
-      // 清空部门树选择
-      this.$refs.deptTree.reset()
       // 清空时间选择
       if (this.advanced) {
         this.$refs.createTime.reset()
@@ -426,4 +461,7 @@ export default {
 </script>
 <style lang="less" scoped>
 @import "../../../../static/less/Common";
+.btnHoven:hover{
+  border-color: #FF4D4F;;
+}
 </style>

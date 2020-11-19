@@ -7,7 +7,7 @@
     :closable="false"
     @close="onClose"
     :visible="roleEditVisiable"
-    style="height: calc(100% - 55px);overflow: auto;padding-bottom: 53px;">
+    >
     <a-form :form="form">
       <a-form-item label='角色名称' v-bind="formItemLayout">
         <a-input readOnly v-decorator="['roleName']"/>

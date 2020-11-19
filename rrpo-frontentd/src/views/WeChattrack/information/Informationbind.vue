@@ -25,13 +25,15 @@
       <a-form-item label='身份证号码' v-bind="formItemLayout">
         <a-input v-decorator="['idCar',
                    {rules: [{ required: true, message: '身份证号码不能为空'},
+                    { pattern: new RegExp( /(^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$)|(^[1-9]\d{5}\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{2}$)/ ), message: '请输入正确格式'},
                    { max: 18, message: '长度不能超过18个字符'}
                   ]}]"/>
       </a-form-item>
       <a-form-item label='身份' v-bind="formItemLayout">
-        <a-input v-decorator="['sf',  {rules: [{ required: true, message: '身份不能为空'}]}]"/>
+        <a-input placeholder="群众/义务护路队员/专业护路队员" v-decorator="['sf',  {rules: [{ required: true, message: '身份不能为空'}]}]"/>
       </a-form-item>
     </a-form>
+    <div><a-button @click="handleSubmit" type="primary" style="margin-left: 470px"  :loading="loading">提交</a-button></div>
     <a-divider orientation="left">已绑定的成员</a-divider>
 <!--    查询-->
     <a-row >
@@ -65,7 +67,6 @@
     </a-table>
     <div class="drawer-bootom-button">
         <a-button @click="onClose">取消</a-button>
-       <a-button @click="handleSubmit" type="primary"  :loading="loading">提交</a-button>
     </div>
     <!-- 修改-->
     <qun-edit
@@ -150,7 +151,6 @@ export default {
       this.getQun(this.htt)
     },
     getQunId (key) {
-      console.log(key)
       this.qunId = key.wxId
       this.getQun()
     },
@@ -203,7 +203,6 @@ export default {
           this.loading = true
           let newadd = {...this.form.getFieldsValue()}
           newadd.qunId = this.qunId
-          console.log(newadd)
           this.$post('/wx/user/addOrUpdate', newadd).then(() => {
             this.reset()
             this.getQun()

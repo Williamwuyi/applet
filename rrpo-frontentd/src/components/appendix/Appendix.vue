@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <a-spin :spinning="uploadSpinning">
+    <a-spin :spinning="uploadSpinning" tip="文件上传中...">
       <div v-if="isUpload">
         <a-upload-dragger
           name="file"
@@ -19,7 +19,7 @@
             单击选择文件或将文件拖到该区域上传
           </p>
           <p class="ant-upload-hint">
-            当前仅支持单文件上传
+            单个上传文件大小限制为100M
           </p>
         </a-upload-dragger>
       </div>
@@ -220,15 +220,15 @@ export default {
           if (this.refId === '-1') {
             this.deleteEditorFile(record)
             this.fileList = this.fileList.filter(item => item.fileId !== record.fileId)
+          } else {
+            this.fetch()
           }
-          this.fetch()
         } else {
           notification.error({
             message: '系统提示',
             description: res.data.message,
             duration: 4
           })
-          this.fetch()
         }
       })
     },
@@ -245,17 +245,19 @@ export default {
             duration: 4
           })
           this.checkRef(info.file.response.file)
+          this.uploadSpinning = false
         } else {
           notification.error({
             message: '系统提示',
             description: info.file.response.message,
             duration: 4
           })
+          this.uploadSpinning = false
         }
       } else if (status === 'error') {
         this.$message.error(`${info.file.name} 文件上传失败，请重试！.`)
+        this.uploadSpinning = false
       }
-      this.uploadSpinning = false
     },
     checkRef (file) {
       if (this.refId === '-1') {

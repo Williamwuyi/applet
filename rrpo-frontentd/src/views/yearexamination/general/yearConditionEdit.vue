@@ -7,11 +7,11 @@
     :closable="false"
     @close="onClose"
     :visible="yearEditVisiable"
-    style="height: calc(100% - 55px);overflow: auto;padding-bottom: 53px;">
+    >
     <a-form :form="form">
       <a-form-item label='考核规则' v-bind="formItemLayout">
         <a-textarea
-          :autosize=true
+          :autoSize=true
           v-decorator="['content',
                    {rules: [
                     { required: true, message: '不能为空'}
@@ -68,7 +68,7 @@
       </a-form-item>
     </a-form>
     <div class="drawer-bootom-button">
-      <a-popconfirm title="确定放弃编辑？" @confirm="onClose" okText="确定" cancelText="取消">
+      <a-popconfirm title="是否确认取消？" @confirm="onClose" okText="确定" cancelText="取消">
         <a-button style="margin-right: .8rem">取消</a-button>
       </a-popconfirm>
       <a-button @click="handleSubmit" type="primary" :loading="loading">提交</a-button>

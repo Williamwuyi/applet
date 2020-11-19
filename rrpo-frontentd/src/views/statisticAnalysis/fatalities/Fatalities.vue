@@ -1,135 +1,149 @@
 <template>
-  <a-card :bordered="false" class="card-area">
-    <div>
+    <div style="width: 100%;min-height: 770px">
       <div :class="advanced ? 'search' : null">
         <!-- 搜索区域 -->
-        <a-form layout="horizontal">
+        <a-form style="">
           <div :class="advanced ? null: 'fold'">
-            <a-row >
-              <a-col :md="5" :sm="20">
+            <a-row>
+              <a-col :md="3" :sm="10" v-has-any-permission="'communication:fatalitiesUnit'">
                 <a-form-item
                   label="单位:"
-                  :labelCol="{span: 5}"
-                  :wrapperCol="{span: 15, offset: 1}">
-                  <a-select v-model="character.cityCsId" @change="citySChange">
-                    <a-select-option v-for="(n,index) in cityS" :key="index" :value="n.deptId" >
-                      {{n.deptName}}
+                  :labelCol="{span: 4}"
+                  :wrapperCol="{span: 18, offset: 1}">
+                  <a-select @change="citySChange" v-model="unitG">
+                    <a-select-option v-for="(n,index) in cityS" :key="index" :value="n.id" >
+                      {{n.dept.deptName}}
                     </a-select-option>
                   </a-select>
                 </a-form-item>
               </a-col>
-              <a-col :md="5" :sm="20">
+              <a-col :md="4" :sm="10" v-has-any-permission="'communication:fatalitiesUnit'">
+                <a-form-item
+                  label="市级单位"
+                  :labelCol="{span: 6}"
+                  :wrapperCol="{span: 15, offset: 1}">
+                  <a-select @change="cityQChange" v-model="unitQ">
+                    <a-select-option v-for="(n,index) in cityQ" :key="index" :value="n.dept.deptId" >
+                      {{n.dept.deptName}}
+                    </a-select-option>
+                  </a-select>
+                </a-form-item>
+              </a-col>
+              <a-col :md="4" :sm="10" v-has-any-permission="'communication:fatalitiesUnit'">
                 <a-form-item
                   label="区县单位 :"
                   :labelCol="{span: 6}"
                   :wrapperCol="{span: 15, offset: 1}">
-                  <a-select v-model="character.cityQxId">
-                    <a-select-option v-for="(n,index) in cityQ" :key="index" :value="n.deptId" >
+                  <a-select @change="cityXChange" v-model="unitX">
+                    <a-select-option v-for="(n,index) in cityX" :key="index" :value="n.deptId" >
                       {{n.deptName}}
                     </a-select-option>
                   </a-select>
                 </a-form-item>
               </a-col>
-              <a-col :md="8" :sm="21" >
-                <a-form-item
-                  label="发生时间:"
-                  :labelCol="{span: 6}"
-                  :wrapperCol="{span: 15, offset: 1}">
-                  <range-date @change="onTimeChange" ref="creatTime" :allowClear="false"></range-date>
+              <a-col :md="4" :sm="20" >
+                <a-form-item label="开始时间:" :labelCol="{span: 6}" :wrapperCol="{span: 15, offset: 1}">
+                  <a-month-picker placeholder="开始时间" @change="onStartChange" v-model="restStartTime">
+                  </a-month-picker>
                 </a-form-item>
               </a-col>
-              <a-col :md="5" :sm="20">
-                <span style="margin-left: 20px">
+              <a-col :md="4" :sm="20" >
+                <a-form-item label="结束时间:" :labelCol="{span: 6}" :wrapperCol="{span: 15, offset: 1}">
+                  <a-month-picker placeholder="结束时间" @change="onEndChange" v-model="restTime">
+                  </a-month-picker>
+                </a-form-item>
+              </a-col>
+              <a-col :md="4" :sm="20" style="margin-top: 3px; margin-left: 10px">
                   <a-button type="primary" @click="search">查询</a-button>
                   <a-button style="margin-left: 8px" @click="reset">重置</a-button>
-                </span>
               </a-col>
             </a-row>
           </div>
         </a-form>
       </div>
-    <a-button class="editable-add-btn" @click="handleAdd" >
+    <a-button class="btn" @click="handleAdd" type="primary">
       添加
     </a-button>
-    <a-button class="editable-add-btn" @click="handleDel">
+    <a-button class="btn" @click="handleDel" style="background-color: #FF4040;color: white">
       删除
     </a-button>
-      <a-button class="editable-add-btn" @click="handleLock">
-        锁定记录
+      <a-button class="btn" @click="handleLock" style="background-color: #CDAD00;color: white">
+        锁定
       </a-button>
-      <a-button class="editable-add-btn" @click="handleRelieve">
-        解锁记录
+      <a-button class="btn" @click="handleRelieve" style="background-color: #CD853F;color: white">
+        解锁
        </a-button>
     <a-table style="overflow: auto;width: 100%"
-      :data-source="dataSource"
-      :scroll={x:100}
-      :columns="columns"
-      :rowKey="(record)=> record.accidentId"
-      :pagination="pagination"
-      :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
-      @change="handleTableChange"
+            :data-source="dataSource"
+             :scroll={x:100,y:580}
+             :columns="columns"
+             :rowKey="(record)=> record.accidentId"
+             :pagination="pagination"
+             :loading="loading"
+             :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+             @change="handleTableChange"
     >
       <template slot="nature" slot-scope="text, record">
-        <span v-if="record.nature === '0' ">一般铁路事故</span>
-        <span v-else-if="record.nature === '1' ">以外事故</span>
-        <span v-else-if="record.nature === '2' ">自杀事故</span>
+        <span v-if="record.nature === 'A' ">一般铁路事故</span>
+        <span v-else-if="record.nature === 'B' ">意外事故</span>
+        <span v-else-if="record.nature === 'C' ">自杀事故</span>
       </template>
       <template slot="conditions" slot-scope="text, record">
-        <span v-if="record.conditions === '0' ">横穿铁路</span>
-        <span v-else-if="record.conditions === '1' ">沿铁路纵向行走</span>
-        <span v-else-if="record.conditions === '2' ">钻车底</span>
-        <span v-else-if="record.conditions === '3' ">线路上玩耍</span>
-        <span v-else-if="record.conditions === '4' ">其他情形</span>
+        <span v-if="record.conditions === 'A' ">横穿铁路</span>
+        <span v-else-if="record.conditions === 'B' ">沿铁路纵向行走</span>
+        <span v-else-if="record.conditions === 'C' ">钻车底</span>
+        <span v-else-if="record.conditions === 'D' ">线路上玩耍</span>
+        <span v-else-if="record.conditions === 'E' ">其他情形</span>
       </template>
       <template slot="instationSection" slot-scope="text, record">
-        <span v-if="record.instationSection === '0' ">站内</span>
-        <span v-else-if="record.instationSection === '1' ">区间</span>
+        <span v-if="record.instationSection === 'A' ">站内</span>
+        <span v-else-if="record.instationSection === 'B' ">区间</span>
       </template>
       <template slot="road" slot-scope="text, record">
-      <span v-if="record.road === '0' ">专业护理区间</span>
-      <span v-else-if="record.road === '1' ">有奖义务护理区间</span>
-      <span v-else-if="record.road === '2' ">其他</span>
+      <span v-if="record.road === 'A' ">专业护理区间</span>
+      <span v-else-if="record.road === 'B' ">有奖义务护理区间</span>
+      <span v-else-if="record.road === 'C' ">其他</span>
     </template>
       <template slot="age" slot-scope="text, record">
-        <span v-if="record.road === '0' ">0~6岁</span>
-        <span v-else-if="record.road === '1' ">7~18岁</span>
-        <span v-else-if="record.road === '2' ">19~64岁</span>
-        <span v-else-if="record.road === '3' ">64岁以上</span>
-        <span v-else-if="record.road === '4' ">不详</span>
+        <span v-if="record.age === 'A' ">0~6岁</span>
+        <span v-else-if="record.age === 'B' ">7~18岁</span>
+        <span v-else-if="record.age === 'C' ">19~64岁</span>
+        <span v-else-if="record.age === 'D' ">64岁以上</span>
+        <span v-else-if="record.age === 'E' ">不详</span>
       </template>
       <template slot="identity" slot-scope="text, record">
-        <span v-if="record.road === '0' ">中小学生</span>
-        <span v-else-if="record.road === '1' ">精神病患者</span>
-        <span v-else-if="record.road === '2' ">其他残障人员</span>
-        <span v-else-if="record.road === '3' ">其他</span>
-        <span v-else-if="record.road === '4' ">不详</span>
+        <span v-if="record.identity === 'A' ">中小学生</span>
+        <span v-else-if="record.identity === 'B' ">精神病患者</span>
+        <span v-else-if="record.identity === 'C' ">其他残障人员</span>
+        <span v-else-if="record.identity === 'D' ">其他</span>
+        <span v-else-if="record.identity === 'E' ">不详</span>
       </template>
       <template slot="jzd" slot-scope="text, record">
-        <span v-if="record.road === '0' ">本村</span>
-        <span v-else-if="record.road === '1' ">本乡</span>
-        <span v-else-if="record.road === '2' ">本县</span>
-        <span v-else-if="record.road === '3' ">其他</span>
+        <span v-if="record.jzd === 'A' ">本村</span>
+        <span v-else-if="record.jzd === 'B' ">本乡</span>
+        <span v-else-if="record.jzd === 'C' ">本县</span>
+        <span v-else-if="record.jzd === 'D' ">其他</span>
       </template>
       <template slot="closed" slot-scope="text, record">
-        <span v-if="record.road === '0' ">全封闭</span>
-        <span v-else-if="record.road === '1' ">因社会管理原因造栅栏开口</span>
-        <span v-else-if="record.road === '2' ">因铁路原因造成栅栏开口</span>
-        <span v-else-if="record.road === '3' ">未封闭</span>
+        <span v-if="record.closed === 'A' ">全封闭</span>
+        <span v-else-if="record.closed === 'B' ">因社会管理原因造栅栏开口</span>
+        <span v-else-if="record.closed === 'C' ">因铁路原因造成栅栏开口</span>
+        <span v-else-if="record.closed === 'D' ">未封闭</span>
       </template>
       <template slot="sex" slot-scope="text, record">
-<!--        <span v-if="record.sex === '0' ">全封闭</span>-->
         <span v-if="record.sex === '1' ">男</span>
         <span v-else-if="record.sex === '2' ">女</span>
-<!--        <span v-else-if="record.sex === '3' ">未封闭</span>-->
       </template>
       <template slot="distance" slot-scope="text, record">
-        <span v-if="record.road === '0' ">500米以内</span>
-        <span v-else-if="record.road === '1' ">500米到2.5公里</span>
-        <span v-else-if="record.road === '2' ">2.5公里以上</span>
-        <span v-else-if="record.road === '3' ">不详</span>
+        <span v-if="record.distance === 'A' ">500米以内</span>
+        <span v-else-if="record.distance === 'B' ">500米到2.5公里</span>
+        <span v-else-if="record.distance === 'C' ">2.5公里以上</span>
+        <span v-else-if="record.distance === 'D' ">不详</span>
       </template>
-      <template slot="operation" slot-scope="text, record" v-if="editShow">
-        <a-icon  type="setting" style="margin-left:8px;color:#158BD2" @click="edit(record)" title="修改"></a-icon>
+      <template slot="operation" slot-scope="text, record">
+<!--        <a-icon v-if="record.statu !== 1" type="setting" style="margin-left:8px;color:#158BD2" @click="edit(record)" title="修改"></a-icon>-->
+        <a @click="edit(record)" style="color: #158BD2" v-if="record.statu !== 1">修改</a>
+        <span v-else>锁定</span>
       </template>
     </a-table>
     <fatalities-add
@@ -145,7 +159,6 @@
       ref="oldedit"
     />
     </div>
-  </a-card>
 </template>
 <script>
 import FatalitiesAdd from './FatalitiesAdd'
@@ -158,17 +171,27 @@ export default {
     return {
       fatalitiesAddVisiable: false,
       fatalitiesEditVisiable: false,
+      loading: false,
       selectedRowKeys: [],
       advanced: false,
       lineData: [], // 线路
       trainData: [], // 车务段
       trackData: [], // 工务段
-      character: {},
-      cityCsId: '', // 县区单位条件查询
-      cityQsId: '', // 单位条件查询
+      cityCsId: null, // 县区单位条件查询
+      cityQsId: null, // 单位条件查询
+      cityXsId: null, // 单位条件查询
+      unitG: '',
+      unitQ: '',
+      unitX: '',
       cityS: [],
       cityQ: [],
-      editShow: true,
+      cityX: [],
+      startTime: null,
+      endTime: null,
+      restStartTime: null,
+      restTime: null,
+      sortedInfo: null,
+      character: {},
       pagination: {
         total: 0,
         pageSize: 10, // 每页中显示10条数据
@@ -206,8 +229,8 @@ export default {
         },
         {
           title: '线路',
-          width: '100px',
-          dataIndex: 'dictXl.valuee'
+          width: '150px',
+          dataIndex: 'dictXl.fieldName'
         },
         {
           title: '地点',
@@ -217,12 +240,12 @@ export default {
         {
           title: '车务段',
           width: '150px',
-          dataIndex: 'dictCwd.valuee'
+          dataIndex: 'dictCwd.fieldName'
         },
         {
           title: '工务段',
           width: '150px',
-          dataIndex: 'dictGwd.valuee'
+          dataIndex: 'dictGwd.fieldName'
         },
         {
           title: '事故性质',
@@ -256,9 +279,8 @@ export default {
         },
         {
           title: '性别',
-          dataIndex: 'sex',
-          width: '100px',
-          scopedSlots: {customRender: 'sex'}
+          dataIndex: 'sexDict.fieldName',
+          width: '100px'
         },
         {
           title: '年龄段',
@@ -287,8 +309,7 @@ export default {
         {
           title: '电脑分析系数',
           dataIndex: 'dnxs',
-          width: '150px',
-          scopedSlots: {customRender: 'dnxs'}
+          width: '150px'
         },
         {
           title: '公安分析系数',
@@ -298,8 +319,7 @@ export default {
         {
           title: '电脑调节系数',
           dataIndex: 'dntjxs',
-          width: '150px',
-          scopedSlots: {customRender: 'dntjxs'}
+          width: '150px'
         },
         {
           title: '换算伤亡',
@@ -316,11 +336,13 @@ export default {
       ]
     }
   },
-  inject: ['reload'],
   mounted () {
     this.fetch()
-    this.$get('/dept/list', {deptId: 0}).then(res => {
-      this.cityS = res.data
+    this.loading = true
+    // 单位公安处
+    this.$get('/accident/dept/list').then(res => {
+      this.cityS = res.data.data
+      this.loading = false
     })
   },
   methods: {
@@ -328,57 +350,77 @@ export default {
       this.loading = true
       this.$get('/accident/accident/listPage', params).then(res => {
         let newData = res.data.data
-        console.log('加载列表数据', newData)
+        console.log('加载列表数据', res.data.data)
         // 分页;
         const pagination = { ...this.pagination }
         pagination.total = newData.total
         this.dataSource = newData.records
         this.pagination = pagination
         this.loading = false
-        for (let key in this.dataSource) {
-          let solck = this.dataSource[key].statu // 1为锁定，0为解锁
-          if (solck === 1) {
-            this.editShow = false
-          } else if (solck === 0) {
-            this.editShow = true
-          }
-        }
       })
     },
     // 选择地级市是，查找县级市
     citySChange (key) {
-      this.$get('/dept/list', {deptId: key}).then(res => {
-        this.cityQ = res.data
+      this.loading = true
+      this.$get('/accident/dept/list', {prentId: key}).then(res => {
+        console.log('查市级', res.data)
+        this.cityQ = res.data.data
+        this.loading = false
       })
-      // 选中后清空，以下联级
-      this.cityQxId = ''
+      this.cityCsId = key
+      this.unitQ = ''
+      this.unitX = ''
+    },
+    cityQChange (key) {
+      this.loading = true
+      this.$get('/dept/list', {deptId: key}).then(res => {
+        console.log('查区县', res.data)
+        this.cityX = res.data
+        this.loading = false
+      })
+      this.cityQsId = key
+      this.unitX = ''
+    },
+    cityXChange (key) {
+      this.cityXsId = key
     },
     // 条件查询
     search () {
       this.fetch({
-        ...this.character
+        cityLevelId: this.cityQsId,
+        quDeptId: this.cityXsId,
+        policeId: this.cityCsId,
+        startDate: this.startTime,
+        endDate: this.endTime
       })
     },
     // 重置
     reset () {
-      // 重置查询参数
-      this.character = {}
-      // 清空时间选择
-      this.$refs.creatTime.reset()
+      // 清空显示
+      this.unitQ = ''
+      this.unitG = ''
+      this.unitX = ''
+      // 清空值
+      this.cityQsId = null
+      this.cityCsId = null
+      this.cityXsId = null
+      this.restTime = null // 结束时间
+      this.restStartTime = null // 开始时间
       this.fetch()
     },
-    // 状态查询
-    onChangecascader (value) {
-      this.character.status = value
+    // 选择开始时间
+    onStartChange (value, date) {
+      this.startTime = date.toString()
+      this.restTime = null // 结束时间
     },
-    // 选中时间
-    onTimeChange (value) {
-      if (value) {
-        let start = value[0] + ` 00:00:00`
-        let end = value[1] + ` 23:59:59`
-        this.character.startTime = start
-        this.character.endTime = end
-      }
+    // 选择结束时间
+    onEndChange (value, date) {
+      console.log('结束时间', value, '--', date)
+      let year = date.toString().substring(0, 4)
+      let months = date.toString().substring(5, 7)
+      let month = parseInt(months)
+      let dateTime = year + '-' + month
+      this.endTime = dateTime
     },
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
@@ -405,7 +447,7 @@ export default {
     handleFataAdd () {
       this.fatalitiesAddVisiable = false
       this.$notification.success({message: '系统提示', description: '操作成功！', duration: 4})
-      this.reload()
+      this.fetch()
     },
     hanleaddclose () {
       this.fatalitiesAddVisiable = false
@@ -418,13 +460,14 @@ export default {
     },
     handleEdit () {
       this.fatalitiesEditVisiable = false
-      this.reload()
+      this.fetch()
     },
     hanleaEditclose () {
       this.fatalitiesEditVisiable = false
     },
     // 锁定记录
     handleLock () {
+      this.loading = true
       const param = {
         accidentId: this.selectedRowKeys,
         status: 1
@@ -432,11 +475,13 @@ export default {
       this.$post('/accident/accident/lock', param).then(res => {
         if (res.data.status === 1) {
           this.$notification.success({message: '系统提示', description: '操作成功！', duration: 4})
-          this.reload()
+          this.fetch()
+          this.loading = false
         }
       })
     },
     handleRelieve () {
+      this.loading = true
       const param = {
         accidentId: this.selectedRowKeys,
         status: 0
@@ -444,7 +489,8 @@ export default {
       this.$post('/accident/accident/lock', param).then(res => {
         if (res.data.status === 1) {
           this.$notification.success({message: '系统提示', description: '操作成功！', duration: 4})
-          this.reload()
+          this.fetch()
+          this.loading = false
         }
       })
     },
@@ -465,7 +511,7 @@ export default {
           that.$delete('/accident/accident/deleteByLists/' + rowd.join(',')).then(res => {
             that.$notification.success({message: '系统提示', description: '操作成功！', duration: 4})
             that.selectedRowKeys = []
-            that.reload()
+            that.fetch()
           })
         },
         onCancel () {
@@ -477,8 +523,8 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-@import "../../../../static/less/Common";
-.ant-table-body {  //样式穿透
-    overflow-x: auto !important;
-  }
+ .btn{
+   margin-bottom: 5px;
+   margin-right: 10px;
+ }
 </style>

@@ -8,8 +8,8 @@
       :destroyOnClose="true"
       @cancel="onClose"
       @ok="handleSubmit"
-      style="min-height: 800px;"
     >
+      <div style="max-height: 650px; overflow: auto">
 <!--    表单  -->
       <a-form :form="form">
         <a-form-item label='时间'
@@ -20,8 +20,8 @@
             format = 'YYYY' @change="onTimeChange" />
         </a-form-item>
         <a-form-item label='工作项得绑定'  v-bind="formItemLayout">
-          <a-checkbox-group :default-value="shArr"  @change="onChange">
-            <a-checkbox :value="item.standardId" v-for="item in CheckArr" :key="item.standardId">
+          <a-checkbox-group :default-value="shArr" >
+            <a-checkbox :value="item.standardId" @change="onChange" v-for="item in CheckArr" :key="item.standardId">
               {{item.name}}
             </a-checkbox>
           </a-checkbox-group>
@@ -33,12 +33,12 @@
           <a-button @click="add">增加</a-button>
           <a-button @click="deleteS(item)">删除</a-button>
           <a-table
-                       :data-source="item.list[0]"
+                       :data-source="item.list"
                        :columns="columns"
                        :loading="loading"
+                       :scroll="{ y: 550 }"
                        :rowKey="(record)=> record.menusYearId"
-                       :pagination="pagination"
-                       @change="handleTableChange"
+                       :pagination="false"
                        :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
                      >
             <template slot="operation" slot-scope="text, record">
@@ -61,6 +61,7 @@
         @success="successEdit"
         ref="oldEdit"
       />
+      </div>
     </a-modal>
 </template>
 <script>
@@ -69,8 +70,8 @@ import yeareditEdit from './yeareditEdit'
 import moment from 'moment'
 // 表单
 const formItemLayout = {
-  labelCol: { span: 4 },
-  wrapperCol: { span: 16 }
+  labelCol: { span: 2 },
+  wrapperCol: { span: 20 }
 }
 export default {
   name: 'yearRuledited',
@@ -94,6 +95,7 @@ export default {
       arr: [],
       CheckArr: [],
       shArr: [],
+      newData: [],
       //  工作
       dataSource: [],
       dataSource1: [],
@@ -132,40 +134,8 @@ export default {
     fach () {
       this.loading = true
       this.$get('/check/menus-year/list', {yearId: this.yearId}).then(res => {
-        this.arr = res.data.data.data
+        this.arr = res.data.data
         this.loading = false
-      })
-    },
-    // 其他渲染
-    // faech (parmse = {pageNum: 1, pageSize: 10, menusId: this.dwpnId}) {
-    //   this.$get('/check/menus/lists', parmse).then(res => {
-    //     let newData = res.data.data
-    //     // 分页;
-    //     const pagination = { ...this.pagination }
-    //     pagination.total = newData.total
-    //     this.dataSource = newData.records
-    //     this.pagination = pagination
-    //     this.loading = false
-    //   })
-    // },
-    // 多选框数据渲染
-    getCheck () {
-      this.$get('/check/menus/list').then(res => {
-        this.CheckArr = res.data.data
-      })
-    },
-    // 分页
-    handleTableChange (pagination, filters) {
-      // 通知界面
-      this.pagination.current = pagination.current
-      this.pagination.pageSize = pagination.pageSize
-      // 通知后台
-      this.yearCon.pageNum = pagination.current
-      this.yearCon.pageSize = pagination.pageSize
-      this.yearCon.menusId = this.dwpnId
-      this.faech({
-        ...this.yearCon,
-        ...filters
       })
     },
     reset () {
@@ -183,22 +153,45 @@ export default {
     onTimeChange (date, dateTime) {
       this.dateTime = dateTime
     },
+    // 多选框数据渲染
+    getCheck () {
+      this.$get('/check/menus/list').then(res => {
+        this.CheckArr = res.data.data
+      })
+    },
     // 多选框
-    onChange (checkedValues) {
-      this.checkAdd(checkedValues)
+    onChange (even) {
+      let neatr = even.target.value
+      if (even.target.checked) {
+        this.checkAdd(neatr)
+      } else {
+        this.newData.forEach(t => {
+          if (neatr === t.menusId) {
+            this.deldeCheck(t.bindId)
+          }
+        })
+      }
     },
     // 添加考核项
     checkAdd (checkedValues) {
-      this.$post('/check/year-bind-menus/add', {menusId: checkedValues, yearId: this.yearId}).then(res => {
+      this.$post('/check/year-bind-menus/addOrUpdate', {menusId: checkedValues, yearId: this.yearId}).then(res => {
         this.fach()
+        this.checkEdit()
+      })
+    },
+    // 删除考核项
+    deldeCheck (checkedValues) {
+      this.$delete('/check/year-bind-menus/delete', {id: checkedValues}).then(res => {
+        this.fach()
+        this.checkEdit()
       })
     },
     // 修改考核项
     checkEdit (checkedValues) {
       this.$get('/check/year-bind-menus/list', {yearId: this.yearId}).then(res => {
         if (res.data.data !== []) {
-          let newData = res.data.data
-          newData.forEach(t => {
+          this.newData = res.data.data
+          this.newData.forEach(t => {
             this.shArr.push(t.menusId)
           })
         }
@@ -277,13 +270,12 @@ export default {
           fromdata.yearId = this.yearId
           this.$post('/check/year/saveOrUpdate', fromdata).then(res => {
             if (res.data.message === '操作成功') {
-              this.$notification.success({message: '系统提示', description: '操作成功！', duration: 4})
             } else {
               this.$notification.warning({message: '系统提示', description: res.data.message, duration: 4})
             }
           })
           // 确定考核项接口
-          this.$get('/check/year/ok', {yearId: this.yearId})
+          // this.$get('/check/year/ok', {yearId: this.yearId})
           // 绑定规则
           let pramase = {}
           pramase.menusId = [...this.selectedRowKeys]

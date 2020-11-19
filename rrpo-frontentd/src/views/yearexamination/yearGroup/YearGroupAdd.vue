@@ -2,7 +2,7 @@
   <a-modal
     :visible="GroupAddVisiable"
     :confirm-loading="confirmLoading"
-    title='创建群聊'
+    title='创建模块'
     okText='确定创建'
     loading
     @cancel="() => { onClose() }"
@@ -14,11 +14,11 @@
                    {rules: [{ required: true, message: '模块名称不能为空'}
                   ]}]"/>
       </a-form-item>
-      <a-form-item label='分数' v-bind="formItemLayout">
-        <a-input v-decorator="['num',
-                   {rules: [{ required: false, message: '分数不能为空'}
-                  ]}]"/>
-      </a-form-item>
+<!--      <a-form-item label='分数' v-bind="formItemLayout">-->
+<!--        <a-input v-decorator="['num',-->
+<!--                   {rules: [{ required: false, message: '分数不能为空'}-->
+<!--                  ]}]"/>-->
+<!--      </a-form-item>-->
     </a-form>
   </a-modal>
 </template>
@@ -60,7 +60,6 @@ export default {
           this.confirmLoading = true
           this.loading = true
           let newadd = {...this.form.getFieldsValue()}
-          console.log(newadd)
           this.$post('/check/menus/addOrUpdate', newadd).then(() => {
             this.reset()
             this.confirmLoading = false

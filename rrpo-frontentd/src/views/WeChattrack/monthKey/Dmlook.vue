@@ -3,10 +3,9 @@
   :visible="NoticelookVisiable"
   :width= "1200"
   :footer="null"
-  style="height: 800px; overflow: auto"
   @cancel="() => { onClose() }"
   >
-  <div class="modalShow">
+  <div class="modalShow" style="height: 800px; overflow: auto">
     <div class="lookHeader">
       <h2>来自{{title}}的月度评选材料上报</h2>
       <div class="msegsize">调整字体:
@@ -97,6 +96,10 @@ export default {
       this.createTime = user.date
       this.title = user.deptJc.deptName
       this.createneirong = user.content
+      // 月份
+      this.month = user.month
+      // 单选框状态
+      this.value = user.preStatus
     },
     bingClick (num) {
       var middle = document.querySelector('.middle')
@@ -110,13 +113,19 @@ export default {
       }
     },
     onChange () {
-      console.log(this.value)
+      // 此月份为id
+      this.$post('/wx/month/koran', {month: this.refId, status: this.value}).then(res => {
+      })
     },
     // 操作
     handleSubmit (key) {
       this.$get('/wx/month/appear', {monthId: this.refId, status: key}).then(res => {
-        this.$emit('close')
-        this.$message.success('操作成功')
+        if (res.data.status !== 0) {
+          this.$emit('close')
+          this.$message.success(res.data.message)
+        } else {
+          this.$message.error(res.data.message)
+        }
       })
     }
   }

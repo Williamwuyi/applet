@@ -1,5 +1,5 @@
 <template>
-  <a-card :bordered="false" class="card-area">
+  <div style="width: 100%">
     <div :class="advanced ? 'search' : null">
       <!-- 搜索区域 -->
       <a-form layout="horizontal">
@@ -8,8 +8,8 @@
             <a-col :md="12" :sm="24" >
               <a-form-item
                 label="名称"
-                :labelCol="{span: 5}"
-                :wrapperCol="{span: 18, offset: 1}">
+                :labelCol="{span: 1}"
+                :wrapperCol="{span: 18, offset: 2}">
                 <a-input v-model="queryParams.deptName"/>
               </a-form-item>
             </a-col>
@@ -31,8 +31,8 @@
     </div>
     <div>
       <div class="operator">
-        <a-button v-hasPermission="'dept:add'" type="primary" ghost @click="add">新增</a-button>
-        <a-button v-hasPermission="'dept:delete'" @click="batchDelete">删除</a-button>
+        <a-button v-hasPermission="'dept:add'" type="primary"  @click="add">新增</a-button>
+        <a-button class="btnHoven" style="background-color: #FF4D4F; color: white; border-radius: 4px!important;" v-hasPermission="'dept:delete'" @click="batchDelete">删除</a-button>
         <a-dropdown v-hasPermission="'dept:export'">
           <a-menu slot="overlay">
             <a-menu-item key="export-data" @click="exportExcel">导出Excel</a-menu-item>
@@ -47,11 +47,13 @@
                :dataSource="dataSource"
                :pagination="pagination"
                :loading="loading"
-               :scroll="{ x: 900 }"
+               :scroll="{ x: 900}"
+               :rowKey="(record)=> record.deptId"
+               @expand="expand"
                :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
                @change="handleTableChange">
         <template slot="operation" slot-scope="text, record">
-          <a-icon v-hasPermission="'dept:update'" type="setting" theme="twoTone" twoToneColor="#4a9ff5" @click="edit(record)" title="修改"></a-icon>
+          <a v-hasPermission="'dept:update'" style="color: #4a9ff5" @click="edit(record)" title="修改">修改</a>
           <a-badge v-hasNoPermission="'dept:update'" status="warning" text="无权限"></a-badge>
         </template>
       </a-table>
@@ -69,7 +71,7 @@
       @close="handleDeptEditClose"
       :deptEditVisiable="deptEditVisiable">
     </dept-edit>
-  </a-card>
+  </div>
 </template>
 
 <script>
@@ -82,6 +84,7 @@ export default {
   components: {DeptAdd, DeptEdit, RangeDate},
   data () {
     return {
+      arr: [],
       advanced: false,
       dataSource: [],
       selectedRowKeys: [],
@@ -92,6 +95,9 @@ export default {
         hideOnSinglePage: true,
         indentSize: 100
       },
+      children: [],
+      grandson: [],
+      grandsonSon: [],
       loading: false,
       deptAddVisiable: false,
       deptEditVisiable: false
@@ -103,10 +109,10 @@ export default {
       sortedInfo = sortedInfo || {}
       return [{
         title: '名称',
-        dataIndex: 'text'
+        dataIndex: 'deptName'
       }, {
         title: '排序',
-        dataIndex: 'order'
+        dataIndex: 'orderNum'
       }, {
         title: '创建时间',
         dataIndex: 'createTime',
@@ -127,8 +133,10 @@ export default {
     }
   },
   mounted () {
-    this.fetch()
+    this.fetch({deptId: -1})
   },
+  // 引用页面刷新方法
+  inject: [ 'reload' ],
   methods: {
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
@@ -139,7 +147,7 @@ export default {
     handleDeptAddSuccess () {
       this.deptAddVisiable = false
       this.$message.success('新增部门成功')
-      this.fetch()
+      this.reload()
     },
     add () {
       this.deptAddVisiable = true
@@ -150,7 +158,7 @@ export default {
     handleDeptEditSuccess () {
       this.deptEditVisiable = false
       this.$message.success('修改部门成功')
-      this.fetch()
+      this.reload()
     },
     edit (record) {
       this.deptEditVisiable = true
@@ -176,7 +184,7 @@ export default {
           that.$delete('dept/' + that.selectedRowKeys.join(',')).then(() => {
             that.$message.success('删除成功')
             that.selectedRowKeys = []
-            that.fetch()
+            that.reload()
           })
         },
         onCancel () {
@@ -200,18 +208,23 @@ export default {
     },
     search () {
       let {sortedInfo} = this
-      console.log(this)
       let sortField, sortOrder
       // 获取当前列的排序和列的过滤规则
       if (sortedInfo) {
         sortField = sortedInfo.field
         sortOrder = sortedInfo.order
       }
-      this.fetch({
-        sortField: sortField,
-        sortOrder: sortOrder,
-        ...this.queryParams
-      })
+      // console.log(sortedInfo)
+      // console.log(JSON.stringify(this.queryParams) === '{}')
+      if (sortedInfo === null && JSON.stringify(this.queryParams) === '{}') {
+        this.fetch({deptId: -1})
+      } else {
+        this.fetch({
+          sortField: sortField,
+          sortOrder: sortOrder,
+          ...this.queryParams
+        })
+      }
     },
     reset () {
       // 取消选中
@@ -222,7 +235,7 @@ export default {
       this.queryParams = {}
       // 清空时间选择
       this.$refs.createTime.reset()
-      this.fetch()
+      this.reload()
     },
     handleTableChange (pagination, filters, sorter) {
       this.sortedInfo = sorter
@@ -234,14 +247,46 @@ export default {
       })
     },
     fetch (params = {}) {
-      this.loading = true
-      this.$get('dept', {
+      // this.loading = true
+      this.$get('/dept/list', {
         ...params
       }).then((r) => {
-        let data = r.data
+        this.arr = r.data
+        this.dataSource = this.arr
         this.loading = false
-        this.dataSource = data.rows.children
       })
+    },
+    expand (expanded, record) {
+      if (expanded) {
+        this.$get('/dept/list', {deptId: record.deptId}).then((r) => {
+          if (r.data.length > 0) {
+            if (record.rank === 0) {
+              this.arr.forEach(t => {
+                if (record.deptId === t.deptId) {
+                  t.children = r.data
+                  this.children = r.data
+                }
+              })
+            } else if (record.rank === 1 || record.rank === 4) {
+              this.children.forEach(t => {
+                if (record.deptId === t.deptId) {
+                  t.children = r.data
+                  this.grandson = r.data
+                }
+              })
+            } else if (record.rank === 2) {
+              this.grandson.forEach(t => {
+                if (record.deptId === t.deptId) {
+                  t.children = r.data
+                  this.grandsonSon = r.data
+                }
+              })
+            }
+          } else {
+            this.$message.error('没有下一级')
+          }
+        })
+      }
     }
   }
 }
@@ -249,4 +294,7 @@ export default {
 
 <style lang="less" scoped>
 @import "../../../../static/less/Common";
+.btnHoven:hover{
+  border-color: #FF4D4F;;
+}
 </style>

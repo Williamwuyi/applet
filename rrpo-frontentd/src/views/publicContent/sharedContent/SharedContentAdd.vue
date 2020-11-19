@@ -37,7 +37,6 @@ export default {
   },
   methods: {
     create () {
-      console.log()
       let newShare = {
         ...this.form.getFieldsValue(),
         parentId: this.parentId,
@@ -57,7 +56,6 @@ export default {
     },
     Onclose () {
       // 清空表单
-      console.log(this.abc)
       this.form.resetFields()
       this.$emit('cancel')
     }

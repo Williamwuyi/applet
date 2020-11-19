@@ -1,5 +1,5 @@
 <template>
-  <a-card :bordered="false" class="card-area">
+  <div style="width: 100%">
     <div :class="advanced ? 'search' : null">
       <!-- 搜索区域 -->
       <a-form layout="horizontal">
@@ -8,7 +8,7 @@
             <a-col :md="12" :sm="24" >
               <a-form-item
                 label="角色"
-                :labelCol="{span: 5}"
+                :labelCol="{span: 2}"
                 :wrapperCol="{span: 18, offset: 1}">
                 <a-input v-model="queryParams.roleName"/>
               </a-form-item>
@@ -31,8 +31,8 @@
     </div>
     <div>
       <div class="operator">
-        <a-button v-hasPermission="'role:add'" ghost type="primary" @click="add">新增</a-button>
-        <a-button v-hasPermission="'role:delete'" @click="batchDelete">删除</a-button>
+        <a-button v-hasPermission="'role:add'"  type="primary" @click="add">新增</a-button>
+        <a-button class="btnHoven" style="background-color: #FF4D4F; color: white; border-radius: 4px!important;" v-hasPermission="'role:delete'" @click="batchDelete">删除</a-button>
         <a-dropdown v-hasPermission="'role:export'">
           <a-menu slot="overlay">
             <a-menu-item key="export-data" @click="exprotExccel">导出Excel</a-menu-item>
@@ -60,9 +60,9 @@
           </a-popover>
         </template>
         <template slot="operation" slot-scope="text, record">
-          <a-icon v-hasPermission="'role:update'" type="setting" theme="twoTone" twoToneColor="#4a9ff5" @click="edit(record)" title="修改角色"></a-icon>
+          <a v-hasPermission="'role:update'"  style="color: #4a9ff5" @click="edit(record)" title="修改角色">修改</a>
           &nbsp;
-          <a-icon type="eye" theme="twoTone" twoToneColor="#42b983" @click="view(record)" title="查看"></a-icon>
+          <a  style="color: #42b983"  @click="view(record)" title="查看">查看</a>
         </template>
       </a-table>
       <!-- 角色信息查看 -->
@@ -86,7 +86,7 @@
         :roleEditVisiable="roleEdit.visiable">
       </role-edit>
     </div>
-  </a-card>
+  </div>
 </template>
 
 <script>
@@ -314,4 +314,7 @@ export default {
 
 <style lang="less" scoped>
 @import "../../../../static/less/Common";
+.btnHoven:hover{
+  border-color: #FF4D4F;;
+}
 </style>

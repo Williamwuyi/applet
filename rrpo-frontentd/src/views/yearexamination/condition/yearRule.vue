@@ -1,8 +1,8 @@
 <template>
-  <a-card :bordered="false" class="card-area">
+  <div style="width: 100%">
     <!-- 表格区域 -->
     <div style="min-height: 500px">
-      <a-button class="editable-add-btn" @click="handledd">
+      <a-button type="primary" style="margin-bottom: 5px" @click="handledd">
         添加
       </a-button>
 <!--   列表   -->
@@ -15,19 +15,47 @@
                 src="static/img/tielu.jpg"
               />
             </a-card-meta>
-            <hr style="margin: 15px 0;border:none;border-top:1px dashed #ccc;"/>
-            <div style="text-align: center" class="htb">
-              <div style="float: left;height: 70px" v-for="wach in item.list" :key="wach.name">
-                <p>{{wach.name}}</p>
-                <p style=""><span style="font-size: 22px">{{wach.count}} </span> 条</p>
-              </div>
-            </div>
-            <template slot="actions" class="ant-card-actions" style="margin-top: -10px">
-              <a-icon  type="setting" theme="twoTone"  twoToneColor="#4a9ff5"  @click="handleAdd(item)"  title="绑定或修改"></a-icon>
-              <a-icon type="upload" @click="clickDr(item.yearId)" style="color: #52c41a" title="导入"/>
-              <a-icon type="eye"  @click="cardClick(item)" style="color: #52c41a" title="查看详细"/>
-              <a-icon  type="delete"    @click="handleDliele(item)" style="margin:0 5px; color: red"   title="删除"></a-icon>
-            </template>
+           <div style="min-height: 86px">
+             <hr style="margin: 15px 0;border:none;border-top:1px dashed #ccc;"/>
+             <div style="text-align: center" class="htb">
+               <div style="float: left;height: 70px" v-for="wach in item.list" :key="wach.name">
+                 <p>{{wach.name}}</p>
+                 <p style=""><span style="font-size: 22px">{{wach.count}} </span> 条</p>
+               </div>
+             </div>
+           </div>
+             <template slot="actions" class="ant-card-actions" style="margin-top: -10px">
+               <a-tooltip placement="top">
+                 <template slot="title">
+                   <span>绑定或修改</span>
+                 </template>
+                 <a-icon  type="setting" theme="twoTone"  twoToneColor="#4a9ff5"  @click="handleAdd(item)" ></a-icon>
+               </a-tooltip>
+               <a-tooltip placement="top">
+                 <template slot="title">
+                   <span>导入</span>
+                 </template>
+                 <a-icon type="upload" @click="clickDr(item.yearId)" style="color: #CD853F" />
+               </a-tooltip>
+               <a-tooltip placement="top">
+                 <template slot="title">
+                   <span>导出模板</span>
+                 </template>
+                 <a-icon type="download" @click="clickEr(item.yearId)" style="color: #CDAD00"/>
+               </a-tooltip>
+               <a-tooltip placement="top">
+                 <template slot="title">
+                   <span>查看详细</span>
+                 </template>
+                 <a-icon type="eye"  @click="cardClick(item)" style="color: #52c41a" />
+               </a-tooltip>
+               <a-tooltip placement="top">
+                 <template slot="title">
+                   <span>删除</span>
+                 </template>
+                 <a-icon  type="delete"    @click="handleDliele(item)" style="margin:0 5px; color: red" ></a-icon>
+               </a-tooltip>
+             </template>
           </a-card>
         </a-list-item>
       </a-list>
@@ -59,7 +87,7 @@
       @check="chooseCreat"
       ref="Dr"
     />
-  </a-card>
+  </div>
 </template>
 <script>
 import moban from './moban'
@@ -96,7 +124,6 @@ export default {
       this.loading = true
       this.$get('/check/year/list').then(res => {
         // this.dataSource = res.data.data
-        console.log(res)
         this.data = res.data.data
         this.loading = false
       })
@@ -112,7 +139,7 @@ export default {
     handleDliele (item) {
       let that = this
       that.$confirm({
-        title: `是否删除${item.yearDate}年度考核，一经删除永远不会恢复?`,
+        title: `是否删除“${item.yearDate}”年度考核，一经删除该年的所有考核成绩都会被删除?`,
         centered: true,
         onOk () {
           that.$delete('/check/year/deleteByLists/' + item.yearId).then(() => {
@@ -163,6 +190,10 @@ export default {
     hanleeditclose () {
       this.yearRulelookVisible = false
       this.fach()
+    },
+    // 导出模板
+    clickEr (record) {
+      this.$export('/check/menus-year/importTemplate', {yearId: record})
     },
     // 执行了导入操作
     clickDr (res) {
@@ -231,5 +262,8 @@ export default {
   }
   .htb div {
     flex: 1;
+  }
+  .ant-card-body {
+    min-height: 175px;
   }
 </style>

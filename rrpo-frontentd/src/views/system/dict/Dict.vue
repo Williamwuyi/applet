@@ -1,5 +1,5 @@
 <template>
-  <a-card :bordered="false" class="card-area">
+  <div style="width: 100%">
     <div :class="advanced ? 'search' : null">
       <a-form layout="horizontal">
         <div :class="advanced ? null: 'fold'">
@@ -7,8 +7,8 @@
             <a-col :md="8" :sm="24" >
               <a-form-item
                 label="键"
-                :labelCol="{span: 5}"
-                :wrapperCol="{span: 18, offset: 1}">
+                :labelCol="{span: 1}"
+                :wrapperCol="{span: 18, offset: 3}">
                 <a-input v-model="queryParams.keyy"/>
               </a-form-item>
             </a-col>
@@ -33,8 +33,8 @@
             <a-col :md="8" :sm="24" >
               <a-form-item
                 label="字段"
-                :labelCol="{span: 5}"
-                :wrapperCol="{span: 18, offset: 1}">
+                :labelCol="{span: 2}"
+                :wrapperCol="{span: 18, offset: 2}">
                 <a-input v-model="queryParams.fieldName" />
               </a-form-item>
             </a-col>
@@ -52,8 +52,8 @@
     </div>
     <div>
       <div class="operator">
-        <a-button v-hasPermission="'dict:add'" type="primary" ghost @click="add">新增</a-button>
-        <a-button v-hasPermission="'dict:delete'" @click="batchDelete">删除</a-button>
+        <a-button v-hasPermission="'dict:add'" type="primary"  @click="add">新增</a-button>
+        <a-button v-hasPermission="'dict:delete'" class="btnHoven" style="background-color: #FF4D4F; color: white; border-radius: 4px!important;" @click="batchDelete">删除</a-button>
         <a-dropdown v-hasPermission="'dict:export'">
           <a-menu slot="overlay">
             <a-menu-item key="export-data" @click="exportExcel">导出Excel</a-menu-item>
@@ -81,7 +81,7 @@
           </a-popover>
         </template>
         <template slot="operation" slot-scope="text, record">
-          <a-icon v-hasPermission="'dict:update'" type="setting" theme="twoTone" twoToneColor="#4a9ff5" @click="edit(record)" title="修改字典"></a-icon>
+          <a v-hasPermission="'dict:update'" style="color: #4a9ff5"  @click="edit(record)" title="修改字典">修改</a>
           <a-badge v-hasNoPermission="'dict:update'" status="warning" text="无权限"></a-badge>
         </template>
       </a-table>
@@ -99,7 +99,7 @@
       @success="handleDictEditSuccess"
       :dictEditVisiable="dictEditVisiable">
     </dict-edit>
-  </a-card>
+  </div>
 </template>
 
 <script>
@@ -274,4 +274,7 @@ export default {
 
 <style lang="less" scoped>
 @import "../../../../static/less/Common";
+.btnHoven:hover{
+  border-color: #FF4D4F;;
+}
 </style>

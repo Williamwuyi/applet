@@ -33,14 +33,16 @@
 <!--  </div>-->
       <!--帮助文档-->
       <div style="float:right; margin-top:2px; font-size: 24px;">
-        <a href="../../../static/file/1.html" target="_blank"><a-icon style="font-size:22px;" type="question-circle" title="帮助文档"/></a></div>
+        <a v-if="loading"><a-icon style="font-size:22px;" @click="download" type="question-circle" title="帮助文档"/></a>
+        <a-spin v-if="!loading" :indicator="indicator" />
+      </div>
     </div>
 <!-- 查看 -->
-<noticelook
-  :NoticelookVisiable="NoticelookVisiable"
-  @close="hanleNoticelookclose"
-  ref="nolook"
-/>
+<!--<noticelook-->
+<!--  :NoticelookVisiable="NoticelookVisiable"-->
+<!--  @close="hanleNoticelookclose"-->
+<!--  ref="nolook"-->
+<!--/>-->
   </a-layout-header>
 </template>
 
@@ -48,14 +50,19 @@
 import HeaderAvatar from './HeaderAvatar'
 import IMenu from '@/components/menu/menu'
 import { mapState } from 'vuex'
-import Noticelook from './Noticelook'
+// import Noticelook from './Noticelook'
+import axios from 'axios'
+import store from '../../store'
+import {notification} from 'ant-design-vue'
 
 export default {
   name: 'GlobalHeader',
-  components: {IMenu, HeaderAvatar, Noticelook},
+  components: {IMenu, HeaderAvatar},
   props: ['collapsed', 'menuData'],
   data () {
     return {
+      loading: true,
+      indicator: '<a-icon type="loading" style="font-size: 24px" spin />',
       NoticelookVisiable: false,
       count: 1,
       list: []
@@ -109,6 +116,55 @@ export default {
     // 查看
     hanleNoticelookclose () {
       this.NoticelookVisiable = false
+    },
+    // 文件下载
+    download () {
+      this.loading = false
+      let record = {
+        file: {
+          fileId: '37ad0059bcdf09e0367aa9de3b1b3856',
+          oldName: '湖南铁护办系统平台使用手册.pdf'
+        }
+      }
+      axios({
+        method: 'post',
+        url: this.$constURL + 'file/downloadFile',
+        headers: {
+          'Authentication': store.state.account.token
+        },
+        params: {
+          fileId: record.file.fileId
+        },
+        responseType: 'blob'
+      }).then(res => {
+        this.loading = true
+        console.log(res)
+        const content = res.data
+        const blob = new Blob([content])
+        if ('download' in document.createElement('a')) {
+          const link = document.createElement('a')
+          link.download = record.file.oldName
+          link.style.display = 'none'
+          link.href = URL.createObjectURL(blob)
+          document.body.appendChild(link)
+          link.click()
+          URL.revokeObjectURL(link.href)
+          document.body.removeChild(link)
+        } else {
+          navigator.msSaveBlob(blob, record.file.oldName)
+        }
+        notification.success({
+          message: '系统提示',
+          description: '文件下载成功！',
+          duration: 4
+        })
+      }).catch(() => {
+        notification.error({
+          message: '系统提示',
+          description: '文件传输失败！',
+          duration: 4
+        })
+      })
     }
   }
 }

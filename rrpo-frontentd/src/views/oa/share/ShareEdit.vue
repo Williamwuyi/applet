@@ -7,7 +7,7 @@
     :closable="false"
     @close="onClose"
     :visible="NoticeEditVisiable"
-    style="height: calc(100% - 55px);overflow: auto;padding-bottom: 53px;">
+    >
     <a-form :form="form">
       <a-form-item label='标题' v-bind="formItemLayout">
         <a-input
@@ -31,7 +31,7 @@
       </a-form-item>
     </a-form>
     <div class="drawer-bootom-button">
-      <a-popconfirm title="确定放弃修改？" @confirm="onClose" okText="确定" cancelText="取消">
+      <a-popconfirm title="是否确认取消？" @confirm="onClose" okText="确定" cancelText="取消">
         <a-button style="margin-right: .8rem">取消</a-button>
       </a-popconfirm>
       <a-button @click="handleSubmit" type="primary" :loading="loading">提交</a-button>

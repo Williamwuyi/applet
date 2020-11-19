@@ -1,193 +1,157 @@
 <template>
-  <div :class="[multipage === true ? 'multi-page':'single-page', 'not-menu-page', 'home-page']">
+  <div :class="[multipage === true ? 'multi-page':'single-page', 'home-page']" style="height: 100%">
+    <a-row :gutter="7" class="head-info">
+      <a-card class="head-info-card" style="border-radius: 10px;">
+        <a-col :span="12">
+          <div class="head-info-avatar">
+            <img alt="头像" :src="avatar">
+          </div>
+          <div class="head-info-count">
+            <div class="head-info-welcome">
+              {{welcomeMessage}}
+            </div>
+            <div class="head-info-desc">
+              <p>{{user.deptName ? user.deptName : '暂无部门'}} | {{user.roleName ? user.roleName : '暂无角色'}}</p>
+            </div>
+            <div class="head-info-time">上次登录时间：{{user.lastLoginTime ? user.lastLoginTime : '第一次访问系统'}}</div>
+          </div>
+        </a-col>
+        <a-col :span="12">
+          <div>
+            <a-row class="more-info">
+              <a-col :span="4"></a-col>
+              <a-col :span="4"></a-col>
+              <a-col :span="4"></a-col>
+              <a-col :span="4">
+                <head-info title="今日IP" :content="todayIp" :center="false" :bordered="false"/>
+              </a-col>
+              <a-col :span="4">
+                <head-info title="今日访问" :content="todayVisitCount" :center="false" :bordered="false"/>
+              </a-col>
+              <a-col :span="4">
+                <head-info title="总访问量" :content="totalVisitCount" :center="false" />
+              </a-col>
+            </a-row>
+          </div>
+        </a-col>
+      </a-card>
+    </a-row>
     <a-row :gutter="8" class="count-info">
-      <a-col :span="16">
-<!--        -->
-        <a-card class="visit-count-wrapper">
-          <div class="head_info">
-            <div class="head-info-avatar">
-              <img alt="头像" :src="avatar" style="width: 5rem;border-radius: 50px;margin-right: 20px">
-            </div>
-            <div class="head-info-count">
-              <div class="head-info-welcome">
-                {{welcomeMessage}}
-              </div>
-              <div class="head-info-desc">
-                <p>{{user.deptName ? user.deptName : '暂无部门'}} | {{user.roleName ? user.roleName : '暂无角色'}}</p>
-              </div>
-                <div class="head-info-time">上次登录时间：{{user.lastLoginTime ? user.lastLoginTime : '第一次访问系统'}}</div>
-            </div>
-          </div>
-          <div style="margin-top: 5px">
-            <a-card class="visit-count">
-            <apexchart ref="count" type=bar height=300 :options="chartOptions" :series="series" />
-            </a-card>
-          </div>
-        </a-card>
-      </a-col>
-<!--    业务提醒  -->
-      <a-col :span="8">
-        <a-card class="visit-count-wrapper">
-          <div style="border-bottom:1px solid #f0f2f5;font-size: 15px;">
-            <b style="color: orangered"><a-icon type="sound" style="margin-right: 10px"/>业务提醒</b>
+      <a-col :span="12" class="visit-count-wrapper">
+        <a-card class="visit-count-wrapper" style="height: 365px;border-radius: 10px;">
+          <div style="font-size: 17px;">
+            <a-row>
+              <a-col :span="5" style="width: 125px"><b style="color: orangered;" title="未读消息"><a-icon type="sound" style="margin-right: 10px;margin-bottom: 10px"/>待办事项 >></b></a-col>
+              <a-col :span="16" style="margin-top: 3px;width: 500px;white-space: nowrap;overflow: hidden; text-overflow:ellipsis;">
+<!--                滚动文字 -->
+                <a-carousel autoplay value="left">
+                  <span style="font-style:oblique" v-for="(n,index) in rollData" :key="index" :value="n.id"><a @click="lookStatus(n.id)" style="color: orangered">{{n.title}}</a></span>
+                </a-carousel>
+              </a-col>
+            </a-row>
           </div>
           <div>
-            <b style="color: blueviolet"><a-icon type="mail" style="margin-right: 10px;margin-top: 10px"/>信息互递</b>
-            <div style="margin-top: 5px;background-color: #f2f2f2;height: 102px;">
-              <ul v-for="(site,index) in xxhdData" :key="index" style="padding: 0;margin-bottom: 0;">
-                <li style="list-style-type:none;border-bottom: 1px dashed #ccc;padding: 2px 10px">
-                  <span style="width: 300px;white-space: nowrap;overflow: hidden;text-overflow:ellipsis; display: inline-block">{{site.title}}</span>
-                  <span style="float: right">{{site.releaseTime}}</span></li>
+            <div style="background-color: #ECF8FF;box-shadow: rgba(0, 0, 0, 0.3) 1px 0px 2px;border-radius: 5px">
+              <b style="color: blueviolet" title="未读消息"><a-icon type="mail" style="margin:8px 10px;"/>信息互递</b>
+              <a @click="moreInfo" style="float: right;margin:5px 5px;">更多信息 >></a>
+            </div>
+            <div style="margin-top: 5px;height: 260px;overflow: auto;">
+              <a-empty v-if="xxhdData.length === 0" style="margin-top: 40px"/>
+              <ul v-for="(n,index) in xxhdData" :key="index" :value="n.id" style="padding: 0;margin-bottom: 0;">
+                <li class="bottom_li">
+                  <span style="width: 350px;white-space: nowrap;overflow: hidden;text-overflow:ellipsis; display: inline-block">
+                    <a @click="lookStatus(n.id)">{{n.title}}</a>
+                  </span>
+                  <span class="bottom_time">{{n.releaseTime}}</span></li>
               </ul>
             </div>
-<!---->
-            <b style="color: darkorange"><a-icon type="hdd" style="margin-right: 10px;margin-top: 10px"/>一事一奖</b>
-            <div style="margin-top: 5px;background-color: #f2f2f2;height: 102px;">
-              <ul v-for="(site,index) in xxhdData" :key="index" style="padding: 0;margin-bottom: 0;">
-                <li style="list-style-type:none;border-bottom: 1px dashed #ccc;padding: 2px 10px">
-                  <span style="width: 300px;white-space: nowrap;overflow: hidden;text-overflow:ellipsis; display: inline-block">{{site.title}}</span>
-                  <span style="float: right">{{site.releaseTime}}</span></li>
-              </ul>
-            </div>
-<!--          -->
-          <b style="color: lightgreen"><a-icon type="read" style="margin-right: 10px;margin-top: 10px"/>其他</b>
-          <div style="margin-top: 5px;background-color: #f2f2f2;height: 102px;">
-            <ul v-for="(site,index) in xxhdData" :key="index" style="padding: 0;margin-bottom: 0;">
-              <li style="list-style-type:none;border-bottom: 1px dashed #ccc;padding: 2px 10px">
-                <span style="width: 300px;white-space: nowrap;overflow: hidden;text-overflow:ellipsis; display: inline-block">{{site.title}}</span>
-                <span style="float: right">{{site.releaseTime}}</span></li>
-            </ul>
-          </div>
-<!--              -->
           </div>
         </a-card>
       </a-col>
-<!--      -->
+      <a-col :span="12" class="project-wrapper">
+        <a-card class="visit-count" style="border-radius: 10px;">
+          <apexchart ref="count" type=bar height=300 :options="chartOptions" :series="series" />
+        </a-card>
+      </a-col>
     </a-row>
 <!--    -->
-    <a-row :gutter="8" class="count-info" style="margin-top: 7px">
+    <a-row :gutter="8" class="count-info" style="margin: 7px 0;">
       <a-col :span="24" class="visit-count-wrapper">
-        <a-card class="visit-count">
-          <div class="mainbottom">
-            <div class="divider">
-              <a-card hoverable>
-                <img
-                  slot="cover"
-                  alt="example"
-                  src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-                />
-                <template slot="actions" class="ant-card-actions">
-                  <a-icon key="setting" type="setting" />
-                  <a-icon key="edit" type="edit" />
-                  <a-icon key="ellipsis" type="ellipsis" />
-                </template>
-                <a-card-meta title="Card title" description="This is the description">
-                  <a-avatar
-                    slot="avatar"
-                    src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-                  />
-                </a-card-meta>
-              </a-card>
+        <a-row style="width: 100%;">
+          <a-col span="8">
+            <a-card title="护路简报" style="border-radius: 10px;height: 360px">
+              <a slot="extra" @click="hljbInfo">更多信息>></a>
+              <a-empty v-if="hljbData.length === 0" style="margin-top: 10px"/>
+              <div style="height: 260px;overflow: auto;">
+                <ul v-for="(n,index) in hljbData" :key="index" :value="n.id" style="padding: 0;margin-bottom: 0;text-align: left;">
+                  <li class="bottom_li">
+                    <span class="bottom_tilte"><a @click="lookRoad(n.id)">{{n.title}}</a></span>
+                    <span class="bottom_time">{{n.releaseTime}}</span>
+                  </li>
+                </ul>
+              </div>
+            </a-card>
+          </a-col>
+          <a-col span="8">
+<!--            style="border-radius: 10px;margin: 0 10px;border: 1px solid #c3c3c3;height: 230px;display: flex;flex-wrap: nowrap;-->
+          <a-card title="一事一奖" style="border-radius: 10px;height: 360px">
+            <a slot="extra" @click="ysyjInfo">更多信息>></a>
+            <div style="height: 260px;overflow: auto;">
+              <a-empty v-if="ysyjData.length === 0" style="margin-top: 10px"/>
+              <ul v-for="(n,index) in ysyjData" :key="index" :value="n.id" style="padding: 0;margin-bottom: 0;text-align: left;">
+                <li class="bottom_li">
+                  <span class="bottom_tilte"><a @click="lookReward(n.id)">{{n.content}}</a></span>
+                  <span class="bottom_time">{{n.releaseTime}}</span>
+                </li>
+              </ul>
             </div>
-            <div class="divider">
-              <a-card hoverable>
-                <img
-                  slot="cover"
-                  alt="example"
-                  src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-                />
-                <template slot="actions" class="ant-card-actions">
-                  <a-icon key="setting" type="setting" />
-                  <a-icon key="edit" type="edit" />
-                  <a-icon key="ellipsis" type="ellipsis" />
-                </template>
-                <a-card-meta title="Card title" description="This is the description">
-                  <a-avatar
-                    slot="avatar"
-                    src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-                  />
-                </a-card-meta>
-              </a-card>
-            </div>
-            <div class="divider">
-              <a-card hoverable>
-                <img
-                  slot="cover"
-                  alt="example"
-                  src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-                />
-                <template slot="actions" class="ant-card-actions">
-                  <a-icon key="setting" type="setting" />
-                  <a-icon key="edit" type="edit" />
-                  <a-icon key="ellipsis" type="ellipsis" />
-                </template>
-                <a-card-meta title="Card title" description="This is the description">
-                  <a-avatar
-                    slot="avatar"
-                    src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-                  />
-                </a-card-meta>
-              </a-card>
-            </div>
-            <div class="divider">
-              <a-card hoverable>
-                <img
-                  slot="cover"
-                  alt="example"
-                  src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-                />
-                <template slot="actions" class="ant-card-actions">
-                  <a-icon key="setting" type="setting" />
-                  <a-icon key="edit" type="edit" />
-                  <a-icon key="ellipsis" type="ellipsis" />
-                </template>
-                <a-card-meta title="Card title" description="This is the description">
-                  <a-avatar
-                    slot="avatar"
-                    src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-                  />
-                </a-card-meta>
-              </a-card>
-            </div>
-            <div class="divider">
-              <a-card hoverable>
-                <img
-                  slot="cover"
-                  alt="example"
-                  src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-                />
-                <template slot="actions" class="ant-card-actions">
-                  <a-icon key="setting" type="setting" />
-                  <a-icon key="edit" type="edit" />
-                  <a-icon key="ellipsis" type="ellipsis" />
-                </template>
-                <a-card-meta title="Card title" description="This is the description">
-                  <a-avatar
-                    slot="avatar"
-                    src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-                  />
-                </a-card-meta>
-              </a-card>
-            </div>
-          </div>
-        </a-card>
+          </a-card>
+          </a-col>
+          <a-col span="8">
+            <a-card title="通知公告" style="border-radius: 10px;height: 360px">
+              <a slot="extra" @click="tzggInfo">更多信息>></a>
+              <div style="height: 260px;overflow: auto;">
+                <a-empty v-if="tzggData.length === 0" style="margin-top: 10px" />
+                <ul v-for="(n,index) in tzggData" :key="index" :value="n.id" style="padding: 0;margin-bottom: 0;text-align: left;">
+                  <li class="bottom_li">
+                    <span class="bottom_tilte"><a @click="lookNotice(n.id)">{{n.title}}</a></span>
+                    <span class="bottom_time">{{n.releaseTime}}</span>
+                  </li>
+                </ul>
+              </div>
+            </a-card>
+          </a-col>
+
+        </a-row>
       </a-col>
     </a-row>
-    <!--    -->
+    <ln-box ref="oldInBox" hidden />
+    <in-shield-road ref="oldRoad" hidden />
+    <notice ref="oldNotice" hidden/>
+    <reward-in ref="oldReward" hidden/>
   </div>
 </template>
 <script>
 import HeadInfo from '@/views/common/HeadInfo'
+import LnBox from './oa/messageMutual/lnBox/LnBox'
 import {mapState} from 'vuex'
 import moment from 'moment'
+import InShieldRoad from './briefReport/inShieldRoad/InShieldRoad'
+import Notice from './notice/produce/Notice'
+import rewardIn from './oa/reward/rewardIn'
 moment.locale('zh-cn')
 
 export default {
   name: 'HomePage',
-  components: {HeadInfo},
+  components: {InShieldRoad, HeadInfo, LnBox, Notice, rewardIn},
   data () {
     return {
       series: [],
+      rollData: [], // 滚动数据
+      xxhdData: [], // 信息互递数据
+      ysyjData: [], // 一事一奖数据
+      tzggData: [], // 通知公告数据
+      hljbData: [], // 护路简报数据
       chartOptions: {
         chart: {
           toolbar: {
@@ -226,9 +190,6 @@ export default {
       todayIp: '',
       todayVisitCount: '',
       totalVisitCount: '',
-      xxhdData: [],
-      ysyjData: [],
-      hljbData: [],
       userRole: '',
       userDept: '',
       lastLoginTime: '',
@@ -242,24 +203,6 @@ export default {
     }),
     avatar () {
       return `static/avatar/${this.user.avatar}`
-    },
-    columns () {
-      return [{
-        title: '标题',
-        dataIndex: 'title',
-        width: '30%',
-        scopedSlots: { customRender: 'name' }
-      }, {
-        title: '发布时间',
-        dataIndex: 'createTime'
-      }, {
-        title: '当前状态',
-        dataIndex: 'state',
-        scopedSlots: { customRender: 'status' }
-      }, {
-        title: '发布人',
-        dataIndex: 'createUser'
-      }]
     }
   },
   methods: {
@@ -267,39 +210,131 @@ export default {
       const date = new Date()
       const hour = date.getHours()
       let time = hour < 6 ? '早上好' : (hour <= 11 ? '上午好' : (hour <= 13 ? '中午好' : (hour <= 18 ? '下午好' : '晚上好')))
-      let welcomeArr = [
-        '喝杯咖啡休息下吧☕',
-        '要不要和朋友打局LOL',
-        '要不要和朋友打局王者荣耀',
-        '几天没见又更好看了呢😍',
-        '今天又写了几个Bug🐞呢',
-        '今天在群里吹水了吗',
-        '今天吃了什么好吃的呢',
-        '今天您微笑了吗😊',
-        '今天帮助别人解决问题了吗',
-        '准备吃些什么呢',
-        '周末要不要去看电影？'
-      ]
-      let index = Math.floor((Math.random() * welcomeArr.length))
-      return `${time}，${this.user.username}，${welcomeArr[index]}`
+      // let welcomeArr = [
+      //   '喝杯咖啡休息下吧☕',
+      //   '要不要和朋友打局LOL',
+      //   '要不要和朋友打局王者荣耀',
+      //   '几天没见又更好看了呢😍',
+      //   '今天又写了几个Bug🐞呢',
+      //   '今天在群里吹水了吗',
+      //   '今天吃了什么好吃的呢',
+      //   '今天您微笑了吗😊',
+      //   '今天帮助别人解决问题了吗',
+      //   '准备吃些什么呢',
+      //   '周末要不要去看电影？'
+      // ]
+      // let index = Math.floor((Math.random() * welcomeArr.length))
+      // return `${time}，${this.user.username}，${welcomeArr[index]}`
+      return `${time}！${this.user.username}`
     },
-    callback (key) {
-      console.log(key)
+    // 信息互递的跳转
+    moreInfo () {
+      this.$router.push('/oa/messageMutual/lnBox')
+    },
+    // 一事一奖的跳转
+    ysyjInfo () {
+      this.$router.push('/oa/reward/rewardOut')
+    },
+    // 护路简报的跳转
+    hljbInfo () {
+      this.$router.push('/briefReport/inShieldRoad')
+    },
+    // 通知公告
+    tzggInfo () {
+      this.$router.push('/notice/collect')
+    },
+    // 获取信息互递的未读信息
+    xxhd () {
+      this.loading = true
+      this.$get('/exchange/inbox').then(res => {
+        let data = res.data.data.rows
+        console.log('信息互递：', data)
+        let xxhd = []
+        for (let key in data) {
+          if (data[key].isRead === 0) {
+            xxhd.push(data[key])
+          }
+        }
+        this.xxhdData = xxhd
+        this.loading = false
+      })
+    },
+    // 获取通知公告信息
+    tzgg () {
+      this.loading = true
+      this.$get('/notice/inbox').then(res => {
+        this.tzggData = res.data.data.rows
+        this.loading = false
+      })
+    },
+    // 获取护路简报信息
+    hljb () {
+      this.loading = true
+      this.$get('/briefing/inbox').then(res => {
+        this.hljbData = res.data.data.rows
+        this.loading = false
+      })
+    },
+    // 获取一事一奖的未读信息
+    ysyj () {
+      this.loading = true
+      this.$get('/prize/inbox').then(res => {
+        let data = res.data.data.rows
+        console.log('一事一奖：', data)
+        let ysyj = []
+        for (let key in data) {
+          if (data[key].status === 3) {
+            ysyj.push(data[key])
+          }
+          if (data[key].status === 2) {
+            ysyj.push(data[key])
+          }
+        }
+        this.ysyjData = ysyj
+        this.loading = false
+      })
+    },
+    // 信息互递文字点击跳转
+    lookStatus (dataId) {
+      console.log('点的id：', dataId)
+      this.$get('/exchange/inbox', {id: dataId}).then(res => {
+        this.$refs.oldInBox.viewLook(res.data.data.rows[0])
+      })
+    },
+    // 护路简报文字点击跳转
+    lookRoad (dataId) {
+      this.$get('/briefing/inbox', {id: dataId}).then(res => {
+        this.$refs.oldRoad.viewLook(res.data.data.rows[0])
+      })
+    },
+    // 通知公告文字点击跳转
+    lookNotice (dataId) {
+      this.$get('/notice/inbox', {id: dataId}).then(res => {
+        this.$refs.oldNotice.look(res.data.data.rows[0])
+      })
+    },
+    // 一事一奖文字点击跳转
+    lookReward (dataId) {
+      this.$get('/prize/inbox', {id: dataId}).then(res => {
+        this.$refs.oldReward.look(res.data.data.rows[0])
+      })
+    },
+    // 有限时回复时间的并滚动的数据
+    rollFun () {
+      this.loading = true
+      this.$get('/exchange/getNotReceive').then(res => {
+        console.log('滚动数据：', res.data.data)
+        this.rollData = res.data.data
+        this.loading = false
+      })
     }
   },
   mounted () {
-    this.$get('/exchange/inbox').then(res => {
-      this.xxhdData = res.data.data.rows
-      this.loading = false
-    })
-    this.$get('/briefing/inbox').then(res => {
-      this.hljbData = res.data.data.rows
-      this.loading = false
-    })
-    this.$get('/prize/inbox').then(res => {
-      this.ysyjData = res.data.data.rows
-      this.loading = false
-    })
+    this.xxhd()
+    this.ysyj()
+    this.tzgg()
+    this.hljb()
+    this.rollFun()
     this.welcomeMessage = this.welcome()
     this.$get(`index/${this.user.username}`).then((r) => {
       let data = r.data.data
@@ -373,6 +408,10 @@ export default {
           display: inline-block;
           float: left;
           margin-right: 1rem;
+          img {
+            width: 5rem;
+            border-radius: 2px;
+          }
         }
         .head-info-count {
           display: inline-block;
@@ -459,36 +498,43 @@ export default {
         }
       }
     }
-  }
-  .head_info{
-    display: flex;
-    flex-wrap: nowrap;
-  }
-  .tableStyle{
-    margin-top: 15px;
-    height:200px;
-    overflow:auto;
-  }
-  .mainbottom {
-    height: 300px;
-    display: flex;
-    flex-wrap: nowrap;
-  }
 
-  .divider {
-    margin: 0 10px;
-    border: 1px solid #c3c3c3;
-    width: 400px;
+    a {
+      color: black;
+    }
+    .mainbottom {
+      height: 230px;
+      display: flex;
+      flex-wrap: nowrap;
+    }
+    .divider {
+      border-radius: 10px;
+      display: flex;
+      flex-wrap: nowrap;
+      margin: 0 10px;
+      border: 1px solid #c3c3c3;
+      width: 500px;
+    }
+    .home-title{
+      width: 100%;
+      text-align: center;
+      margin-top: 10px;
+      margin: 10px 20px
+    }
+    .home-title-p{
+      width: 100%;background-color: #ECF8FF;padding: 8px 0;box-shadow: rgba(0, 0, 0, 0.3) 1px 0px 2px;border-radius: 5px;
+    }
+    .home-title-list{
+      height: 150px;overflow: auto
+    }
+    .bottom_li{
+      list-style-type:none;border-bottom: 1px dashed #ccc;padding: 2px 10px
+    }
+    .bottom_tilte{
+      width: 200px;white-space: nowrap;overflow: hidden;text-overflow:ellipsis; display: inline-block
+    }
+    .bottom_time{
+      float: right;width: 85px;white-space: nowrap;overflow: hidden;text-overflow:ellipsis;
+    }
   }
-  .headerDiv{
-    border-radius: 10px;
-    background-color: antiquewhite;
-    height: 80px;
-    width: 100px;
-    margin-left: 15px;
-    padding-right: 4px;
-    line-height: 80px;
-    text-align: center;
-  }
-
 </style>

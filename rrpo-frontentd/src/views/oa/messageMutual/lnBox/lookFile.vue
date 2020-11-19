@@ -63,7 +63,7 @@ export default {
       this.$emit('close')
     },
     setId (id) {
-      this.$post('file/getAppendixList', {refId: id}).then(res => {
+      this.$post('/file/getAppendixListReply', {refId: id}).then(res => {
         if (res.data.status) {
           this.fileList = res.data.fileList
         }

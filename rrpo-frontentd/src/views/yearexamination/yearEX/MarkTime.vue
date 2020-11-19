@@ -9,11 +9,15 @@
     @ok="() => { create() }"
     style="text-align: center"
   >
-    <a-date-picker v-model="timeValue"   @change="onTimeChange" />
+    <a-date-picker v-model="timeValue"
+                   format="YYYY-MM-DD"
+                   :disabled-date="disabledDate"
+                   @change="onTimeChange" />
   </a-modal>
 </template>
 
 <script>
+import moment from 'moment'
 export default {
   name: 'yearChoose',
   props: ['markIsshow'],
@@ -26,18 +30,23 @@ export default {
     }
   },
   methods: {
+    moment,
     rest () {
       // 清空时间
       this.timeValue = undefined
     },
     create () {
       this.confirmLoading = true
-      console.log(this.dateTime)
       this.$post('/check/num/deadDate', {...this.markTime, date: this.dateTime}).then(res => {
         this.$emit('check', this.yearId)
         this.confirmLoading = false
         this.rest()
       })
+    },
+    // 禁用时间
+    disabledDate (current) {
+      // Can not select days before today and today
+      return current && current < moment().endOf('day')
     },
     getnumId (key) {
       this.markTime.numId = key

@@ -1,13 +1,18 @@
 <template>
   <div style="width: 100%; height: auto">
     <div>
-      <a-cascader  change-on-select
-                   style="width: 105px;"
-                   @change="onChangeTime"
-                   :options="options"
-                   placeholder="未选择"
-                   ref="time"
-      />
+<!--      <a-cascader  change-on-select-->
+<!--                   style="width: 105px;"-->
+<!--                   @change="onChangeTime"-->
+<!--                   :options="options"-->
+<!--                   placeholder="未选择"-->
+<!--                   ref="time"-->
+<!--      />-->
+      <a-select v-model="mr" @change="onChangeTime" style="width: 100px">
+        <a-select-option v-for="(n,index) in options" :key="index" :value="n.yearId">
+          {{n.yearDate}}
+        </a-select-option>
+      </a-select>
     </div>
     <div id="myChart" style="height:600px;width:100%;" ></div>
     <div style="text-align: center; font-size: 22px;">湖南省本年度考核统计表</div>
@@ -15,6 +20,7 @@
 </template>
 
 <script>
+import echarts from 'echarts'
 export default {
   name: 'Organization',
   data () {
@@ -23,12 +29,12 @@ export default {
       jcgz: [],
       count: [],
       gzxg: [],
+      mr: [],
       options: []
     }
   },
   mounted () {
     this.getDate()
-    this.getdept()
   },
   methods: {
     getdept (yearId) {
@@ -48,23 +54,21 @@ export default {
     getDate () {
       this.$get('/check/year/list').then(res => {
         let data = res.data.data
-        this.options = []
-        data.forEach(t => {
-          this.options.push({value: t.yearId, label: t.yearDate})
-        })
+        this.options = data
+        this.getdept(data[0].yearId)
+        this.mr = data[0].yearId
+        // data.forEach(t => {
+        //   this.options.push({value: t.yearId, label: t.yearDate})
+        // })
       })
     },
     // 下拉函数
     onChangeTime (value) {
-      if (value.length > 0) {
-        this.getdept(value[0])
-      } else {
-        this.getdept(value[0])
-      }
+      this.getdept(value)
     },
     drawLine () {
       // 基于准备好的dom，初始化echarts实例
-      let myChart = this.$echarts.init(document.getElementById('myChart'))
+      let myChart = echarts.init(document.getElementById('myChart'))
       // 绘制图表
       myChart.setOption({
         tooltip: {
@@ -138,7 +142,12 @@ export default {
           {
             name: '工作效果',
             type: 'bar',
-            data: this.gzxg
+            data: this.gzxg,
+            itemStyle: {
+              normal: {
+                color: '#42B983'
+              }
+            }
           },
           {
             name: '总共得分',

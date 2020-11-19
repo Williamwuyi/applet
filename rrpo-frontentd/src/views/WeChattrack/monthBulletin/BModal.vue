@@ -4,9 +4,10 @@
     title="简报"
     :width= "800"
     :footer="null"
-    style="height: 800px; overflow: auto"
+    :zIndex="100"
     @cancel="() => { onClose() }"
   >
+    <div style="height: 700px; overflow: auto; overflow-x: hidden">
     <div style="height: 50px">
       <a-form-item
         style="float: left"
@@ -18,9 +19,9 @@
       </a-form-item>
       <div class="floatR" style="width:220px">
         <span style="margin-top: 3px;">
-              <a-button type="primary" @click="fach">查询</a-button>
+              <a-button type="primary" @click="search">查询</a-button>
               <a-button style="margin-left: 8px" @click="reset">重置</a-button>
-                <a-button style="margin-left: 8px; background-color: #2f54eb; color: #fff" @click="players">打印</a-button>
+                <a-button style="margin-left: 8px; background-color: #2f54eb; color: #fff" @click="players">导出</a-button>
         </span>
       </div>
     </div>
@@ -28,19 +29,26 @@
       <h2>湖南铁路护路联防</h2>
       <h1>简报</h1>
       <p class="repNumber">
-        第 <input type="text" class="periods"> 期
+        第 <input type="text" class="periods" v-model="number"> 期
       </p>
       <div class="repcode clearboth">
         <p class="floatL">湖南省铁路护路联防工作办公室编</p>
-        <p class="floatR"><input type="text" class="periods2">年<input type="text" class="periods3">月<input type="text" class="periods3">日</p>
+<!--        <p class="floatR"><input type="text" class="periods2">年<input type="text" class="periods3">月<input type="text" class="periods3">日</p>-->
       </div>
     </div>
-    <editor height="400px" :readonly=false ref="editor" refType="9" ></editor>
+    <editor height="400px" :readonly=false ref="editor" refType="10" ></editor>
     <a-table
       :columns="columns"
       :data-source="dataSource"
       :pagination="pagination"
-    ></a-table>
+      :scroll="{ y: 450 }"
+      @change="handleTableChange"
+    >
+      <template slot="content" slot-scope="text, record">
+        <div v-html="text"></div>
+      </template>
+    </a-table>
+    </div>
   </a-modal>
 </template>
 <script>
@@ -52,22 +60,22 @@ export default {
     return {
       loading: false,
       timeValue: undefined,
+      number: null,
+      month: '',
       columns: [
         {
           title: '序号',
-          dataIndex: 'number',
+          dataIndex: 'serial',
           align: 'center'
         },
         {
           title: '推荐单位',
-          dataIndex: 'place',
-          scopedSlots: { customRender: 'places' },
+          dataIndex: 'szDeptName',
           align: 'center'
         },
         {
           title: '乡镇街',
-          dataIndex: 'qwe',
-          scopedSlots: { customRender: 'qwe' },
+          dataIndex: 'deptJc.deptName',
           align: 'center'
         },
         {
@@ -93,27 +101,55 @@ export default {
     }
   },
   methods: {
-    // 时间查询
-    onTimeChange () {},
+    // 选择时间
+    onTimeChange (date, dateTime) {
+      this.month = dateTime
+    },
+    // 纯文本
+    ToText (HTML) {
+      var input = HTML
+      return input.replace(/<(style|script|iframe)[^>]*?>[\s\S]+?<\/\1\s*>/gi, '').replace(/<[^>]+?>/g, '').replace(/\s+/g, ' ').replace(/ /g, ' ').replace(/>/g, ' ')
+    },
+    // 查询
+    search () {
+      if (this.timeValue !== undefined) {
+        this.fach()
+      } else {
+        this.$message.error('请先选择月份')
+      }
+    },
     // 渲染
-    fach () {
+    fach (parmse = {pageNum: 1, pageSize: 10, month: this.month, status: 3}) {
       this.loading = true
-      this.$get('/prize/briefing', this.character).then(res => {
-        let newData = res.data.data.rows
-        let pagination = {}
-        pagination.total = res.data.data.total
-        this.dataSource = newData.rows
-        this.pagination = pagination
+      this.$get('/wx/month/list', parmse).then(res => {
+        let newData = res.data.data
         // 分页;
-        this.dataSource = newData
+        const pagination = { ...this.pagination }
+        pagination.total = newData.total
+        this.dataSource = newData.records
+        this.pagination = pagination
         this.loading = false
       })
     },
     // 打印
-    players () {},
+    players () {
+      if (this.timeValue !== undefined && this.number !== null) {
+        let newadd = {}
+        newadd.content = this.ToText(this.$refs.editor.content)
+        newadd.number = this.number
+        newadd.month = this.month
+        this.$DocExport('/wx/month/downDocxGood', newadd).then(res => {
+        })
+      } else {
+        this.$message.error('月份或期数不能为空')
+      }
+    },
     // 重置
     reset () {
+      this.number = null
+      this.$refs.editor.content = ''
       this.loading = false
+      this.timeValue = undefined
       this.character = {}
       this.dataSource = []
       this.pagination = {
@@ -126,6 +162,19 @@ export default {
     onClose () {
       this.reset()
       this.$emit('close')
+    },
+    // 分页
+    handleTableChange (pagination) {
+      // 通知界面
+      this.pagination.current = pagination.current
+      this.pagination.pageSize = pagination.pageSize
+      // 通知后台
+      this.character.pageNum = pagination.current
+      this.character.pageSize = pagination.pageSize
+      this.fach({
+        ...this.character,
+        month: this.month
+      })
     }
   }
 }
@@ -136,7 +185,7 @@ export default {
   .clearboth .floatL, clearboth .floatR{display: block;content: '';clear: both}
   .rewardForm{width:750px;height: 320px;margin: 0 auto;border-bottom:2px solid red;position: relative;}
   .rewardForm h2,.rewardForm h1{color: red;text-align: center;margin: 0}
-  .rewardForm h2{font-size: 50px;padding-top: 10px}
+  .rewardForm h2{font-size: 50px;padding-top: 10px;font-weight: 300;}
   .rewardForm h1{font-size: 70px}
   .rewardForm .repNumber{text-align: center;margin-top: 30px}
   .rewardForm .repcode{width:688px;position: absolute;bottom: 0;left: 0}

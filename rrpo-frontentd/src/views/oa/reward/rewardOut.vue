@@ -2,11 +2,11 @@
   <div style="width: 100%">
     <a-row>
       <!-- 功能按钮 -->
-      <a-col :span="6">
+      <a-col :span="4">
         <a-button @click="rejects" v-hasPermission="'reward:reject'">批量驳回</a-button>
         <a-button @click="batchAddrews" v-hasPermission="'reward:approval'">批量审批</a-button>
       </a-col>
-      <a-col :span="18">
+      <a-col :span="20">
         <div>
           <!-- 搜索区域 -->
           <a-form layout="horizontal" :form="form">
@@ -17,7 +17,7 @@
                     label="编号"
                     :labelCol="{span: 8}"
                     :wrapperCol="{span: 14, offset: 1}">
-                    <a-input v-model="character.number"/>
+                    <a-input v-model="character.number" type="number" />
                   </a-form-item>
                 </a-col>
                 <a-col :span="6">
@@ -92,7 +92,7 @@
                 <a-col :span="3">
                   <span style="float: right; margin-top: 3px;">
                     <a-button @click="search" type="primary">查询</a-button>
-                    <a-button @click="reset" style="margin-left: 4px">重置</a-button>
+                    <a-button @click="reset">重置</a-button>
                   </span>
                 </a-col>
               </a-row>
@@ -115,21 +115,21 @@
         <a-tag v-if="record.status === 3" color="#DEE1E6">未审批</a-tag>
         <a-tag v-else-if="record.status === 5 && ranks===1" color="#87d068" >已审批</a-tag>
         <a-tag v-else-if="record.status === 6 && ranks===1" color="#87d068" >已审批</a-tag>
-        <a-tag v-else-if="record.status === 7 && ranks===1" color="#87d068" >已审批</a-tag>
         <a-tag v-else-if="record.status === 5 && ranks===4" color="#DEE1E6" >未审批</a-tag>
         <a-tag v-else-if="record.status === 6 && ranks===4" color="#87d068" >已审批</a-tag>
-        <a-tag v-else-if="record.status === 7 && ranks===4" color="#87d068" >已审批</a-tag>
         <a-tag v-else-if="record.status === 6 && ranks===0" color="#DEE1E6" >未审批</a-tag>
-        <a-tag v-else-if="record.status === 7 && ranks===0" color="#87d068" >已完结</a-tag>
+        <a-tag v-else-if="record.status === 7" color="#87d068" >已完结</a-tag>
         <a-tag v-else-if="record.status === 2" color="#FF0033">被驳回</a-tag>
       </template>
       <template slot="operation" slot-scope="text, record">
-        <a-icon v-if="record.status === 3" type="audit" style="color:#4a9ff5;margin:0" v-hasPermission="'reward:approval'" @click="batchAddrew(record)" title="审批" />
-        <a-icon v-else-if="record.status === 5 && ranks===4" type="audit" style="color:#4a9ff5;margin:0" v-hasPermission="'reward:approval'" @click="batchAddrew(record)" title="审批" />
-        <a-icon v-else-if="record.status === 6 && ranks===0" type="audit" style="color:#4a9ff5;margin:0" v-hasPermission="'reward:approval'" @click="batchAddrew(record)" title="审批" />
-        <a-icon v-if="record.status !== 4&&record.status === 3" type="rollback"  style="color:#4a9ff5;margin:0" @click="reject(record)" title="驳回" />
-        <a-icon v-else-if="record.status !== 4&&record.status === 5 && ranks===4" type="rollback"  style="color:#4a9ff5;margin:0" @click="reject(record)" title="驳回" />
-        <a-icon v-else-if="record.status !== 4&&record.status === 6 && ranks===0" type="rollback"  style="color:#4a9ff5;margin:0" @click="reject(record)" title="驳回" />
+
+        <a v-if="record.status === 3" style="color:#4a9ff5;margin:0" v-hasPermission="'reward:approval'" @click="batchAddrew(record)" title="审批">审批</a>
+        <a v-else-if="record.status === 5 && ranks===4" style="color:#4a9ff5;margin:0" v-hasPermission="'reward:approval'" @click="batchAddrew(record)" title="审批">审批</a>
+        <a v-else-if="record.status === 6 && ranks===0" style="color:#4a9ff5;margin:0" v-hasPermission="'reward:approval'" @click="batchAddrew(record)" title="审批">审批</a>
+        <a v-if="record.status !== 4&&record.status === 3"  style="color:#FF0000;margin:0" @click="reject(record)" title="驳回">驳回</a>
+        <a v-else-if="record.status !== 4&&record.status === 5 && ranks===4"  style="color:#FF0000;margin:0" @click="reject(record)" title="驳回">驳回</a>
+        <a v-else-if="record.status !== 4&&record.status === 6 && ranks===0"  style="color:#FF0000;margin:0" @click="reject(record)" title="驳回">驳回</a>
+        <a v-else-if="record.status === 7 && ranks===0" style="color:#4a9ff5;margin:0" @click="retweet(record)" title="同步到门户网">同步到门户网</a>
       </template>
     </a-table>
     <!--   查看-->
@@ -157,6 +157,13 @@
       @success="handleRej"
       ref="noReject"
     ></rewardReject>
+<!--    转发至门户网-->
+    <synchronization
+      :synchronization="synchronization"
+      @close="synclose"
+      @success="handleSyn"
+      ref="noSyn"
+    />
   </div>
 </template>
 <script>
@@ -165,9 +172,10 @@ import rewardLook from './rewardLook'
 import rewardApvals from './rewardApvals'
 import reportForm from './reportForm'
 import rewardReject from './rewardReject'
+import synchronization from './synchronization'
 export default {
   name: 'rewardout',
-  components: {rewardLook, rewardApvals, RangeDate, reportForm, rewardReject},
+  components: { rewardLook, rewardApvals, RangeDate, reportForm, rewardReject, synchronization },
   data () {
     return {
       character: {},
@@ -193,7 +201,8 @@ export default {
       ranks: 0,
       options: [],
       fieldNames: {label: 'title', value: 'text', children: 'children'},
-      fileListdata: []
+      fileListdata: [],
+      synchronization: false
     }
   },
   computed: {
@@ -203,15 +212,15 @@ export default {
       return [
         {
           title: '编号',
-          dataIndex: 'number',
-          width: '5%',
+          dataIndex: 'newNumber',
+          width: '100px',
           scopedSlots: { customRender: 'number' },
           align: 'center'
         },
         {
           title: '事迹简介',
           dataIndex: 'content',
-          width: '30%',
+          width: '25%',
           ellipsis: true,
           scopedSlots: { customRender: 'content' }
         },
@@ -219,6 +228,7 @@ export default {
           title: '上报时间',
           dataIndex: 'releaseTime',
           sorter: true,
+          width: '200px',
           sortOrder: sortedInfo.columnKey === 'creatTime' && sortedInfo.order,
           align: 'center'
         },
@@ -226,6 +236,7 @@ export default {
           title: '当前状态',
           dataIndex: 'state',
           scopedSlots: { customRender: 'status' },
+          width: '100px',
           align: 'center'
         },
         {
@@ -236,7 +247,8 @@ export default {
           title: '事发时间',
           dataIndex: 'happenTime',
           scopedSlots: { customRender: 'happenTime' },
-          align: 'center'
+          align: 'center',
+          width: '150px'
         },
         {
           title: '事件类型',
@@ -246,7 +258,9 @@ export default {
         {
           title: '操作',
           dataIndex: 'operation',
-          scopedSlots: { customRender: 'operation' }
+          scopedSlots: { customRender: 'operation' },
+          width: '150px',
+          align: 'center'
         }
       ]
     }
@@ -262,9 +276,7 @@ export default {
     // /dept/findRank
     // 获取当前用户的rank
     this.$get('/dept/findRank').then(res => {
-      console.log(res)
       this.ranks = res.data.data.rank
-      console.log(this.ranks)
     })
     // 获取事件类型
     this.$get('prizeTypes/getTypesList').then((r) => {
@@ -286,13 +298,11 @@ export default {
       })
     },
     thingtype (value) {
-      console.log(value)
     },
     onChange (date, dateString) {},
     // 重置表格参数
     reset () {
       this.fach()
-      this.loading = false
       // 重置查询参数
       this.character = {}
       // 清空时间选择
@@ -312,7 +322,18 @@ export default {
       }
     },
     onChange2 (value) {
-      console.log(value)
+    },
+    // 同步到门户网
+    retweet (record) {
+      this.synchronization = true
+      this.$refs.noSyn.setTableValues(record)
+    },
+    // 关闭转载页面
+    synclose () {
+      this.synchronization = false
+    },
+    // 返回转载状态
+    handleSyn () {
     },
     // 查询
     search () {
@@ -334,7 +355,6 @@ export default {
     onSelectChange (selectedRowKeys, selectedRows) {
       this.selectedRowKeys = selectedRowKeys
       this.selectedRows = selectedRows
-      console.log(this.selectedRows)
     },
     // 打开查看页面
     showLook () {

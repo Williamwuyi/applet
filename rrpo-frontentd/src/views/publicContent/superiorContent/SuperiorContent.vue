@@ -145,7 +145,6 @@ export default {
   methods: {
     // 渲染
     fach () {
-      console.log('111111')
     },
     // 跳转上级
     onClick (key) {

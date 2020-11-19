@@ -99,7 +99,7 @@ export default {
       this.$emit('close')
     },
     appList (exchangeId) {
-      this.$post('file/getAppendixList', {refId: exchangeId}).then(res => {
+      this.$post('/file/getAppendixListReply', {refId: exchangeId}).then(res => {
         if (res.data.status) {
           this.fileList = res.data.fileList
         }

@@ -1,38 +1,35 @@
 <template>
-  <a-card :bordered="false" class="card-area">
-    <div>
+    <div style="width: 100%;min-height: 780px">
     <div :class="advanced ? 'search' : null">
       <!-- 搜索区域 -->
-      <a-form layout="horizontal">
+      <a-form>
         <div :class="advanced ? null: 'fold'">
           <a-row >
-            <a-col :md="8" :sm="24">
+            <a-col :md="4" :sm="20">
               <a-form-item
                 label="标题:"
-                :labelCol="{span: 5}"
-                :wrapperCol="{span: 18, offset: 1}">
+                :labelCol="{span: 4}"
+                :wrapperCol="{span: 18, offset: -2}">
                 <a-input v-model="character.title"/>
               </a-form-item>
             </a-col>
-            <a-col :md="8" :sm="24" >
+            <a-col :md="8" :sm="20" >
               <a-form-item
                 label="接收时间:"
                 :labelCol="{span: 5}"
-                :wrapperCol="{span: 18, offset: 1}">
+                :wrapperCol="{span: 18, offset: 0}">
                 <range-date @change="onTimeChange" ref="releaseTime"></range-date>
               </a-form-item>
             </a-col>
-            <a-col :md="8" :sm="24">
-              <span style="margin-left: 100px">
+            <a-col :md="8" :sm="24" style="margin-left: 10px;margin-top: 3px">
                 <a-button type="primary" @click="search">查询</a-button>
                 <a-button style="margin-left: 8px" @click="reset">重置</a-button>
-              </span>
             </a-col>
           </a-row>
         </div>
       </a-form>
     </div>
-    <a-button class="editable-add-btn" @click="handleDel">
+    <a-button @click="handleDel" style="background-color: #FF4D4F;color:white; margin-bottom: 5px">
       删除
     </a-button>
     <a-table
@@ -40,6 +37,8 @@
       :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
       :columns="columns"
       @change="handleTableChange"
+      :scroll="{ y: 580 }"
+      :loading="loading"
       :rowKey="(record)=> record.id"
       :pagination="pagination">
       <template slot="isRead" slot-scope="text, record">
@@ -48,33 +47,31 @@
         <a-tag v-else-if="record.isRead === 2" color="darkorange">已回复</a-tag>
       </template>
       <template slot="isTime" slot-scope="text, record">
-<!--        <a-badge>-->
-<!--          <a-icon type="clock-circle" style="color: #f5222d"/>-->
-<!--          <a-tag v-if="record.isTime === 'true' " color="#DC143C" title="必须在规定时间内回复信息">是</a-tag>-->
-<!--          <a-tag v-if="record.isTime === 'false' " color="#6495ED" title="请查看信息">否</a-tag>-->
-<!--        </a-badge>-->
         <a-badge>
-          <a-icon slot="count" v-if="record.isTime === 'true' " type="clock-circle" style="color: #f5222d" />
+          <a-icon slot="count" v-if="record.isTime === 'true' " type="clock-circle" style="color: #f5222d" title="必须在规定时间内回复信息"/>
           <a-tag v-if="record.isTime === 'true' "  color="#DC143C" title="必须在规定时间内回复信息">是</a-tag>
           <a-tag v-if="record.isTime === 'false' " color="lightskyblue" title="请查看信息">否</a-tag>
         </a-badge>
       </template>
       <template slot="operation" slot-scope="text, record">
-                <a-icon type="message" theme="twoTone" twoToneColor="#42b983" @click="viewLook(record)" title="查看及回复"></a-icon>
+<!--                <a-icon type="message" theme="twoTone" twoToneColor="#42b983" @click="viewLook(record)" title="查看及回复"></a-icon>-->
+        <a v-if="record.isRead === 2" @click="viewLook(record)" style="color: #42b983">查看</a>
+        <a v-else @click="viewLook(record)" style="color: #42b983">回复</a>
       </template>
     </a-table>
       <ln-box-view
         @success="handleView"
+        :randomId="randomId"
         @close="hanleviewclose"
         :boxViewVisiable="boxViewVisiable"
         ref="oldeView"
       />
     </div>
-  </a-card>
 </template>
 <script>
 import RangeDate from '@/components/datetime/RangeDate'
 import lnBoxView from './lnBoxView'
+import uuidv1 from 'uuid/v1'
 export default {
   name: 'Lnbox',
   components: {RangeDate, lnBoxView},
@@ -84,9 +81,11 @@ export default {
       character: {},
       dataSource: [],
       selectedRowKeys: [],
+      loading: false,
       boxViewVisiable: false,
       sortedInfo: null,
       isRead: 0,
+      randomId: '-1', // 文件的uuid
       // 分页
       pagination: {
         total: 0,
@@ -100,7 +99,6 @@ export default {
       boxEditVisiable: false
     }
   },
-  inject: ['reload'],
   computed: {
     columns () {
       let { sortedInfo } = this
@@ -200,15 +198,13 @@ export default {
     },
     handleView () {
       this.boxViewVisiable = false
-      this.reload()
+      this.fetch()
       this.$notification.success({message: '系统提示', description: '操作成功！', duration: 4})
     },
     hanleviewclose () {
       this.boxViewVisiable = false
-      this.reload()
     },
     handleTableChange (pagination, filters, sorter) {
-      console.log('+++', sorter)
       this.sortedInfo = sorter
       // 通知界面
       this.pagination.current = pagination.current
@@ -231,7 +227,6 @@ export default {
         return
       }
       let that = this
-      console.log(that.selectedRowKeys)
       this.$confirm({
         content: '当您点击确定按钮后，这些记录将会被彻底删除',
         centered: true,
@@ -240,7 +235,7 @@ export default {
           that.$delete('/exchange/inbox/' + rowd.join(',')).then(() => {
             that.$notification.success({message: '系统提示', description: '操作成功！', duration: 4})
             that.selectedRowKeys = []
-            that.reload()
+            that.fetch()
           })
         },
         onCancel () {
@@ -250,11 +245,11 @@ export default {
     },
     // 信息回复
     viewLook (record) {
+      this.randomId = uuidv1() // 获取随机ID
       const param = {
         exchangeId: record.id
       }
       this.$get('/exchange/getReceive', param).then(res => {
-        console.log('根据文本id获取到：', res)
         // 获取查到的回复内容，并生成属性赋值传给子组件
         record.opinion = res.data.data.opinion
         if (res.status === 200) {

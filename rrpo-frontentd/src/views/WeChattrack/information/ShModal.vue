@@ -5,9 +5,8 @@
     :footer="null"
     @cancel="() => { onClose() }"
     loading
-    style="overflow: auto; height: 800px"
   >
-        <div style="padding-bottom: 20px">
+        <div style="padding-bottom: 20px;" v-if="Shmo">
           <h2>乡镇街铁路护路微信平台建设及运行申报表</h2>
           <div class="middle">
             <table border="1">
@@ -19,7 +18,7 @@
                 <td style="width: 300px;">建群时间</td>
                 <td>{{Shmo.date}}</td>
                 <td style="width: 300px;">所属县市区</td>
-                <td v-if="Shmo.szDept">{{Shmo.szDept.deptName}}{{Shmo.qxDept.deptName}}</td>
+                <td>{{Shmo.szDept.deptName}}{{Shmo.qxDept.deptName}}</td>
               </tr>
               <tr>
                 <td>群主姓名及职务</td>
@@ -29,7 +28,7 @@
               </tr>
               <tr>
                 <td>护路线路及里程</td>
-                <td v-if="Shmo.dictLine">{{Shmo.dictLine.valuee}}({{Shmo.qunKm}})公里</td>
+                <td v-if="Shmo.dictLine">{{Shmo.dictLine.fieldName}}({{Shmo.qunKm}})公里</td>
                 <td>群活跃程度</td>
                 <td>{{Shmo.qunHyd}}</td>
               </tr>
@@ -108,7 +107,7 @@ export default {
   props: ['ShModalVisiable'],
   data () {
     return {
-      Shmo: {}
+      Shmo: null
     }
   },
   methods: {
@@ -116,14 +115,13 @@ export default {
       this.$emit('error')
     },
     getSh (key) {
-      console.log(key)
       this.$get('/wx/qun-js/selectById', {wXId: key}).then(res => {
-        console.log(res)
-        this.Shmo = res.data.data
+        if (res.data.data) {
+          this.Shmo = res.data.data
+        }
       })
     },
     htt (value1, value2) {
-      console.log(value1, value2)
     }
   }
 }

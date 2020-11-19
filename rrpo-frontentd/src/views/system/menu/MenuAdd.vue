@@ -7,7 +7,7 @@
     :closable="false"
     @close="onClose"
     :visible="menuAddVisiable"
-    style="height: calc(100% - 55px);overflow: auto;padding-bottom: 53px;">
+    >
     <a-form :form="form">
       <a-form-item label='菜单名称' v-bind="formItemLayout">
         <a-input v-model="menu.menuName"

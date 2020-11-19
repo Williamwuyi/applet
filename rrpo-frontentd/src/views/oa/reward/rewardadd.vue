@@ -73,7 +73,7 @@
                 { rules: [{ required: true, message: '请输入身份' }] },
               ]"
               >
-                <a-select-option v-for="n in idenList" :key="n.id" :value="n.id">{{n.identity}}</a-select-option>
+                <a-select-option v-for="n in idenList" :key="n.dictId" :value="n.fieldName">{{n.fieldName}}</a-select-option>
               </a-select>
             </a-form-item>
           </a-col>
@@ -106,28 +106,55 @@
                     { rules: [{ required: true, message: '请选择事件类型' }] }
                   ]"
               >
-                <a-select-option v-for="n in fileListdata" :key="n.id" :value="n.name">{{n.name}}</a-select-option>
+                <a-select-option v-for="n in fileListdata" :key="n.dictId" :value="n.fieldName">{{n.fieldName}}</a-select-option>
               </a-select>
             </a-form-item>
           </a-col>
           <a-col :span="24">
-            <a-form-item
-              :label-col="{span: 4}"
-              :wrapper-col="{span:18}"
-              label="事发地点"
-            >
-              <a-cascader
-                :options="options"
-                :fieldNames="fieldNames"
-                expand-trigger="hover"
-                @change="onChange2"
-                placeholder=""
-                v-decorator="[
-                  'place',
-                  { rules: [{ required: true, message: '请选择事发地点' }] }
-                ]"
-              />
-            </a-form-item>
+            <a-row>
+              <a-col :span="8">
+                <a-form-item
+                  :label-col="{span: 12}"
+                  :wrapper-col="{span:12}"
+                  label="事发地点"
+                >
+                  <a-select @change="handleProv" placeholder="请选择市" v-decorator="['provincePlace',{rules:[{required: true, message: '请先选择地市'}]}]">
+                    <a-select-option v-if="userRank <= 1" v-for="province in provinceData" :value='province.deptName' :key="province.deptId">
+                      {{ province.deptName}}
+                    </a-select-option>
+                    <a-select-option v-else-if="userRank > 1" v-for="province in provinceData" :value='province.parentDeptName' :key="province.deptId">
+                      {{ province.parentDeptName }}
+                    </a-select-option>
+                  </a-select>
+                </a-form-item>
+              </a-col>
+              <a-col :span="5">
+                <a-form-item
+                  :label-col="{span: 1}"
+                  :wrapper-col="{span:23}"
+                  label=""
+                >
+                  <a-select @change="handleCitie" placeholder="请选择区县" v-decorator="['citiePlace',{rules:[{required: true, message: '请先选择区县'}]}]">
+                    <a-select-option v-for="city in cities" :value="city.deptName" :key="city.deptId">
+                      {{ city.deptName }}
+                    </a-select-option>
+                  </a-select>
+                </a-form-item>
+              </a-col>
+              <a-col :span="6">
+                <a-form-item
+                  :label-col="{span: 4}"
+                  :wrapper-col="{span:20}"
+                  label=""
+                >
+                  <a-select placeholder="请选择乡镇街道" @change="handleStreet" v-decorator="['streetPlace',{rules:[{required: true, message: '请先选择乡镇街道'}]}]">
+                    <a-select-option v-for="street in streets" :value="street.deptName" :key="street.deptId">
+                      {{ street.deptName }}
+                    </a-select-option>
+                  </a-select>
+                </a-form-item>
+              </a-col>
+            </a-row>
           </a-col>
           <a-col :span="12">
             <a-form-item
@@ -242,21 +269,58 @@ export default {
       arrdata: [],
       action: this.$constURL + '/file/uploadFile',
       fileIds: [],
-      idenList: {}
+      idenList: {},
+      provinceData: [{parentDeptName: '', deptId: 1}],
+      cities: [{deptName: '', deptId: 1}],
+      streets: [{deptName: '', deptId: 1}],
+      secondCity: [],
+      secondStreet: [],
+      userRank: 0,
+      parentDeptName: '',
+      provincePlace: '',
+      citiePlace: '',
+      streetPlace: '',
+      placeIds: 0,
+      placeIdq: 0,
+      placeIdj: 0
     }
   },
   mounted () {
-    // 获取地址
-    this.$get('dept').then((r) => {
-      this.options = r.data.rows.children
+    // 根据角色获取地址
+    this.$get('/dept/findRank').then(res => {
+      this.userRank = res.data.data.rank // 获取当前用户的rank
+      // 如果是市级
+      if (this.userRank === 1) {
+        this.provinceData[0].parentDeptName = this.provinceData[0].deptName
+        this.$get('/dept/queryDeptChile').then((r) => {
+          this.provinceData = r.data.data
+        })
+      } else if (this.userRank === 0) { // 如果是省级或管理员
+        this.$get('/dept/queryDeptChile').then((r) => {
+          let rank = {prentId: r.data.data[0].deptId}
+          // 查询市级
+          this.$get('/dept/queryDeptChile', rank).then((e) => {
+            let province = e.data.data
+            for (let i = 0; i < 14; i++) {
+              this.provinceData[i] = province[i]
+            }
+          })
+        })
+      } else {
+        // 如果是区县用户
+        this.$get('/dept/queryDeptChile').then((r) => {
+          this.provinceData = r.data.data
+          this.cities = this.provinceData
+        })
+      }
     })
     // 获取事件类型
-    this.$get('prizeTypes/getTypesList').then((r) => {
-      this.fileListdata = r.data.data
+    this.$get('/dict/getListTable', { parentId: 'fd14fb748b74e6bedddd14dd81a3be3e' }).then((r) => {
+      this.fileListdata = r.data.data.records
     })
     //  获取身份信息
-    this.$get('/prizeIdentity/getInformListByMapper').then((r) => {
-      this.idenList = r.data
+    this.$get('/dict/getListTable', { parentId: '873293cce2e47b64bf6ab3b6b007f436' }).then((r) => {
+      this.idenList = r.data.data.records
     })
   },
   methods: {
@@ -269,7 +333,42 @@ export default {
       this.happenTime = dateString
     },
     onChange2 (value) {
-      console.log(value)
+    },
+    // 选择市级事件
+    handleProv (value, Array) {
+      this.provincePlace = value
+      let rank = {prentId: Array.key}
+      this.placeIds = Array.key
+      // 如果是省级或市级用户
+      if (this.userRank <= 1) {
+        // 查询区县
+        this.$get('/dept/queryDeptChile', rank).then((r) => {
+          this.cities = r.data.data
+        })
+      }
+      // 选中后清空地区+乡镇街道
+      this.form.setFieldsValue({
+        citiePlace: '',
+        streetPlace: ''
+      })
+    },
+    handleCitie (value, Array) {
+      console.log(value, Array)
+      this.citiePlace = value
+      this.placeIdq = Array.key
+      // 查询乡镇
+      let rank = {prentId: Array.key}
+      this.$get('/dept/queryDeptChile', rank).then((r) => {
+        this.streets = r.data.data
+      })
+      // 选中后乡镇街道
+      this.form.setFieldsValue({
+        streetPlace: ''
+      })
+    },
+    handleStreet (value, Array) {
+      this.streetPlace = value
+      this.placeIdj = Array.key
     },
     check () {
       this.form.validateFields((err, values) => {
@@ -277,14 +376,16 @@ export default {
           // 附件信息
           let appendixs = this.$store.state.file.appendixList
           Object.keys(appendixs).forEach((key) => {
-            console.log(key)
             this.fileIds.push(appendixs[key].fileId)
           })
           values.happenTime = new Date(this.happenTime)
           values.status = 1
+          values.placeIds = this.placeIds
+          values.placeIdq = this.placeIdq
+          values.placeIdj = this.placeIdj
           values.fileIds = this.fileIds
+          values.place = this.provincePlace + ',' + this.citiePlace + ',' + this.streetPlace
           this.loading = true
-          console.log(values.fileIds)
           this.$post('prize/save', values).then(() => {
             this.reset()
             this.$emit('success')

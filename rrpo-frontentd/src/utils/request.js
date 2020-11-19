@@ -6,8 +6,8 @@ import db from './localstorage'
 moment.locale('zh-cn')
 
 // const constURL = 'http://127.0.0.1:9527/'
-const constURL = 'http://192.168.10.104:9527/'
-// const constURL = 'http://114.115.147.159:9527/'
+// const constURL = 'http://192.168.10.104:19527/'
+const constURL = 'http://114.115.147.159:19527/'
 // 统一配置
 let JIEBAO_REQUEST = axios.create({
   baseURL: constURL,
@@ -191,6 +191,40 @@ const request = {
       const content = r.data
       const blob = new Blob([content])
       const fileName = `${new Date().getTime()}_导出结果.xlsx`
+      if ('download' in document.createElement('a')) {
+        const elink = document.createElement('a')
+        elink.download = fileName
+        elink.style.display = 'none'
+        elink.href = URL.createObjectURL(blob)
+        document.body.appendChild(elink)
+        elink.click()
+        URL.revokeObjectURL(elink.href)
+        document.body.removeChild(elink)
+      } else {
+        navigator.msSaveBlob(blob, fileName)
+      }
+    }).catch((r) => {
+      console.error(r)
+      message.error('导出失败')
+    })
+  },
+  DocExport (url, params = {}) {
+    message.loading('导出数据中')
+    return JIEBAO_REQUEST.post(url, params, {
+      transformRequest: [(params) => {
+        let result = ''
+        Object.keys(params).forEach((key) => {
+          if (!Object.is(params[key], undefined) && !Object.is(params[key], null)) {
+            result += encodeURIComponent(key) + '=' + encodeURIComponent(params[key]) + '&'
+          }
+        })
+        return result
+      }],
+      responseType: 'blob'
+    }).then((r) => {
+      const content = r.data
+      const blob = new Blob([content])
+      const fileName = `${new Date().getTime()}_导出结果.docx`
       if ('download' in document.createElement('a')) {
         const elink = document.createElement('a')
         elink.download = fileName

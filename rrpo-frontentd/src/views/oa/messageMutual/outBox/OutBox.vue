@@ -1,32 +1,32 @@
 <template>
-  <a-card :bordered="false" class="card-area">
-    <div>
+    <div style="width: 100%;min-height: 780px">
       <div :class="advanced ? 'search' : null">
         <!-- 搜索区域 -->
-        <a-form layout="horizontal">
+        <a-form>
           <div :class="advanced ? null: 'fold'">
-            <a-row >
-              <a-col :md="5" :sm="20">
+            <a-row>
+              <a-col :md="4" :sm="20">
                 <a-form-item
                   label="标题:"
-                  :labelCol="{span: 5}"
-                  :wrapperCol="{span: 15, offset: 1}">
+                  :labelCol="{span: 4}"
+                  :wrapperCol="{span: 17, offset: -2}">
                   <a-input v-model="character.title"/>
                 </a-form-item>
               </a-col>
-              <a-col :md="8" :sm="24" >
+              <a-col :md="8" :sm="20" >
                 <a-form-item
                   label="创建时间:"
-                  :labelCol="{span: 6}"
-                  :wrapperCol="{span: 15, offset: 1}">
+                  :labelCol="{span: 5}"
+                  :wrapperCol="{span: 18, offset: 0}">
                   <range-date @change="onTimeChange" ref="creatTime" :allowClear="false"></range-date>
                 </a-form-item>
               </a-col>
-              <a-col :md="5" :sm="20" >
-                <a-form-item style="margin-left: 30px"
+              <a-col :md="4" :sm="16" >
+                <a-form-item
                   label="发送状态:"
-                  :labelCol="{span: 6}"
-                  :wrapperCol="{span: 15, offset: 1}">
+                  :labelCol="{span: 8}"
+                  style="margin-left: 10px"
+                  :wrapperCol="{span: 15, offset: 0}">
                   <a-cascader  change-on-select
                                @change="onChangecascader"
                                :options="options"
@@ -35,26 +35,26 @@
                   />
                 </a-form-item>
               </a-col>
-              <a-col :md="5" :sm="20">
-                <span style="margin-left: 20px">
-                  <a-button type="primary" @click="search">查询</a-button>
-                  <a-button style="margin-left: 8px" @click="reset">重置</a-button>
-                </span>
+              <a-col :md="6" :sm="24" style="margin-left: 10px;margin-top: 3px">
+                <a-button type="primary" @click="search">查询</a-button>
+                <a-button style="margin-left: 8px" @click="reset">重置</a-button>
               </a-col>
             </a-row>
           </div>
         </a-form>
       </div>
-      <a-button class="editable-add-btn" @click="batchRelease">
-      批量发布
+      <a-button @click="batchRelease" style="margin-bottom: 5px;background-color: #87D068;color: white">
+      发布
       </a-button>
-    <a-button class="editable-add-btn" @click="batchRemove">
-      批量删除
+    <a-button @click="batchRemove" style="background-color: #FF4040; color: white;margin-bottom: 5px;margin-left: 10px">
+      删除
     </a-button>
     <a-table
       :data-source="dataSource"
       :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
       :columns="columns"
+      :loading="loading"
+      :scroll="{ y: 580 }"
       @change="handleTableChange"
       :rowKey="(record)=> record.id"
       :pagination="pagination">
@@ -64,7 +64,8 @@
         <a-tag v-else-if="record.status === '1'" color="#DEE1E6" >未发送</a-tag>
       </template>
       <template slot="operation" slot-scope="text, record">
-        <a-icon  type="setting" theme="twoTone" twoToneColor="#4a9ff5" style="margin-left:8px" @click="outBoxedit(record)" title="修改"></a-icon>
+<!--        <a-icon  type="setting" theme="twoTone" twoToneColor="#4a9ff5" style="margin-left:8px" @click="outBoxedit(record)" title="修改"></a-icon>-->
+        <a @click="outBoxedit(record)" style="color: #4a9ff5">修改</a>
       </template>
     </a-table>
     <!-- 修改 -->
@@ -81,7 +82,6 @@
         ref="nolookstatus"
       />
   </div>
-  </a-card>
 </template>
 <script>
 import OutBoxEdit from './OutBoxEdit'
@@ -95,6 +95,7 @@ export default {
       advanced: false,
       dataSource: [],
       selectedRowKeys: [],
+      loading: false,
       lookStatusVisiable: false,
       // 分页
       pagination: {
@@ -122,7 +123,6 @@ export default {
       boxEditVisiable: false
     }
   },
-  inject: ['reload'],
   computed: {
     columns () {
       let { sortedInfo } = this
@@ -265,7 +265,7 @@ export default {
           that.$delete('/exchange/' + Remove.join(',')).then(() => {
             that.$notification.success({message: '系统提示', description: '操作成功！', duration: 4})
             that.selectedRowKeys = []
-            that.reload()
+            that.fetch()
           })
         },
         onCancel () {
@@ -279,7 +279,7 @@ export default {
     },
     handlecomAdd () {
       this.comAddVisiable = false
-      this.reload()
+      this.fetch()
     },
     hanlecomclose () {
       this.comAddVisiable = false
@@ -296,7 +296,7 @@ export default {
     },
     handleEdit () {
       this.boxEditVisiable = false
-      this.reload()
+      this.fetch()
       this.$notification.success({message: '系统提示', description: '操作成功！', duration: 4})
     },
     // 批量发布
@@ -307,21 +307,31 @@ export default {
       }
       let that = this
       let batch = that.selectedRowKeys
-      that.$get('/exchange/release/' + batch.join(',')).then(res => {
-        that.reload()
-        this.$notification.success({message: '系统提示', description: '发布成功！', duration: 4})
-      }).catch(err => {
-        that.reload()
-        that.$message.error(err)
+      this.$confirm({
+        content: '是否确认发布',
+        centered: true,
+        onOk () {
+          that.$get('/exchange/release/' + batch.join(',')).then(res => {
+            console.log(res)
+            if (res.status === 200) {
+              that.$notification.success({message: '系统提示', description: '发布成功！', duration: 4})
+              that.fetch()
+            }
+          }).catch(err => {
+            that.fetch()
+            that.$message.error(err)
+          })
+        },
+        onCancel () {
+          that.selectedRowKeys = []
+        }
       })
     },
     hanleeditclose () {
       this.boxEditVisiable = false
-      this.reload()
     },
     lookStatusClose () {
       this.lookStatusVisiable = false
-      this.reload()
     },
     // 查看状态
     lookStatus (info) {
@@ -333,39 +343,10 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-  @import "../../../../../static/less/Common";
-  .editable-cell {
-    position: relative;
+  .ant-table-placeholder{
+    margin: 200px;
   }
-  .editable-cell-input-wrapper,
-  .editable-cell-text-wrapper {
-    padding-right: 24px;
-  }
-  .editable-cell-text-wrapper {
-    padding: 5px 24px 5px 5px;
-  }
-  .editable-cell-icon,
-  .editable-cell-icon-check {
-    position: absolute;
-    right: 0;
-    width: 20px;
-    cursor: pointer;
-  }
-  .editable-cell-icon {
-    line-height: 18px;
-    display: none;
-  }
-  .editable-cell-icon-check {
-    line-height: 28px;
-  }
-  .editable-cell:hover .editable-cell-icon {
-    display: inline-block;
-  }
-  .editable-cell-icon:hover,
-  .editable-cell-icon-check:hover {
-    color: #108ee9;
-  }
-  .editable-add-btn {
-    margin: 8px;
+  .ant-empty .ant-empty-normal{
+    margin: 200px;
   }
 </style>
