@@ -156,7 +156,6 @@ export default {
         for (let i = 0; filesList.length > i; i++) {
           fileIds.push(filesList[i].fileId)
         }
-        console.log('获取到文件id', fileIds)
       }
       this.fileIds = fileIds
     },

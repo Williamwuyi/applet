@@ -7,11 +7,11 @@
                    {rules: [{ required: true, message: '标题不能为空'}
                   ]}]"/>
         </a-form-item>
-        <a-form-item label='类别' v-bind="formItemLayout">
-          <a-select v-model="id">
-            <a-select-option v-for="n in typeData" :key="n.dictId" :value="n.dictId">{{n.fieldName}}</a-select-option>
-          </a-select>
-        </a-form-item>
+<!--        <a-form-item label='类别' v-bind="formItemLayout">-->
+<!--          <a-select v-model="id">-->
+<!--            <a-select-option v-for="n in typeData" :key="n.dictId" :value="n.dictId">{{n.fieldName}}</a-select-option>-->
+<!--          </a-select>-->
+<!--        </a-form-item>-->
         <a-form-item label='关联' v-bind="formItemLayout" v-has-any-permission="'newFolder:relevance'">
             <a-radio-group  @change="radioChange" v-model="defaultValue">
               <a-radio value="0" hidden>
@@ -173,7 +173,7 @@ export default {
       portal: false, // 是否同步门户网
       programa: [], // 栏目数据
       targetsId: '', // 栏目id
-      id: null,
+      // id: null,
       fileIds: [],
       typeData: [], // 下拉数据接收
       personnelId: [], // 模态框提交的人员id
@@ -212,7 +212,6 @@ export default {
     },
     yearK () {
       this.$get('/check/grade/selectByUserIdOrDateYear').then(res => {
-        console.log('年度考核的摘要:', res.data.data)
         this.dataSource = res.data.data
       })
     },
@@ -221,7 +220,6 @@ export default {
       this.redioData = e.target.value
       if (e.target.value === '1') {
         this.$get('/check/year/list').then(res => {
-          console.log(res.data.data)
           this.yearTimeData = res.data.data
         })
         this.yearVisible = true
@@ -229,10 +227,8 @@ export default {
     },
     // 年度考核选择时间
     onYearTime (value) {
-      console.log('年度考核时间：', value)
       this.yearTime = value
       this.$get('/check/grade/selectByUserIdOrDateYear', {yearId: value}).then(res => {
-        console.log(res)
         this.dataSource = res.data.data
       })
     },
@@ -245,7 +241,6 @@ export default {
     },
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
-      console.log('选中的摘要id', this.selectedRowKeys)
     },
     // 是否同步
     tbChange (e) {
@@ -259,7 +254,6 @@ export default {
       this.tbDefaultTime = y + '-' + m + '-' + d
       // 获取栏目数据
       this.$get('/dict/getTargets').then((res) => {
-        console.log('获取栏目信息', res.data.data.targets)
         this.programa = res.data.data.targets
       })
       this.isTb = e.target.checked
@@ -272,13 +266,12 @@ export default {
     },
     handleChange (value) {
       this.targetsId = value.toString()
-      console.log('栏目id', this.targetsId)
     },
     // 选择年度考核
     KHChange (e) {
       this.selectedRowKeys = []
       if (e.target.checked) {
-        this.selectedRowKeys.push(0)
+        this.selectedRowKeysselectedRowKeys.push(0)
       }
     },
     // 勾选时间
@@ -321,13 +314,11 @@ export default {
     // 获取上传文件id
     getFileList () {
       let filesList = this.$store.state.file.appendixList
-      console.log(filesList)
       let fileIds = []
       if (filesList.length !== 0 || filesList !== null) {
         for (let i = 0; filesList.length > i; i++) {
           fileIds.push(filesList[i].fileId)
         }
-        console.log('获取到文件id', fileIds)
       }
       this.fileIds = fileIds
     },
@@ -400,7 +391,7 @@ export default {
             }
             param.sendUserIds = this.personnelId // 选择的传阅人员
             param.content = this.newFolder.content // 内容
-            param.typeId = this.id // 类型选择
+            // param.typeId = this.id // 类型选择
             param.status = statusId // 保存或者提交状态
             param.claimTime = this.dateTime // 限时回复时间
             param.isTime = this.isSX // 是否有回复时间

@@ -352,7 +352,7 @@ export default {
     },
     // 请求右侧数据
     look (e, index) {
-      console.log(e.dictId)
+      // console.log(e.dictId)
       this.rightINum = e.dictId
       this.loadingRight = true
       this.queryParamsRight.parentId = e.dictId

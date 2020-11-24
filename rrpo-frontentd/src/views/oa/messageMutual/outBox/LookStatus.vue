@@ -198,7 +198,6 @@ export default {
       this.loading = true
       this.$get('/exchange/getUserInfo/', params).then(res => {
         let newData = res.data.data
-        console.log('查询列表信息：', newData)
         // 分页;
         const pagination = { ...this.pagination }
         pagination.total = newData.total
@@ -214,7 +213,6 @@ export default {
         this.userName = r.data.userName
       })
       this.titleId = user.id
-      console.log('父组件传值：', user)
       this.title = user.title
       this.content = user.content
       this.releaseTime = user.releaseTime // 发布时间
@@ -231,7 +229,6 @@ export default {
     lookReply (record) {
       this.visible = true
       this.details = record
-      console.log(record)
     },
     handleCancel () {
       this.visible = false
@@ -260,15 +257,12 @@ export default {
     },
     onWChange (selectedIdW) {
       this.selectedIdW = selectedIdW
-      console.log('未读', this.selectedIdW)
     },
     onYChange (selectedIdY) {
       this.selectedIdY = selectedIdY
-      console.log('已读', this.selectedIdY)
     },
     onHChange (selectedIdH) {
       this.selectedIdH = selectedIdH
-      console.log('回复', this.selectedIdH)
     },
     exprotExccel (data) {
       let id

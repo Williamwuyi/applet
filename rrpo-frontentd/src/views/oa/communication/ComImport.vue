@@ -89,7 +89,6 @@ export default {
       this.$emit('cancel')
     },
     handleCheck (checkedKeys) {
-      console.log('选中的id ', checkedKeys)
       checkedKeysVlue.deptId = checkedKeys
     },
     handleExpand (expandedKeys) {

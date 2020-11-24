@@ -216,7 +216,6 @@ export default {
       this.$get('/exchangeGroup/getInformListByMapper').then(res => {
         this.dataGroup = res.data
         this.loading = false
-        console.log('获取分组信息', this.dataGroup)
       })
     },
     // 接收人员
@@ -232,7 +231,6 @@ export default {
     personnel () {
       this.loading = true
       let arr = [...this.selectedIdS, ...this.selectedIdQ, ...this.selectedIdX, ...this.selectedIdP]
-      console.log(arr)
       const param = {
         deptIds: arr
       }
@@ -292,7 +290,6 @@ export default {
     // 选择人员
     onSelectChange (y) {
       this.selectedIdY = y
-      console.log('人员选中id：', this.selectedIdY)
     },
     // 选择分组
     onSelectGroup (g) {
@@ -304,7 +301,6 @@ export default {
       this.dataSource = []
       this.groupName = ''
       this.$get('/exchangeGroup/getGroupUserList', param).then(res => {
-        console.log('获取分组人员数据', res.data)
         if (res.data.status === 1) {
           this.dataSource = res.data.data
           this.selectedIdS = []
@@ -329,7 +325,6 @@ export default {
     },
     // 删除人员分组
     deleteGroup (record) {
-      console.log(record)
       let groupId = record.id
       let that = this
       this.$confirm({
@@ -401,7 +396,6 @@ export default {
     },
     // 选传阅人的提交模态框
     modalsubmit () {
-      console.log(this.selectedIdY)
       if (this.selectedIdY.length === 0) {
         this.$notification.warning({message: '系统提示', description: '至少选择一个传阅人！', duration: 4})
         return

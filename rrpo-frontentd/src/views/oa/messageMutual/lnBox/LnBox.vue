@@ -9,19 +9,24 @@
               <a-form-item
                 label="标题:"
                 :labelCol="{span: 4}"
-                :wrapperCol="{span: 18, offset: -2}">
+                :wrapperCol="{span: 15, offset: -2}">
                 <a-input v-model="character.title"/>
               </a-form-item>
             </a-col>
-            <a-col :md="8" :sm="20" >
+            <a-col :md="6" :sm="20" >
               <a-form-item
                 label="接收时间:"
                 :labelCol="{span: 5}"
-                :wrapperCol="{span: 18, offset: 0}">
+                :wrapperCol="{span: 15, offset: 0}">
                 <range-date @change="onTimeChange" ref="releaseTime"></range-date>
               </a-form-item>
             </a-col>
-            <a-col :md="8" :sm="24" style="margin-left: 10px;margin-top: 3px">
+            <a-col :md="6" :sm="20" >
+              <a-form-item label="发送人:" :labelCol="{span: 5}" :wrapperCol="{span: 15, offset: 0}">
+                <a-input v-model="character.creatUser"/>
+              </a-form-item>
+            </a-col>
+            <a-col :md="6" :sm="24" style="margin-left: 10px;margin-top: 3px">
                 <a-button type="primary" @click="search">查询</a-button>
                 <a-button style="margin-left: 8px" @click="reset">重置</a-button>
             </a-col>
@@ -82,6 +87,7 @@ export default {
       dataSource: [],
       selectedRowKeys: [],
       loading: false,
+      creatUser: '',
       boxViewVisiable: false,
       sortedInfo: null,
       isRead: 0,

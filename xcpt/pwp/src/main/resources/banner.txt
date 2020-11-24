@@ -1,0 +1,14 @@
+${AnsiColor.BRIGHT_MAGENTA}
+    o8o  o8o             .o8                                         oooo                .    .o88o.
+    `"'  `"'            "888                                         `888              .o8    888 `"
+   oooo oooo   .ooooo.   888oooo.   .oooo.    .ooooo.     oo.ooooo.   888   .oooo.   .o888oo o888oo   .ooooo.  oooo d8b ooo. .oo.  .oo.
+   `888 `888  d88' `88b  d88' `88b `P  )88b  d88' `88b     888' `88b  888  `P  )88b    888    888    d88' `88b `888""8P `888P"Y88bP"Y88b
+    888  888  888ooo888  888   888  .oP"888  888   888     888   888  888   .oP"888    888    888    888   888  888      888   888   888
+    888  888  888    .o  888   888 d8(  888  888   888     888   888  888  d8(  888    888 .  888    888   888  888      888   888   888
+    888 o888o `Y8bod8P'  `Y8bod8P' `Y888""8o `Y8bod8P'     888bod8P' o888o `Y888""8o   "888" o888o   `Y8bod8P' d888b    o888o o888o o888o
+    888                                                    888
+.o. 88P                                                   o888o
+`Y888P
+${AnsiColor.BRIGHT_RED}
+Application Version: ${application.version}${application.formatted-version}
+Spring Boot Version: ${spring-boot.version}${spring-boot.formatted-version}

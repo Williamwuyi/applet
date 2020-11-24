@@ -122,7 +122,7 @@ export default {
       this.loading = false
       let record = {
         file: {
-          fileId: '37ad0059bcdf09e0367aa9de3b1b3856',
+          fileId: '8ba8403e99102d79528eaba5fcd3020e',
           oldName: '湖南铁护办系统平台使用手册.pdf'
         }
       }

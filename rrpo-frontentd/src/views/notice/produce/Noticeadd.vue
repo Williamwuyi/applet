@@ -18,7 +18,7 @@
                    { max: 30, message: '长度不能超过30个字符'}
                   ]}]"/>
       </a-form-item>
-        <a-form-item label='是否同步' v-bind="formItemLayout" >
+        <a-form-item label='是否同步' v-bind="formItemLayout" v-hasPermission="'notice:synchronize'">
           <a-radio-group :disabled="isRadio" v-model="portal" @change="radioChange">
             <a-radio value="1">
               门户网站

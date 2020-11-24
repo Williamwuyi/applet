@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="8f4dc167-df65-406c-aa2d-342b5c2153f1" name="Default Changelist" comment="init" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ChangesViewManager" show_ignored="true" />
+  <component name="Git.Settings">
+    <option name="PUSH_TAGS">
+      <GitPushTagMode>
+        <option name="argument" value="--tags" />
+        <option name="title" value="All" />
+      </GitPushTagMode>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1aeKBQHWBGiTUmYcp3sWVeFK44Y" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="editor.config.ad.shown" value="true" />
+    <property name="javascript.nodejs.core.library.configured.version" value="12.16.1" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.standard" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.standard" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="D:\idea\FEBS-Vue\frontend\node_modules\eslint" />
+    <property name="node.js.selected.package.standard" value="D:\idea\FEBS-Vue\frontend\node_modules\eslint" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="nodejs_interpreter_path" value="node" />
+    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
+    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="nodejs_package_manager_path" value="$PROJECT_DIR$/../../Program Files (x86)/Yarn" />
+    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
+    <property name="ts.external.directory.path" value="D:\Program Files\JetBrains\WebStorm 2020.1\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
+  </component>
+  <component name="Push.Settings">
+    <option name="SHOW_DETAILS_PANEL" value="false" />
+  </component>
+  <component name="RunManager" selected="npm.start">
+    <configuration name="build" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="build" />
+      </scripts>
+      <node-interpreter value="project" />
+      <package-manager value="yarn" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <configuration name="dev" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="dev" />
+      </scripts>
+      <node-interpreter value="project" />
+      <package-manager value="yarn" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <configuration name="start" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="start" />
+      </scripts>
+      <node-interpreter value="project" />
+      <package-manager value="yarn" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="npm.build" />
+      <item itemvalue="npm.dev" />
+      <item itemvalue="npm.start" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="npm.start" />
+        <item itemvalue="npm.dev" />
+        <item itemvalue="npm.build" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="8f4dc167-df65-406c-aa2d-342b5c2153f1" name="Default Changelist" comment="" />
+      <created>1560924750002</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1560924750002</updated>
+      <workItem from="1560924751244" duration="1436000" />
+      <workItem from="1560993335744" duration="4982000" />
+      <workItem from="1561080508674" duration="5215000" />
+      <workItem from="1561337444218" duration="2016000" />
+      <workItem from="1562133167679" duration="641000" />
+      <workItem from="1564366674136" duration="249000" />
+      <workItem from="1564385582538" duration="1043000" />
+      <workItem from="1564390170512" duration="1207000" />
+      <workItem from="1569459539973" duration="5000" />
+      <workItem from="1582180184337" duration="1714000" />
+      <workItem from="1582182827411" duration="2630000" />
+      <workItem from="1582186987066" duration="2103000" />
+      <workItem from="1582189405944" duration="3799000" />
+      <workItem from="1582253243673" duration="1352000" />
+      <workItem from="1582526020761" duration="1300000" />
+      <workItem from="1582535731277" duration="718000" />
+      <workItem from="1582612634133" duration="2337000" />
+      <workItem from="1583214363655" duration="5113000" />
+      <workItem from="1583227901989" duration="201000" />
+      <workItem from="1583283918453" duration="9627000" />
+      <workItem from="1583371804306" duration="15075000" />
+      <workItem from="1583457320856" duration="4372000" />
+      <workItem from="1583717420424" duration="3208000" />
+      <workItem from="1583746778867" duration="628000" />
+      <workItem from="1583803217036" duration="7365000" />
+      <workItem from="1583894041578" duration="3662000" />
+      <workItem from="1583975323989" duration="1542000" />
+      <workItem from="1584321779053" duration="619000" />
+      <workItem from="1584405901187" duration="2282000" />
+      <workItem from="1584502234174" duration="6687000" />
+      <workItem from="1584578100538" duration="5400000" />
+      <workItem from="1584600321481" duration="6352000" />
+      <workItem from="1584666841172" duration="2334000" />
+      <workItem from="1584673494141" duration="2549000" />
+      <workItem from="1584684615829" duration="7071000" />
+      <workItem from="1584696128617" duration="717000" />
+      <workItem from="1584950436627" duration="2292000" />
+      <workItem from="1585121719470" duration="789000" />
+      <workItem from="1585209750162" duration="3987000" />
+      <workItem from="1585274376960" duration="2667000" />
+      <workItem from="1585633862896" duration="1203000" />
+      <workItem from="1585710036564" duration="7762000" />
+      <workItem from="1585793614646" duration="854000" />
+      <workItem from="1585797979433" duration="7066000" />
+      <workItem from="1585885724361" duration="9845000" />
+      <workItem from="1585913994175" duration="2334000" />
+      <workItem from="1586220718548" duration="15898000" />
+      <workItem from="1586501715685" duration="6495000" />
+      <workItem from="1586738202466" duration="2207000" />
+      <workItem from="1587090485020" duration="3801000" />
+      <workItem from="1587112686633" duration="3239000" />
+      <workItem from="1587117025721" duration="5000" />
+      <workItem from="1587118089337" duration="1223000" />
+      <workItem from="1587344371480" duration="23000" />
+      <workItem from="1587344403994" duration="31000" />
+      <workItem from="1587348411966" duration="2672000" />
+      <workItem from="1587354906225" duration="124000" />
+      <workItem from="1587362656196" duration="908000" />
+      <workItem from="1587365977386" duration="26000" />
+      <workItem from="1587366646592" duration="1065000" />
+      <workItem from="1587370634591" duration="2296000" />
+      <workItem from="1587525689568" duration="1203000" />
+      <workItem from="1587953843598" duration="39000" />
+      <workItem from="1587955961655" duration="3000" />
+      <workItem from="1587968725140" duration="6268000" />
+      <workItem from="1587977053229" duration="628000" />
+      <workItem from="1587979710221" duration="1516000" />
+      <workItem from="1588133077341" duration="50000" />
+      <workItem from="1588216437442" duration="40000" />
+      <workItem from="1589852373690" duration="2140000" />
+    </task>
+    <task id="LOCAL-00001" summary="init">
+      <created>1564390375675</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1564390375675</updated>
+    </task>
+    <task id="LOCAL-00002" summary="init">
+      <created>1582199553297</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1582199553297</updated>
+    </task>
+    <task id="LOCAL-00003" summary="加入 eslint插件 基础接口页面">
+      <created>1583465430446</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1583465430446</updated>
+    </task>
+    <task id="LOCAL-00004" summary="init">
+      <created>1589853267176</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1589853267176</updated>
+    </task>
+    <task id="LOCAL-00005" summary="init">
+      <created>1589853623865</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1589853623865</updated>
+    </task>
+    <task id="LOCAL-00006" summary="init">
+      <created>1589853871666</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1589853871666</updated>
+    </task>
+    <task id="LOCAL-00007" summary="init">
+      <created>1589854236995</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1589854236995</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
+    <servers />
+  </component>
+  <component name="TodoView">
+    <todo-panel id="selected-file">
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="2" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <ignored-roots>
+      <path value="$PROJECT_DIR$/.." />
+      <path value="$PROJECT_DIR$" />
+    </ignored-roots>
+    <MESSAGE value="加入 eslint插件 基础接口页面" />
+    <MESSAGE value="init" />
+    <option name="LAST_COMMIT_MESSAGE" value="init" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="552" y="161" key="#Plugins" timestamp="1587344412770">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="552" y="161" key="#Plugins/0.0.1920.1040@0.0.1920.1040" timestamp="1587344412770" />
+    <state x="414" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1589852596891">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="414" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1589852596891" />
+    <state x="690" y="266" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1589854073216">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="690" y="266" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1589854073216" />
+    <state x="651" y="185" key="#dev" timestamp="1589852535349">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="651" y="185" key="#dev/0.0.1920.1040@0.0.1920.1040" timestamp="1589852535349" />
+    <state x="184" y="86" key="DiffContextDialog" timestamp="1589854111179">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="184" y="86" key="DiffContextDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1589854111179" />
+    <state x="740" y="261" key="FileChooserDialogImpl" timestamp="1589854153513">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="740" y="261" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1589854153513" />
+    <state width="1899" height="433" key="GridCell.Tab.0.bottom" timestamp="1589852936491">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1899" height="433" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1589852936491" />
+    <state width="1899" height="433" key="GridCell.Tab.0.center" timestamp="1589852936491">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1899" height="433" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1589852936491" />
+    <state width="1899" height="433" key="GridCell.Tab.0.left" timestamp="1589852936491">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1899" height="433" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1589852936491" />
+    <state width="1899" height="433" key="GridCell.Tab.0.right" timestamp="1589852936491">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1899" height="433" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1589852936491" />
+    <state x="836" y="385" key="MultipleFileMergeDialog" timestamp="1589853710402">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="836" y="385" key="MultipleFileMergeDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1589853710402" />
+    <state x="461" y="164" key="SettingsEditor" timestamp="1589854516347">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="461" y="164" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1589854516347" />
+    <state x="552" y="249" key="Vcs.Push.Dialog.v2" timestamp="1589854390583">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="552" y="249" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1589854390583" />
+    <state x="663" y="212" width="594" height="616" key="find.popup" timestamp="1589852841335">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="663" y="212" width="594" height="616" key="find.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1589852841335" />
+    <state x="739" y="298" key="git4idea.merge.GitMergeDialog" timestamp="1589854384617">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="739" y="298" key="git4idea.merge.GitMergeDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1589854384617" />
+  </component>
+</project>

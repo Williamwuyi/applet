@@ -100,7 +100,6 @@ export default {
     },
     handleCheck (checkedKeys) {
       this.checkedKeys = checkedKeys
-      console.log('选中的id ', checkedKeys)
     },
     handleExpand (expandedKeys) {
       this.expandedKeys = expandedKeys
@@ -131,7 +130,6 @@ export default {
           this.form.setFieldsValue(obj)
         }
       })
-      console.log('编辑：', user)
       // 实现自动选定上级菜单并展开
       // 如果时公共文件夹则默认不选择树状图
       this.defaultCheckedKeys = user.deptName
@@ -154,9 +152,7 @@ export default {
             this.loading = false
             return
           }
-          console.log(values)
           this.$put('address', values).then((res) => {
-            console.log(res)
             if (res.data.status === 1) {
               this.reset()
               this.$emit('success')

@@ -318,7 +318,7 @@ export default {
       if (treeNode) {
         return new Promise(resolve => {
           setTimeout(() => {
-            this.$get('/dept/queryDeptChile', {prentId: treeNode.dataRef.id}).then((r) => {
+            this.$get('/dept/queryDeptChileNotshiro', {prentId: treeNode.dataRef.id}).then((r) => {
               let newData = r.data.data
               newData.forEach(t => {
                 this.deptTreeData.push(
@@ -330,7 +330,7 @@ export default {
           }, 300)
         })
       } else {
-        this.$get('/dept/queryDeptChile', {prentId: this.deptId}).then((r) => {
+        this.$get('/dept/queryDeptChileNotshiro', {prentId: 0}).then((r) => {
           let newData = r.data.data
           newData.forEach(t => {
             this.deptTreeData.push(

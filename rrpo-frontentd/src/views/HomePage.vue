@@ -45,7 +45,7 @@
               <a-col :span="16" style="margin-top: 3px;width: 500px;white-space: nowrap;overflow: hidden; text-overflow:ellipsis;">
 <!--                滚动文字 -->
                 <a-carousel autoplay value="left">
-                  <span style="font-style:oblique" v-for="(n,index) in rollData" :key="index" :value="n.id"><a @click="lookStatus(n.id)" style="color: orangered">{{n.title}}</a></span>
+                  <span style="font-style:oblique" v-for="(n,index) in rollData" :key="index" :value="n.id" :loading="loading"><a @click="lookStatus(n.id)" style="color: orangered">{{n.title}}</a></span>
                 </a-carousel>
               </a-col>
             </a-row>
@@ -248,7 +248,6 @@ export default {
       this.loading = true
       this.$get('/exchange/inbox').then(res => {
         let data = res.data.data.rows
-        console.log('信息互递：', data)
         let xxhd = []
         for (let key in data) {
           if (data[key].isRead === 0) {
@@ -280,7 +279,6 @@ export default {
       this.loading = true
       this.$get('/prize/inbox').then(res => {
         let data = res.data.data.rows
-        console.log('一事一奖：', data)
         let ysyj = []
         for (let key in data) {
           if (data[key].status === 3) {
@@ -296,7 +294,6 @@ export default {
     },
     // 信息互递文字点击跳转
     lookStatus (dataId) {
-      console.log('点的id：', dataId)
       this.$get('/exchange/inbox', {id: dataId}).then(res => {
         this.$refs.oldInBox.viewLook(res.data.data.rows[0])
       })
@@ -323,7 +320,6 @@ export default {
     rollFun () {
       this.loading = true
       this.$get('/exchange/getNotReceive').then(res => {
-        console.log('滚动数据：', res.data.data)
         this.rollData = res.data.data
         this.loading = false
       })
@@ -391,7 +387,6 @@ export default {
         }
       }, true, true)
     }).catch((r) => {
-      console.error(r)
       this.$message.error('获取首页信息失败')
     })
   }

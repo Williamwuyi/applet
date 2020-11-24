@@ -30,15 +30,15 @@
                     { max: 20, message: '长度不能超过20个字符'}
                   ]}]"/>
       </a-form-item>
-      <a-form-item label='系数占比' v-bind="formItemLayout" v-if="count">
-        <a-input style="width: 100%" placeholder="此项为‘封闭程度’字典项内容"
-                 v-decorator="['coefficient',
-                   {rules: [
-                    { required: false, message: '不能为空'}
-                  ]}]"/>
-      </a-form-item>
+<!--      <a-form-item label='系数占比' v-bind="formItemLayout" v-if="count">-->
+<!--        <a-input style="width: 100%" placeholder="此项为‘封闭程度’字典项内容"-->
+<!--                 v-decorator="['coefficient',-->
+<!--                   {rules: [-->
+<!--                    { required: false, message: '不能为空'}-->
+<!--                  ]}]"/>-->
+<!--      </a-form-item>-->
       <a-form-item label="线路性质" width=650 v-bind="formItemLayout" v-if="route">
-        <a-select  style="width: 100%" placeholder="此项为‘线路’字典项内容" :allowClear="true"
+        <a-select  style="width: 100%" placeholder="请选择线路性质" :allowClear="true"
                    v-decorator="['nature',
                    {rules: [
                     { required: false, message: '不能为空'}
@@ -52,14 +52,14 @@
         </a-select>
       </a-form-item>
       <a-form-item label='公里数' v-bind="formItemLayout" v-if="route">
-        <a-input style="width: 100%" placeholder="此项为‘线路’字典项内容"
+        <a-input style="width: 100%" placeholder="请输入公里数"
                  v-decorator="['revenue',
                    {rules: [
                     { required: false, message: '不能为空'},
                     { max: 20, message: '长度不能超过20个字符'}
                   ]}]"/>
       </a-form-item>
-      <a-form-item label='值' v-bind="formItemLayout">
+      <a-form-item label='值' v-bind="formItemLayout" v-if="show">
         <a-input-number style="width: 100%" placeholder="请输入值"
                  v-decorator="['value',
                    {rules: [
@@ -92,6 +92,7 @@ export default {
     return {
       count: false,
       route: false,
+      show: false,
       loading: false,
       arr: [],
       formItemLayout,
@@ -127,7 +128,7 @@ export default {
     },
     // 判断左侧是点击哪个字典
     searchId (key) {
-      // console.log(key)
+      console.log(key)
       this.msgbasic = key
       if (key === '96b76029ac74b1ad1c73642b6ddb9dab') {
         this.count = true
@@ -139,6 +140,11 @@ export default {
       } else {
         this.route = false
       }
+      if (key === '873293cce2e47b64bf6ab3b6b007f436' || key === '96b76029ac74b1ad1c73642b6ddb9dab' || key === 'dc5b3760be9b7a9cd3497f38abc2fc12' || key === '3c539bb9577d64f75d5e2039268037ea' || key === '7db3ce75ef3dd8b92830c325a81e10b4' || key === 'b730c43d0c0723636433a8f325650632') {
+        this.show = true
+      } else {
+        this.show = false
+      }
     },
     handleSubmit () {
       this.form.validateFields((err, values) => {
@@ -146,7 +152,7 @@ export default {
           const param = {
             parentId: this.msgbasic,
             fieldName: values.fieldName,
-            coefficient: values.coefficient,
+            // coefficient: values.coefficient,
             nature: values.nature,
             revenue: values.revenue,
             value: values.value

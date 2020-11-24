@@ -176,7 +176,6 @@ export default {
       this.loading = true
       this.$get('exchange', params).then(res => {
         let newData = res.data.data
-        console.log('查询列表信息：', newData)
         // 分页;
         const pagination = { ...this.pagination }
         pagination.total = newData.total
@@ -312,7 +311,6 @@ export default {
         centered: true,
         onOk () {
           that.$get('/exchange/release/' + batch.join(',')).then(res => {
-            console.log(res)
             if (res.status === 200) {
               that.$notification.success({message: '系统提示', description: '发布成功！', duration: 4})
               that.fetch()

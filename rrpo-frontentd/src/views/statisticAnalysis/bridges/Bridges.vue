@@ -1,5 +1,13 @@
 <template>
-  <div style="width: 100%; min-height: 690px">
+  <div style="width: 100%; min-height: 690px;background-color: white;">
+    <div>
+      <a-breadcrumb style="padding: 20px 10px">
+        <a-breadcrumb-item>
+          <a @click="home">首页</a>
+        </a-breadcrumb-item>
+        <a-breadcrumb-item>过轨通道</a-breadcrumb-item>
+      </a-breadcrumb>
+    </div>
     <div :class="advanced ? 'search' : null">
       <!-- 搜索区域 -->
       <a-form layout="horizontal">
@@ -52,7 +60,7 @@
       </a-form>
     </div>
     <!-- 表格区域 -->
-    <div>
+    <div style="margin: 0 10px">
       <div style="margin-bottom: 5px">
         <a-button type="primary" @click="handleAdd" v-hasPermission="'notice:add'">
           添加
@@ -273,6 +281,9 @@ export default {
     },
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
+    },
+    home () {
+      this.$router.push('/home')
     },
     // 查询
     search () {

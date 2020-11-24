@@ -74,7 +74,7 @@
       @change="handleTableChange"
       :rowKey="record=>record.id"
       :loading="loading">
-      <template slot="operation" slot-scope="text, record">
+      <template slot="operation" slot-scope="text, record" v-hasPermission="'communication:edit'">
 <!--        <a-icon  type="setting" theme="twoTone" twoToneColor="#4a9ff5" style="margin-left:8px" @click="edit(record)" title="修改" v-hasPermission="'communication:edit'"></a-icon>-->
         <a @click="edit(record)" style="color: #4a9ff5">修改</a>
       </template>
@@ -196,7 +196,6 @@ export default{
       this.loading = true
       this.$get('/address/iPage', params).then(res => {
         let newData = res.data.data
-        console.log('查询列表信息：', newData)
         // 分页;
         const pagination = { ...this.pagination }
         pagination.total = newData.total
@@ -269,7 +268,6 @@ export default{
         return
       }
       let that = this
-      console.log(that.selectedRowKeys)
       this.$confirm({
         title: '确定删除所选中的记录?',
         content: '当您点击确定按钮后，这些记录将会被彻底删除',

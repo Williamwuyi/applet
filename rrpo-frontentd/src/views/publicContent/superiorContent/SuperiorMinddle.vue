@@ -30,19 +30,19 @@
           <!--     有子集文件夹显示     -->
           <a href="#" v-if="!item.hasChildren" @dblclick="ClickShare(item)">
             <img src="static/img/share.png"/>
-            <p :title="`创建时间： ${item.creatTime}`" style="text-align: center;color: #000c17;">{{item.name}}</p>
+            <p :title="`创建时间： ${item.creatTime} \n 创建人：${item.userName}`" style="text-align: center;color: #000c17;">{{item.name}}</p>
           </a>
           <!--     无子集文件夹显示     -->
           <a href="#" v-else @dblclick="ClickShare(item)">
             <img style="width: 55px;height: 52px;margin-left: 12px;margin-top: 7px;" src="static/img/share_active.png"/>
-            <p :title="`创建时间： ${item.creatTime}`" style="margin-top: 9px;text-align: center;color: #000c17;">{{item.name}}</p>
+            <p :title="`创建时间： ${item.creatTime} \n 创建人：${item.userName}`" style="margin-top: 9px;text-align: center;color: #000c17;">{{item.name}}</p>
           </a>
         </div>
         <!--     文件显示   -->
         <div v-else class="bgColor" style="padding-top: 13px;position: relative">
           <a href="#"  @dblclick="ClickShare(item)">
             <img style="width: 55px;height: 52px;margin-left: 12px;" src="static/img/wps.png"/>
-            <p :title="`创建时间: ${item.time} \n文件名: ${item.oldName}`" class="fileName">{{item.oldName}}</p>
+            <p :title="`创建时间: ${item.time} \n文件名: ${item.oldName} \n 上传人：${item.userName}`" class="fileName">{{item.oldName}}</p>
           </a>
         </div>
       </div>

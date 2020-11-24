@@ -1,6 +1,14 @@
 <template>
-  <div style="width: 100%;min-height: 780px">
-  <div>
+  <div style="width: 100%;min-height: 780px;background-color: white">
+    <div>
+      <a-breadcrumb style="padding: 20px 10px">
+        <a-breadcrumb-item>
+          <a @click="home">首页</a>
+        </a-breadcrumb-item>
+        <a-breadcrumb-item>涉案事件</a-breadcrumb-item>
+      </a-breadcrumb>
+    </div>
+  <div style="margin: 0 10px">
       <div :class="advanced ? 'search' : null">
         <!-- 搜索区域 -->
         <a-form>
@@ -96,16 +104,16 @@
           </div>
         </a-form>
       </div>
-    <a-button class="btn" @click="handleAdd" type="primary">
+    <a-button class="btn" @click="handleAdd" type="primary" v-has-any-permission="'InvolveEvent:add'">
       添加
     </a-button>
-    <a-button class="btn" @click="handleDel" style="background-color: #FF4040;color: white">
+    <a-button class="btn" @click="handleDel" style="background-color: #FF4040;color: white" v-has-any-permission="'InvolveEvent:delete'">
       删除
     </a-button>
-      <a-button class="btn" @click="handleLock" style="background-color: #CDAD00;color: white">
+      <a-button class="btn" @click="handleLock" style="background-color: #CDAD00;color: white" v-has-any-permission="'InvolveEvent:lock'">
         锁定
       </a-button>
-      <a-button class="btn" @click="handleRelieve" style="background-color: #CD853F;color: white">
+      <a-button class="btn" @click="handleRelieve" style="background-color: #CD853F;color: white" v-has-any-permission="'InvolveEvent:lock'">
         解锁
       </a-button>
     <a-table style="overflow: auto;width: 100%"
@@ -322,11 +330,13 @@ export default {
         this.loading = false
       })
     },
+    home () {
+      this.$router.push('/home')
+    },
     // 选择地级市是，查找县级市
     citySChange (key) {
       this.loading = true
       this.$get('/accident/dept/list', {prentId: key}).then(res => {
-        console.log('查市级', res.data)
         this.cityQ = res.data.data
         this.loading = false
       })
@@ -336,9 +346,7 @@ export default {
     },
     cityQChange (key) {
       this.loading = true
-      console.log('++++', key)
       this.$get('/dept/list', {deptId: key}).then(res => {
-        console.log('查区县', res.data)
         this.cityX = res.data
         this.loading = false
       })
@@ -392,7 +400,6 @@ export default {
     },
     // 选择结束时间
     onEndChange (value, date) {
-      console.log('结束时间', value, '--', date)
       let year = date.toString().substring(0, 4)
       let months = date.toString().substring(5, 7)
       let month = parseInt(months) + 1
@@ -475,7 +482,6 @@ export default {
         return
       }
       let that = this
-      console.log(that.selectedRowKeys)
       this.$confirm({
         content: '当您点击确定按钮后，这些记录将会被彻底删除',
         centered: true,

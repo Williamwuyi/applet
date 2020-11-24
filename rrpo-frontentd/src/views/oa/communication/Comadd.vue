@@ -93,7 +93,6 @@ export default {
       this.$emit('close')
     },
     handleCheck (checkedKeys) {
-      console.log('选中的id ', checkedKeys)
       this.checkedKeys = checkedKeys
     },
     handleExpand (expandedKeys) {
@@ -131,7 +130,6 @@ export default {
             this.loading = false
             return
           }
-          console.log(values)
           this.$post('address', values).then((res) => {
             if (res.data.status === 1) {
               this.reset()
@@ -153,7 +151,6 @@ export default {
       this.loading = true
       if (this.comAddVisiable) {
         this.$get('/dept/queryDeptChile').then((r) => {
-          console.log('所属机构：', r.data)
           this.replaceFields = { key: 'deptId', title: 'deptName', value: 'deptId' }
           this.deptTreeData = r.data.data
           this.loading = false

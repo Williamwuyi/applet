@@ -15,7 +15,18 @@
             label="接收时间:"
             :labelCol="{span: 5}"
             :wrapperCol="{span: 18, offset: 0}">
-            <a-month-picker :locale="locale" placeholder="选择查询时间" rel="releaseTime" @change="onChange" v-model="monthPicker" />
+            <a-range-picker
+              :placeholder="['开始时间', '结束时间']"
+              format="YYYY-MM"
+              :locale="locale"
+              :value="monthValue"
+              :mode="mode"
+              :show-time="{ format: 'YYYY-MM' }"
+              @panelChange="monthChange"
+              @blur="cityBlur(monthValue, $event)"
+              @change="onChange"
+              @ok="onOk"
+            />
           </a-form-item>
         </a-col>
         <a-col :md="8" :sm="24" style="margin-left: 10px;margin-top: 3px">
@@ -81,10 +92,10 @@ const Statistics = {
   series: [
     {
       name: '数量',
-      type: 'line',
+      type: 'bar',
       data: [],
       itemStyle: {
-        color: '#100000'
+        color: '#42B983'
       }
     }
   ]
@@ -93,10 +104,13 @@ export default {
   name: 'Index',
   data () {
     return {
-      titleText: '',
+      titleText: '护路简报统计',
       character: {
         title: ''
       },
+      mode: ['month', 'month'],
+      monthValue: [],
+      ifOpen: true,
       characters: {},
       loading: false,
       locale,
@@ -109,8 +123,7 @@ export default {
         pageSizeOptions: ['10', '20', '50', '100'], // 每页中显示的数据
         showTotal: total => `共有 ${total} 条数据` // 分页中显示总的数据
       },
-      Statistics,
-      monthPicker: null
+      Statistics
     }
   },
   computed: {
@@ -132,11 +145,6 @@ export default {
     }
   },
   mounted () {
-    let date = new Date()
-    this.characters.startTime = date.getFullYear() + '-' + (date.getMonth() + 1) + '-01 00:00'
-    this.characters.endTime = date.getFullYear() + '-' + (date.getMonth() + 1) + '-31 23:59'
-    this.titleText = date.getFullYear() + '年' + (date.getMonth() + 1) + '月份简报统计'
-    console.log(this.characters)
     this.fetch()
     this.query()
   },
@@ -161,7 +169,6 @@ export default {
       this.loading = true
       this.$get('/briefing/countList', params).then(res => {
         let newData = res.data.data
-        console.log(newData)
         // 分页;
         const pagination = { ...this.pagination }
         pagination.total = newData.total
@@ -177,7 +184,7 @@ export default {
     look (e) {
       let ids = {briefingId: e.id}
       this.loading = true
-      this.titleText = e.title + '简报统计'
+      this.titleText = e.title + '统计'
       this.$get('/briefing/countCityById', ids).then((e) => {
         this.Statistics.xAxis.data = []
         this.Statistics.series[0].data = []
@@ -204,15 +211,90 @@ export default {
         ...this.character
       })
     },
-    onChange (date, dateString) {
-      this.character.startTime = dateString + '-01 00:00'
-      this.character.endTime = dateString + '-31 23:59'
-      this.characters.startTime = dateString + '-01 00:00'
-      this.characters.endTime = dateString + '-31 23:59'
+    monthChange (value, mode) {
+      this.monthValue = value
+      this.mode = [mode[0] === 'date' ? 'month' : mode[0], mode[1] === 'date' ? 'month' : mode[1]]
+    },
+    cityBlur (value, data) {
+      console.log('失去焦点', value)
+      if (value === undefined) {
+        this.character.startTime = ''
+        this.character.endTime = ''
+        this.characters = []
+        this.titleText = '护路简报统计'
+      } else {
+        if (value.length !== 0) {
+          let start = new Date(value[0]._d)
+          let end = new Date(value[1]._d)
+          let startMonthData = ''
+          let endMonthData = ''
+          if (start.getMonth() < 9) {
+            startMonthData = '0' + (start.getMonth() + 1)
+          } else {
+            startMonthData = (start.getMonth() + 1)
+          }
+          if (end.getMonth() < 9) {
+            endMonthData = '0' + (end.getMonth() + 1)
+          } else {
+            endMonthData = (end.getMonth() + 1)
+          }
+          let ba = start.getFullYear() + '-' + startMonthData + '-01 00:00'
+          let bb = end.getFullYear() + '-' + endMonthData + '-31 23:59'
+          console.log('开始时间qujd', ba)
+          console.log('结束时间qujd', bb)
+          this.character.startTime = ba
+          this.character.endTime = bb
+          this.characters.startTime = ba
+          this.characters.endTime = bb
+        } else {
+          this.character.startTime = ''
+          this.character.endTime = ''
+          this.characters = []
+          this.titleText = '护路简报统计'
+        }
+      }
+    },
+    onChange (value) {
+      console.log('重置时间', value)
+      this.monthValue = value[0]
+      // var d = new Date('Fri Dec 12 2014 08:00:00 GMT+0800');
+      // d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
+      // this.character.startTime = dateString + '-01 00:00'
+      // this.character.endTime = dateString + '-31 23:59'
+      // this.characters.startTime = dateString + '-01 00:00'
+      // this.characters.endTime = dateString + '-31 23:59'
+    },
+    onOk (value) {
+      if (value.length !== 0) {
+        let start = new Date(value[0]._d)
+        let end = new Date(value[1]._d)
+        let startMonthData = ''
+        let endMonthData = ''
+        if (start.getMonth() < 9) {
+          startMonthData = '0' + (start.getMonth() + 1)
+        } else {
+          startMonthData = (start.getMonth() + 1)
+        }
+        if (end.getMonth() < 9) {
+          endMonthData = '0' + (end.getMonth() + 1)
+        } else {
+          endMonthData = (end.getMonth() + 1)
+        }
+        let ba = start.getFullYear() + '-' + startMonthData + '-01 00:00'
+        let bb = end.getFullYear() + '-' + endMonthData + '-31 23:59'
+        console.log('开始时间OK', ba)
+        console.log('结束时间OK', bb)
+        this.character.startTime = ba
+        this.character.endTime = bb
+        this.characters.startTime = ba
+        this.characters.endTime = bb
+      } else {
+        console.log('选择时间为空')
+      }
     },
     search () {
-      if (this.character.startTime !== undefined) {
-        this.titleText = this.character.startTime.slice(0, 4) + '年' + this.character.startTime.slice(5, 7) + '月份简报统计'
+      if (this.characters.startTime !== undefined) {
+        this.titleText = this.character.startTime.slice(0, 4) + '年' + this.character.startTime.slice(5, 7) + '月至' + this.character.endTime.slice(0, 4) + '年' + this.character.endTime.slice(5, 7) + '月简报统计'
       }
       this.fetch({
         ...this.character
@@ -223,10 +305,10 @@ export default {
     },
     reset () {
       this.loading = true
-      let date = new Date()
-      this.titleText = date.getFullYear() + '年' + (date.getMonth() + 1) + '月份简报统计'
+      this.monthValue = []
+      this.titleText = '护路简报统计'
       this.character = []
-      this.monthPicker = null
+      this.characters = []
       this.fetch()
       this.query()
       this.loading = false

@@ -13,36 +13,22 @@
           <a-input
             v-decorator="['title',{rules: [{ required: true, message: '标题不能为空'}]}]" />
         </a-form-item>
-<!--        <a-form-item label='是否同步' v-bind="formItemLayout" >-->
-<!--          <a-radio-group :disabled="isRadio" @change="radioChange">-->
-<!--            <a-radio value="1">-->
-<!--              门户网站-->
-<!--            </a-radio>-->
-<!--            <a-radio value="2">-->
-<!--              其他-->
-<!--            </a-radio>-->
-<!--          </a-radio-group>-->
-<!--        </a-form-item>-->
-<!--        <a-form-item v-if="isSX" label='来源' v-bind="formItemLayout">-->
-<!--          <a-input v-decorator="['source']" />-->
-<!--        </a-form-item>-->
-<!--        <a-form-item v-if="isSX" label='时间' v-bind="formItemLayout">-->
-<!--          <a-date-picker  @change="onTimeChange" :default-value="defaultTime" />-->
-<!--        </a-form-item>-->
-<!--        <a-form-item v-if="isSX" label='栏目' v-bind="formItemLayout">-->
-<!--          <a-select-->
-<!--            mode="multiple"-->
-<!--            show-search style="width: 100%"-->
-<!--            placeholder="选择栏目"-->
-<!--            @change="handleChange"-->
-<!--            v-decorator="['lanmu',{rules: [{ required: true, message: '栏目必选'}]}]"-->
-<!--          >-->
-<!--            <a-select-option v-for="i in programa" :key="i.id" :value="i.id">-->
-<!--              {{ i.name }}-->
-<!--            </a-select-option>-->
-<!--          </a-select>-->
-<!--        </a-form-item>-->
-        <a-form-item label='传阅人员' v-bind="formItemLayout">
+        <a-form-item label='是否同步' v-bind="formItemLayout" v-has-any-permission="'shieldRoad:synchroniz'">
+          <a-checkbox :disabled="isRadio" @change="tbChange">门户网站</a-checkbox>
+        </a-form-item>
+        <!--        <a-form-item v-if="isTb" label='来源' v-bind="formItemLayout">-->
+        <!--          <a-input v-decorator="['source']" disabled />-->
+        <!--        </a-form-item>-->
+        <a-form-item v-if="isTb" label='时间' v-bind="formItemLayout">
+          <a-date-picker  @change="tbTimeChange" :default-value="tbDefaultTime" />
+        </a-form-item>
+        <a-form-item v-if="isTb" label='栏目' v-bind="formItemLayout">
+          <a-select mode="multiple" ref="lanmu" show-search style="width: 100%" placeholder="选择栏目" @change="handleChange">
+            <a-select-option v-for="i in programa" :key="i.id" :value="i.id">
+              {{ i.name }}
+            </a-select-option>
+          </a-select>
+        </a-form-item>        <a-form-item label='传阅人员' v-bind="formItemLayout">
           <a-button @click="selectSender" >选择传阅人</a-button>
           <a-collapse>
             <a-collapse-panel key="1" header="查看选中人员">
@@ -118,8 +104,10 @@ export default {
       isRadio: false,
       dateTime: null, // 选择时间
       defaultTime: null, // 默认当前时间
-      portal: 0, // 是否同步门户网
+      tbDefaultTime: null, // 默认当前时间
+      portal: false, // 是否同步门户网
       programa: [], // 栏目数据
+      isTb: false,
       targetsId: '', // 栏目id
       cont: 1,
       personnelId: [], // 模态框提交的人员id
@@ -147,7 +135,7 @@ export default {
       this.folderVisible = true
     },
     // 是否同步
-    radioChange (e) {
+    tbChange (e) {
       // 获取当前默认时间展示
       let date = new Date()
       let y = date.getFullYear()
@@ -155,28 +143,26 @@ export default {
       m = m < 10 ? ('0' + m) : m
       var d = date.getDate()
       d = d < 10 ? ('0' + d) : d
-      this.defaultTime = y + '-' + m + '-' + d
+      this.tbDefaultTime = y + '-' + m + '-' + d
       // 获取栏目数据
-      // this.$get('/dict/getTargets').then((res) => {
-      //   console.log('获取栏目信息', res.data.data.targets)
-      //   this.programa = res.data.data.targets
-      // })
-      // 判断是否同步 显示
-      if (e.target.value === '1') {
-        this.isSX = e.target.checked
-      } else {
-        this.isSX = false
-      }
+      this.$get('/dict/getTargets').then((res) => {
+        this.programa = res.data.data.targets
+      })
+      this.isTb = e.target.checked
       // 是否同步，是否选中门户网
-      this.portal = e.target.value
+      this.portal = e.target.checked
+    },
+    // 选择时间
+    tbTimeChange (date, dateTime) {
+      this.tbTime = date
     },
     // 选择时间
     onTimeChange (date, dateTime) {
       this.dateTime = date
     },
+    // 选择栏目id
     handleChange (value) {
       this.targetsId = value.toString()
-      console.log('栏目id', this.targetsId)
     },
     // 选传阅人的提交模态框
     modalSubmit (dataId) {
@@ -245,21 +231,22 @@ export default {
         this.get() // 获取文本内容
         this.getFileList() // 获取上传文件id
         if (!err) {
-          let param = {}
+          // 判断是否同步且时间
           let atTime = ''
-          if (this.portal === '1') {
-            if (this.dateTime !== null) {
-              atTime = this.dateTime
+          let param = {}
+          if (this.portal) {
+            if (this.tbTime !== '') {
+              atTime = this.tbTime
             } else {
               atTime = new Date()
             }
-            param.synchronizeWeb = this.portal // 是否同步门户网
-            param.source = values.source // 来源
+            param.synchronizeWeb = 1 // 是否同步门户网
+            // param.source = values.source // 来源
             param.time = atTime // 网页信息发布时间
-            // param.targetsId = this.targetsId // 栏目id
+            param.targetsId = this.targetsId // 栏目id
           } else {
             this.targetsId = ''
-            values.source = ''
+            param.synchronizeWeb = 0
           }
           param.sendUserIds = this.personnelId // 传阅人id
           param.content = this.newFolder.content // 文本内容

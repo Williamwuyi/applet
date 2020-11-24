@@ -31,7 +31,6 @@ export default {
     this.loading = true
     // 树结构获取数据
     this.$get('/dept/queryDeptChileNotshiro').then((r) => {
-      console.log('获取机构树：', r.data)
       this.replaceFields = { title: 'deptName', key: 'deptId' }
       this.treeData = r.data.data
       this.loading = false
@@ -56,7 +55,6 @@ export default {
     // 点击，传递部门key，在人员表中显示当前部门的人员。
     onSelect (selectedKeys) {
       this.$emit('reloadStaffTable', selectedKeys[0])
-      console.log('选中的id', selectedKeys)
       this.selectedKeys = selectedKeys
       this.$emit('clearSelectrows')
     }

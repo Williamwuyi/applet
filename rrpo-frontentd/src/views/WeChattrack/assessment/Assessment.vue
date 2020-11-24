@@ -117,6 +117,9 @@ export default {
         title: '姓名',
         dataIndex: 'name'
       }, {
+        title: '身份证',
+        dataIndex: 'idCar'
+      }, {
         title: '身份',
         dataIndex: 'sf'
       }, {
