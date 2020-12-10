@@ -35,7 +35,7 @@
                       @change="thingtype"
                       v-model="character.types"
                     >
-                      <a-select-option v-for="n in fileListdata" :key="n.dictId" :value="n.fieldName">{{n.fieldName}}</a-select-option>
+                      <a-select-option v-for="n in fileListdata" :key="n.id" :value="n.name">{{n.name}}</a-select-option>
                     </a-select>
                   </a-form-item>
                 </a-col>
@@ -65,22 +65,16 @@
                     <a-select
                       v-model="statuses"
                     >
-                      <a-select-option v-if="ranks==0" value="3,6,7">
+                      <a-select-option v-if="ranks==4" value="6">
                         未审批
                       </a-select-option>
-                      <a-select-option v-if="ranks==2 || ranks == 4" value="3">
-                        未审批
-                      </a-select-option>
-                      <a-select-option v-if="ranks==1" value="3,5">
-                        未审批
-                      </a-select-option>
-                      <a-select-option v-if="ranks==4" value="6,7,8">
+                      <a-select-option v-if="ranks==4" value="7,8">
                         已审批
                       </a-select-option>
-                      <a-select-option v-if="ranks==1" value="6,7,8">
-                        已审批
+                      <a-select-option v-if="ranks==1" value="7">
+                        未审批
                       </a-select-option>
-                      <a-select-option v-if="ranks==2" value="5,6,7,8">
+                      <a-select-option v-if="ranks==1" value="6,8">
                         已审批
                       </a-select-option>
                       <a-select-option value="8">
@@ -117,30 +111,18 @@
       <a slot="content" slot-scope="text,record" style="color:#6290FF" @click="look(record)" title="text">{{ text }}</a>
       <template slot="status" slot-scope="text, record">
         <a-tag v-if="record.status === 3" color="#DEE1E6">未审批</a-tag>
-        <a-tag v-else-if="record.status === 5 && ranks===2" color="#87d068" >已审批</a-tag>
         <a-tag v-else-if="record.status === 6 && ranks===1" color="#87d068" >已审批</a-tag>
-        <a-tag v-else-if="record.status === 7 && ranks===1" color="#87d068" >已审批</a-tag>
         <a-tag v-else-if="record.status === 7 && ranks===4" color="#87d068" >已审批</a-tag>
         <a-tag v-else-if="record.status === 6 && ranks===4" color="#DEE1E6" >未审批</a-tag>
-        <a-tag v-else-if="record.status === 5 && ranks===1" color="#DEE1E6" >未审批</a-tag>
-        <a-tag v-else-if="record.status === 7 && ranks===0" color="#DEE1E6" >未审批</a-tag>
-        <a-tag v-else-if="record.status === 6 && ranks===0" color="#DEE1E6" >未审批</a-tag>
+        <a-tag v-else-if="record.status === 7 && ranks===1" color="#DEE1E6" >未审批</a-tag>
         <a-tag v-else-if="record.status === 8" color="#87d068" >已完结</a-tag>
         <a-tag v-else-if="record.status === 2" color="#FF0033">被驳回</a-tag>
       </template>
       <template slot="operation" slot-scope="text, record">
-
-        <a v-if="record.status === 3" style="color:#4a9ff5;margin:0" v-hasPermission="'reward:approval'" @click="batchAddrew(record)" title="审批">审批</a>
-        <a v-else-if="record.status === 6&&ranks===4" style="color:#4a9ff5;margin:0" v-hasPermission="'reward:approval'" @click="batchAddrew(record)" title="审批">审批</a>
-        <a v-else-if="record.status === 7&&ranks===0" style="color:#4a9ff5;margin:0" v-hasPermission="'reward:approval'" @click="batchAddrew(record)" title="审批">审批</a>
-        <a v-else-if="record.status === 6&&ranks===0" style="color:#4a9ff5;margin:0" v-hasPermission="'reward:approval'" @click="batchAddrew(record)" title="审批">审批</a>
-        <a v-else-if="record.status === 5&&ranks===1" style="color:#4a9ff5;margin:0" v-hasPermission="'reward:approval'" @click="batchAddrew(record)" title="审批">审批</a>
-        <a v-if="record.status !== 2&&record.status === 3"  style="color:#FF0000;margin:0" @click="reject(record)" title="驳回">驳回</a>
-        <a v-else-if="record.status !== 2&&record.status === 6&&ranks===4"  style="color:#FF0000;margin:0" @click="reject(record)" title="驳回">驳回</a>
-        <a v-else-if="record.status !== 2&&record.status === 7&&ranks===0"  style="color:#FF0000;margin:0" @click="reject(record)" title="驳回">驳回</a>
-        <a v-else-if="record.status !== 2&&record.status === 6&&ranks===0"  style="color:#FF0000;margin:0" @click="reject(record)" title="驳回">驳回</a>
-        <a v-else-if="record.status !== 2&&record.status === 5&&ranks===1"  style="color:#FF0000;margin:0" @click="reject(record)" title="驳回">驳回</a>
-        <a v-else-if="record.status === 8&&ranks===0" style="color:#4a9ff5;margin:0" @click="retweet(record)" title="同步到门户网">同步到门户网</a>
+        <a v-if="record.status === 6 && ranks===4" style="color:#4a9ff5;margin:0" v-hasPermission="'reward:approval'" @click="batchAddrew(record)" title="审批">审批</a>
+        <a v-else-if="record.status === 7 && ranks===1" style="color:#4a9ff5;margin:0" v-hasPermission="'reward:approval'" @click="batchAddrew(record)" title="审批">审批</a>
+        <a v-if="record.status === 7&&ranks===1"  style="color:#FF0000;margin:0" @click="reject(record)" title="驳回">驳回</a>
+        <a v-else-if="record.status == 6&& ranks===4"  style="color:#FF0000;margin:0" @click="reject(record)" title="驳回">驳回</a>
       </template>
     </a-table>
     <!--   查看-->
@@ -149,44 +131,30 @@
       @close="hanleedLoclose"
       ref="nolook"
     ></rewardLook>
-<!--    审批-->
-    <rewardApvals
+    <!--    审批-->
+    <pendingApvals
       :rewardApvals="rewardApvalVisiable"
       @close="hanleedApclose"
       @success="handleApv"
       ref="noApval"
-    ></rewardApvals>
-<!-- 生成报表-->
-    <reportForm
-      :reportform="reportform"
-      @close="hanleedRepclose"
-    ></reportForm>
-<!--    提交驳回意见-->
+    ></pendingApvals>
+    <!--    提交驳回意见-->
     <rewardReject
       :rewardReject="rewardReject"
       @close="hanleedRejclose"
       @success="handleRej"
       ref="noReject"
     ></rewardReject>
-<!--    转发至门户网-->
-    <synchronization
-      :synchronization="synchronization"
-      @close="synclose"
-      @success="handleSyn"
-      ref="noSyn"
-    />
   </div>
 </template>
 <script>
 import RangeDate from '@/components/datetime/RangeDate'
 import rewardLook from './rewardLook'
-import rewardApvals from './rewardApvals'
-import reportForm from './reportForm'
+import pendingApvals from './pendingApvals'
 import rewardReject from './rewardReject'
-import synchronization from './synchronization'
 export default {
   name: 'rewardout',
-  components: { rewardLook, rewardApvals, RangeDate, reportForm, rewardReject, synchronization },
+  components: { rewardLook, pendingApvals, RangeDate, rewardReject },
   data () {
     return {
       character: {},
@@ -194,7 +162,6 @@ export default {
       sortedInfo: null,
       rewardlookVisiable: false,
       rewardApvalVisiable: false,
-      reportform: false,
       rewardReject: false,
       form: this.$form.createForm(this),
       dataSource: [],
@@ -291,9 +258,8 @@ export default {
       this.fach()
     })
     // 获取事件类型
-    this.$get('/dict/getListTable', { parentId: 'fd14fb748b74e6bedddd14dd81a3be3e' }).then((r) => {
-      this.fileListdata = r.data.data.records
-      console.log('事件类型', this.fileListdata)
+    this.$get('prizeTypes/getTypesList').then((r) => {
+      this.fileListdata = r.data.data
     })
   },
   methods: {
@@ -301,7 +267,7 @@ export default {
     fach (parmse = {pageNum: 1, pageSize: 10}) {
       this.loading = true
       if (this.ranks === 4) {
-        parmse.cityStatus = 0
+        parmse.cityStatus = 1
         this.$get('/prize/inbox', parmse).then(res => {
           let newData = res.data.data
           // 分页;
@@ -312,17 +278,7 @@ export default {
           this.loading = false
         })
       } else if (this.ranks === 1) {
-        parmse.gongStatus = 0
-        this.$get('/prize/inbox', parmse).then(res => {
-          let newData = res.data.data
-          // 分页;
-          const pagination = { ...this.pagination }
-          pagination.total = newData.total
-          this.dataSource = newData.rows
-          this.pagination = pagination
-          this.loading = false
-        })
-      } else {
+        parmse.gongStatus = 1
         this.$get('/prize/inbox', parmse).then(res => {
           let newData = res.data.data
           // 分页;
@@ -360,25 +316,13 @@ export default {
     },
     onChange2 (value) {
     },
-    // 同步到门户网
-    retweet (record) {
-      this.synchronization = true
-      this.$refs.noSyn.setTableValues(record)
-    },
-    // 关闭转载页面
-    synclose () {
-      this.synchronization = false
-    },
-    // 返回转载状态
-    handleSyn () {
-    },
     // 查询
     search () {
+      // 通过this.character来进行查询
       if (this.statuses !== null) {
         this.character.statuses = this.statuses.split(',')
       }
-      console.log(this.character.statuses)
-      // 通过this.character来进行查询
+      this.character.type = 0
       let {sortedInfo} = this
       let sortField, sortOrder
       // 获取当前列的排序和列的过滤规则
@@ -459,10 +403,6 @@ export default {
     hanleedRejclose () {
       this.rewardReject = false
     },
-    // 关闭报表页
-    hanleedRepclose () {
-      this.reportform = false
-    },
     handleTableChange (pagination, filters, sorter) {
       this.sortedInfo = sorter
       // 通知界面
@@ -471,7 +411,7 @@ export default {
       // 通知后台
       this.character.pageNum = pagination.current
       this.character.pageSize = pagination.pageSize
-      this.character.type = 1
+      this.character.type = 0
       this.fach({
         sortField: sorter.field,
         sortOrder: sorter.order,

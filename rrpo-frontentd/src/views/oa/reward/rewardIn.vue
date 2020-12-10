@@ -39,6 +39,18 @@
                     <a-select-option value=3>
                       已上报
                     </a-select-option>
+                    <a-select-option v-if="ranks === 3" value=5>
+                      区县已审批
+                    </a-select-option>
+                    <a-select-option value=6>
+                      市级已审批
+                    </a-select-option>
+                    <a-select-option value=7>
+                      公安处已审批
+                    </a-select-option>
+                    <a-select-option value=8>
+                      已完结
+                    </a-select-option>
                     <a-select-option value=2>
                       被驳回
                     </a-select-option>
@@ -70,9 +82,10 @@
         <a-tag v-if="record.status === 3" color="#87d068">已上报</a-tag>
         <a-tag v-else-if="record.status === 1" color="#DEE1E6" >未上报</a-tag>
         <a-tag v-else-if="record.status === 2" color="#FF0033" >被驳回</a-tag>
-        <a-tag v-else-if="record.status === 5" color="#87d068" >市州已审批</a-tag>
-        <a-tag v-else-if="record.status === 6" color="#87d068" >公安处已审批</a-tag>
-        <a-tag v-else-if="record.status === 7" color="#87d068" >省级已审批</a-tag>
+        <a-tag v-else-if="record.status === 5" color="#87d068" >区县已审批</a-tag>
+        <a-tag v-else-if="record.status === 6" color="#87d068" >市级已审批</a-tag>
+        <a-tag v-else-if="record.status === 7" color="#87d068" >公安处已审批</a-tag>
+        <a-tag v-else-if="record.status === 8" color="#87d068" >已完结</a-tag>
       </template>
       <template slot="operation" slot-scope="text, record">
         <a v-if="record.status <2" style="color:#4a9ff5"  @click="edit(record)" v-hasPermission="'reward:modify'" title="修改">修改</a>
@@ -95,7 +108,7 @@
           @confirm="onDelete(record)"
         >
           <a-icon slot="icon" type="question-circle-o" style="color: red" />
-          <a href="#" style="color: #FF0000">移除</a>
+          <a href="#" style="color: #FF0000">删除</a>
         </a-popconfirm>
       </template>
     </a-table>

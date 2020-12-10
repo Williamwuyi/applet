@@ -291,7 +291,11 @@ export default {
     },
     // 下拉的值
     onChangecascader (key) {
-      this.character.status = key[0]
+      if (key.length > 0) {
+        this.character.status = key[0]
+      } else {
+        this.character.status = null
+      }
     },
     // 查询
     search () {

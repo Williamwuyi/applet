@@ -287,7 +287,7 @@ export default {
       if (this.userRank === 1) {
         this.provinceData[0].parentDeptName = this.provinceData[0].deptName
         this.$get('/dept/queryDeptChile').then((r) => {
-          console.log(r)
+          // console.log(r)
           this.provinceData = r.data.data
           let rank = {prentId: r.data.data[0].deptId}
           this.$get('/dept/queryDeptChile', rank).then((e) => {
@@ -317,7 +317,7 @@ export default {
     // 获取事件类型
     this.$get('/dict/getListTable', { parentId: 'fd14fb748b74e6bedddd14dd81a3be3e' }).then((r) => {
       this.fileListdata = r.data.data.records
-      console.log('事件类型', r)
+      // console.log('事件类型', r)
     })
     //  获取身份信息
     this.$get('/dict/getListTable', { parentId: '873293cce2e47b64bf6ab3b6b007f436' }).then((r) => {
@@ -357,7 +357,7 @@ export default {
       let rank = {prentId: user.placeIdq}
       this.$get('/dept/queryDeptChile', rank).then((r) => {
         this.streets = r.data.data
-        console.log(this.streets)
+        // console.log(this.streets)
       })
     },
     onChange2 (value) {},

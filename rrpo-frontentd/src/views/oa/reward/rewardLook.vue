@@ -37,13 +37,13 @@
             <span class="time">{{lookList.creatTime}}</span>
           </li>
           <li>
-            <p class="title">所在铁路公安机关意见</p>
-            <div v-if="opiData.length>1">
+            <p class="title">区县单位意见</p>
+            <div v-if="money.quxian !== ''">
               <p class="content">{{auditOpinion.stateaud}}</p>
-              <span class="money" v-if="ranks == 1 || ranks == 4 || ranks == 0">建议奖励金额<u>{{money.statemoney}}</u>元</span>
-              <span class="time">2020年3月19日</span>
+              <span class="money" v-if="ranks == 1 || ranks == 4 || ranks == 0 || userParRank == 1">建议奖励金额<u>{{money.statemoney}}</u>元</span>
+              <span class="time">{{auditTime.quxian}}</span>
             </div>
-            <div v-else-if="rejectOpinion.rejectRank==4">
+            <div v-else-if="rejectOpinion.rejectRank==2">
               <p class="content">{{rejectOpinion.rejectContent}}</p>
               <span class="money" v-if="ranks==4">驳回人:<u>{{rejectOpinion.rejectName}}</u></span>
               <span class="time"> 驳回时间:{{rejectOpinion.rejectTime}}</span>
@@ -53,10 +53,10 @@
         <ul class="lookOpinion clearboth">
           <li>
             <p class="title">市州护路办意见</p>
-            <div v-if="opiData.length>0">
+            <div v-if="auditOpinion.ctiyaud !== ''">
               <p class="content">{{auditOpinion.ctiyaud}}</p>
-              <span class="money" v-if="ranks == 4 || ranks == 0">建议奖励金额<u>{{money.ctiymoney}}</u>元</span>
-              <span class="time">2020年3月19日</span>
+              <span class="money" v-if="ranks == 4 || ranks == 0 || ranks == 1">建议奖励金额<u>{{money.ctiymoney}}</u>元</span>
+              <span class="time">{{auditTime.ctiyaud}}</span>
             </div>
             <div v-else-if="rejectOpinion.rejectRank===1">
               <p class="content">{{rejectOpinion.rejectContent}}</p>
@@ -65,11 +65,26 @@
             </div>
           </li>
           <li>
+            <p class="title">公安处意见</p>
+            <div v-if="auditOpinion.stateaud!==''">
+              <p class="content">{{auditOpinion.stateaud}}</p>
+              <span class="money" v-if="ranks == 0 || ranks == 4">奖励金额<u>{{money.statemoney}}</u>元</span>
+              <span class="time">{{auditTime.stateaud}}</span>
+            </div>
+            <div v-else-if="rejectOpinion.rejectRank==4">
+              <p class="content">{{rejectOpinion.rejectContent}}</p>
+              <span class="money" v-if="ranks==0 || ranks == 4">驳回人:<u>{{rejectOpinion.rejectName}}</u></span>
+              <span class="time"> 驳回时间:{{rejectOpinion.rejectTime}}</span>
+            </div>
+          </li>
+        </ul>
+        <ul class="lookOpinion clearboth">
+          <li style="width: 100%;">
             <p class="title">省护路办意见</p>
-            <div v-if="opiData.length>2">
+            <div v-if="auditOpinion.proaud!==''">
               <p class="content">{{auditOpinion.proaud}}</p>
               <span class="money" v-if="ranks == 0">奖励金额<u>{{money.promoney}}</u>元</span>
-              <span class="time">2020年3月19日</span>
+              <span class="time">{{auditTime.proaud}}</span>
             </div>
             <div v-else-if="rejectOpinion.rejectRank==0">
               <p class="content">{{rejectOpinion.rejectContent}}</p>
@@ -94,11 +109,19 @@ export default {
   data () {
     return {
       money: {
+        quxian: '',
         ctiymoney: '',
         statemoney: '',
         promoney: ''
       },
       auditOpinion: {
+        quxianaud: '',
+        ctiyaud: '',
+        stateaud: '',
+        proaud: ''
+      },
+      auditTime: {
+        quxian: '',
         ctiyaud: '',
         stateaud: '',
         proaud: ''
@@ -118,7 +141,12 @@ export default {
       idenList: {},
       happenTimeyear: '',
       happenTimemon: '',
-      happenTimedate: ''
+      happenTimedate: '',
+      quxian: '',
+      shiji: '',
+      gonganchu: '',
+      shenban: '',
+      userParRank: 1
     }
   },
   // 预设窗口弹出关闭状态
@@ -136,6 +164,7 @@ export default {
   methods: {
     // 获取标题数据
     setFormValues (user) {
+      console.log('文档信息', user)
       this.lookList = user
       this.happenTimeyear = this.lookList.happenTime.substring(0, 4)
       this.happenTimemon = this.lookList.happenTime.substring(5, 7)
@@ -149,17 +178,25 @@ export default {
       this.state = user.status
       // 获取当前文档意见
       this.$get('/prize/findOpinion', {prizeId: user.id}).then(res => {
+        console.log('审批意见列表', res)
         this.opiData = res.data.data
         this.opiData.forEach((key) => {
-          if (key.rank === 1) {
+          if (key.rank === 2) {
+            this.money.quxian = key.money
+            this.auditOpinion.quxianaud = key.auditOpinion
+            this.auditTime.quxian = key.auditTime
+          } else if (key.rank === 1) {
             this.money.ctiymoney = key.money
             this.auditOpinion.ctiyaud = key.auditOpinion
+            this.auditTime.ctiyaud = key.auditTime
           } else if (key.rank === 4) {
             this.money.statemoney = key.money
             this.auditOpinion.stateaud = key.auditOpinion
+            this.auditTime.stateaud = key.auditTime
           } else if (key.rank === 0) {
             this.money.promoney = key.money
             this.auditOpinion.proaud = key.auditOpinion
+            this.auditTime.proaud = key.auditTime
           }
         })
       })
@@ -167,8 +204,13 @@ export default {
       this.$get('/dept/findRank').then(res => {
         this.ranks = res.data.data.rank
       })
+      // 获取角色父级rank
+      this.$get('/dept/findRankIfFour').then(res => {
+        this.userParRank = res.data.data
+      })
       // 获取驳回数据
       this.$get('/prize/findRejectOpinion', {prizeId: user.id}).then(res => {
+        console.log('驳回意见列表', res)
         this.rejectOpinion.rejectRank = res.data.data.rank
         this.rejectOpinion.rejectContent = res.data.data.auditOpinion
         this.rejectOpinion.rejectName = res.data.data.userName
@@ -178,10 +220,12 @@ export default {
     rest () {
       // 清空数据
       this.lookList = {}
+      this.money.quxian = ''
       this.money.ctiymoney = ''
       this.auditOpinion.ctiyaud = ''
       this.auditOpinion.stateaud = ''
       this.money.statemoney = ''
+      this.auditOpinion.quxianaud = ''
       this.auditOpinion.proaud = ''
       this.money.promoney = ''
     },

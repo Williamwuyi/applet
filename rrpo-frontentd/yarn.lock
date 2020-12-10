@@ -3128,11 +3128,11 @@ ecc-jsbn@~0.1.1:
     safer-buffer "^2.1.0"
 
 echarts@^4.8.0:
-  version "4.8.0"
-  resolved "https://registry.npm.taobao.org/echarts/download/echarts-4.8.0.tgz?cache=0&sync_timestamp=1597689252070&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fecharts%2Fdownload%2Fecharts-4.8.0.tgz#b2c1cfb9229b13d368ee104fc8eea600b574d4c4"
-  integrity sha1-ssHPuSKbE9No7hBPyO6mALV01MQ=
+  version "4.9.0"
+  resolved "https://registry.yarnpkg.com/echarts/-/echarts-4.9.0.tgz#a9b9baa03f03a2a731e6340c55befb57a9e1347d"
+  integrity sha512-+ugizgtJ+KmsJyyDPxaw2Br5FqzuBnyOWwcxPKO6y0gc5caYcfnEUIlNStx02necw8jmKmTafmpHhGo4XDtEIA==
   dependencies:
-    zrender "4.3.1"
+    zrender "4.3.2"
 
 editorconfig@^0.15.3:
   version "0.15.3"
@@ -3166,8 +3166,8 @@ electron-to-chromium@^1.2.7, electron-to-chromium@^1.3.30, electron-to-chromium@
 
 element-tiptap@^1.26.2:
   version "1.26.2"
-  resolved "https://registry.npm.taobao.org/element-tiptap/download/element-tiptap-1.26.2.tgz#327a3e8afa38a14ea5a70a302e7d74e7d039fa80"
-  integrity sha1-Mno+ivo4oU6lpwowLn1059A5+oA=
+  resolved "https://registry.yarnpkg.com/element-tiptap/-/element-tiptap-1.26.2.tgz#327a3e8afa38a14ea5a70a302e7d74e7d039fa80"
+  integrity sha512-O3dCdIwO++u0l0Q+LCVkp6etaFKtu2jpKl3ish8RMvc5eFkL9CLQqifZvb/ZtkDsHW1UQqxqRPaaZiU2hQHlYg==
   dependencies:
     "@juggle/resize-observer" "^3.1.2"
     codemirror "^5.54.0"
@@ -7115,7 +7115,7 @@ parseurl@~1.3.2, parseurl@~1.3.3:
 
 particles.js@^2.0.0:
   version "2.0.0"
-  resolved "https://registry.npm.taobao.org/particles.js/download/particles.js-2.0.0.tgz#21386c4328d6c7f96780a201e96eedfc09c736f6"
+  resolved "https://registry.yarnpkg.com/particles.js/-/particles.js-2.0.0.tgz#21386c4328d6c7f96780a201e96eedfc09c736f6"
   integrity sha1-IThsQyjWx/lngKIB6W7t/AnHNvY=
 
 pascalcase@^0.1.1:
@@ -8037,10 +8037,10 @@ prosemirror-keymap@1.1.4, prosemirror-keymap@^1.0.0, prosemirror-keymap@^1.1.2:
     prosemirror-state "^1.0.0"
     w3c-keyname "^2.2.0"
 
-prosemirror-model@1.10.0, prosemirror-model@1.9.1, prosemirror-model@^1.0.0, prosemirror-model@^1.1.0, prosemirror-model@^1.10.0, prosemirror-model@^1.11.0, prosemirror-model@^1.8.1:
+prosemirror-model@1.10.0, prosemirror-model@1.9.1, prosemirror-model@^1.0.0, prosemirror-model@^1.1.0, prosemirror-model@^1.10.0, prosemirror-model@^1.11.2, prosemirror-model@^1.8.1:
   version "1.9.1"
-  resolved "https://registry.npm.taobao.org/prosemirror-model/download/prosemirror-model-1.9.1.tgz#8c08cf556f593c5f015548d2c1a6825661df087f"
-  integrity sha1-jAjPVW9ZPF8BVUjSwaaCVmHfCH8=
+  resolved "https://registry.yarnpkg.com/prosemirror-model/-/prosemirror-model-1.9.1.tgz#8c08cf556f593c5f015548d2c1a6825661df087f"
+  integrity sha512-Qblh8pm1c7Ll64sYLauwwzjimo/tFg1zW3Q3IWhKRhvfOEgRKqa6dC5pRrAa+XHOIjBFEYrqbi52J5bqA2dV8Q==
   dependencies:
     orderedmap "^1.1.0"
 
@@ -9617,11 +9617,11 @@ tiptap-extensions@^1.28.6:
     tiptap-commands "^1.14.1"
 
 tiptap-utils@^1.10.1:
-  version "1.10.4"
-  resolved "https://registry.npm.taobao.org/tiptap-utils/download/tiptap-utils-1.10.4.tgz#a2c39bcb13cc640c3e08f2ec648288ff214b22eb"
-  integrity sha1-osObyxPMZAw+CPLsZIKI/yFLIus=
+  version "1.11.0"
+  resolved "https://registry.yarnpkg.com/tiptap-utils/-/tiptap-utils-1.11.0.tgz#2da8f5a2e5cde2d3c53cdf42ab335f947e18dfe6"
+  integrity sha512-lv/Fj8vZxPLSxHoDQVG2XVJC5h/Txtcrg+uArtvsZbVDFYyT1Boa/pal7YPQD7572uBlzlh3YtBPcFwcRBCGJA==
   dependencies:
-    prosemirror-model "^1.11.0"
+    prosemirror-model "^1.11.2"
     prosemirror-state "^1.3.3"
     prosemirror-tables "^1.1.1"
     prosemirror-utils "^0.9.6"
@@ -9638,8 +9638,8 @@ tiptap-utils@^1.10.3:
 
 tiptap@1.29.1:
   version "1.29.1"
-  resolved "https://registry.npm.taobao.org/tiptap/download/tiptap-1.29.1.tgz#9a8d8b360ce53491556f535b47a9a631e3a1808f"
-  integrity sha1-mo2LNgzlNJFVb1NbR6mmMeOhgI8=
+  resolved "https://registry.yarnpkg.com/tiptap/-/tiptap-1.29.1.tgz#9a8d8b360ce53491556f535b47a9a631e3a1808f"
+  integrity sha512-clb92b4/Ej83/bGLCnV8V3vifFN99B1HOvlP9D0U3Ym0jKwnryvk285oWl7255D9bvjukSVwmx4vWnBIZmpGUA==
   dependencies:
     prosemirror-commands "1.1.4"
     prosemirror-dropcursor "1.3.2"
@@ -10153,7 +10153,7 @@ vue-loader@^13.3.0:
 
 vue-particles@^1.0.9:
   version "1.0.9"
-  resolved "https://registry.npm.taobao.org/vue-particles/download/vue-particles-1.0.9.tgz#29d9cc2be0157df1c0a87ec3b96c96f33279526e"
+  resolved "https://registry.yarnpkg.com/vue-particles/-/vue-particles-1.0.9.tgz#29d9cc2be0157df1c0a87ec3b96c96f33279526e"
   integrity sha1-KdnMK+AVffHAqH7DuWyW8zJ5Um4=
   dependencies:
     particles.js "^2.0.0"
@@ -10199,8 +10199,8 @@ vue-template-es2015-compiler@^1.5.3, vue-template-es2015-compiler@^1.6.0:
 
 vue@^2.2.6:
   version "2.6.12"
-  resolved "https://registry.npm.taobao.org/vue/download/vue-2.6.12.tgz#f5ebd4fa6bd2869403e29a896aed4904456c9123"
-  integrity sha1-9evU+mvShpQD4pqJau1JBEVskSM=
+  resolved "https://registry.yarnpkg.com/vue/-/vue-2.6.12.tgz#f5ebd4fa6bd2869403e29a896aed4904456c9123"
+  integrity sha512-uhmLFETqPPNyuLLbsKz6ioJ4q7AZHzD8ZVFNATNyICSZouqP2Sz0rotWQC8UNBF6VGSCs5abnKJoStA6JbCbfg==
 
 vue@^2.6.11:
   version "2.6.11"
@@ -10662,7 +10662,7 @@ yauzl@^2.10.0:
     buffer-crc32 "~0.2.3"
     fd-slicer "~1.1.0"
 
-zrender@4.3.1:
-  version "4.3.1"
-  resolved "https://registry.npm.taobao.org/zrender/download/zrender-4.3.1.tgz#baf8aa6dc8187a2f819692d7d5f9bedfa2b90fa3"
-  integrity sha1-uviqbcgYei+BlpLX1fm+36K5D6M=
+zrender@4.3.2:
+  version "4.3.2"
+  resolved "https://registry.yarnpkg.com/zrender/-/zrender-4.3.2.tgz#ec7432f9415c82c73584b6b7b8c47e1b016209c6"
+  integrity sha512-bIusJLS8c4DkIcdiK+s13HiQ/zjQQVgpNohtd8d94Y2DnJqgM1yjh/jpDb8DoL6hd7r8Awagw8e3qK/oLaWr3g==

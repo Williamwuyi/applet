@@ -118,12 +118,19 @@
                   :wrapper-col="{span:12}"
                   label="事发地点"
                 >
-                  <a-select @change="handleProv" placeholder="请选择市" v-decorator="['provincePlace',{rules:[{required: true, message: '请先选择地市'}]}]">
-                    <a-select-option v-if="userRank <= 1" v-for="province in provinceData" :value='province.deptName' :key="province.deptId">
+                  <a-select v-if="userRank <= 1 || userRank === 4 || userParRank === 4 || userRank === 3" @change="handleProv" placeholder="请选择市" v-decorator="['provincePlace',{rules:[{required: true, message: '请先选择地市'}]}]">
+                    <a-select-option v-for="province in provinceData" :value='province.deptName' :key="province.deptId">
                       {{ province.deptName}}
                     </a-select-option>
-                    <a-select-option v-else-if="userRank > 1" v-for="province in provinceData" :value='province.parentDeptName' :key="province.deptId">
+                  </a-select>
+                  <a-select v-else-if="userRank ===1 || userParRank ===1"  @change="handleProv" placeholder="请选择市" v-decorator="['provincePlace',{rules:[{required: true, message: '请先选择地市'}]}]">
+                    <a-select-option v-for="province in provinceData" :value='province.parentDeptName' :key="province.parentId">
                       {{ province.parentDeptName }}
+                    </a-select-option>
+                  </a-select>
+                  <a-select v-else-if="userRank ===3" @change="handleProv" placeholder="请选择市" v-decorator="['provincePlace',{rules:[{required: true, message: '请先选择地市'}]}]">
+                    <a-select-option  v-if="userRank === 3" v-for="province in provinceData" :value='province.deptName' :key="province.deptId">
+                      {{ province.deptName}}
                     </a-select-option>
                   </a-select>
                 </a-form-item>
@@ -134,9 +141,14 @@
                   :wrapper-col="{span:23}"
                   label=""
                 >
-                  <a-select @change="handleCitie" placeholder="请选择区县" v-decorator="['citiePlace',{rules:[{required: true, message: '请先选择区县'}]}]">
+                  <a-select v-if="userRank!==3" @change="handleCitie" placeholder="请选择区县" v-decorator="['citiePlace',{rules:[{required: true, message: '请先选择区县'}]}]">
                     <a-select-option v-for="city in cities" :value="city.deptName" :key="city.deptId">
                       {{ city.deptName }}
+                    </a-select-option>
+                  </a-select>
+                  <a-select v-else-if="userRank===3" @change="handleCitie" placeholder="请选择区县" v-decorator="['citiePlace',{rules:[{required: true, message: '请先选择区县'}]}]">
+                    <a-select-option v-for="city in cities" :value="city.parentDeptName" :key="city.parentId">
+                      {{ city.parentDeptName }}
                     </a-select-option>
                   </a-select>
                 </a-form-item>
@@ -282,38 +294,11 @@ export default {
       streetPlace: '',
       placeIds: 0,
       placeIdq: 0,
-      placeIdj: 0
+      placeIdj: 0,
+      userParRank: 0
     }
   },
   mounted () {
-    // 根据角色获取地址
-    this.$get('/dept/findRank').then(res => {
-      this.userRank = res.data.data.rank // 获取当前用户的rank
-      // 如果是市级
-      if (this.userRank === 1) {
-        this.provinceData[0].parentDeptName = this.provinceData[0].deptName
-        this.$get('/dept/queryDeptChile').then((r) => {
-          this.provinceData = r.data.data
-        })
-      } else if (this.userRank === 0) { // 如果是省级或管理员
-        this.$get('/dept/queryDeptChile').then((r) => {
-          let rank = {prentId: r.data.data[0].deptId}
-          // 查询市级
-          this.$get('/dept/queryDeptChile', rank).then((e) => {
-            let province = e.data.data
-            for (let i = 0; i < 14; i++) {
-              this.provinceData[i] = province[i]
-            }
-          })
-        })
-      } else {
-        // 如果是区县用户
-        this.$get('/dept/queryDeptChile').then((r) => {
-          this.provinceData = r.data.data
-          this.cities = this.provinceData
-        })
-      }
-    })
     // 获取事件类型
     this.$get('/dict/getListTable', { parentId: 'fd14fb748b74e6bedddd14dd81a3be3e' }).then((r) => {
       this.fileListdata = r.data.data.records
@@ -322,6 +307,7 @@ export default {
     this.$get('/dict/getListTable', { parentId: '873293cce2e47b64bf6ab3b6b007f436' }).then((r) => {
       this.idenList = r.data.data.records
     })
+    this.xuanran()
   },
   methods: {
     reset () {
@@ -329,20 +315,85 @@ export default {
       this.loading = false
       this.fileIds = []
     },
+    xuanran () {
+      // 根据角色获取父级rank
+      this.$get('/dept/findRankIfFour').then(res => {
+        this.userParRank = res.data.data
+        // 根据角色获取地址
+        this.$get('/dept/findRank').then(res => {
+          this.userRank = res.data.data.rank // 获取当前用户的rank
+          console.log('用户rank为：', this.userRank, '父级rank为：', this.userParRank)
+          // 如果是市级
+          if (this.userRank === 1) {
+            console.log('市级查询：')
+            this.provinceData[0].parentDeptName = this.provinceData[0].deptName
+
+            this.$get('/dept/queryDeptChile').then((r) => {
+              this.provinceData = r.data.data
+            })
+          } else if (this.userRank === 0) { // 如果是省级或管理员
+            this.$get('/dept/queryDeptChile').then((r) => {
+              console.log('省级查询', r)
+              let rank = {prentId: r.data.data[9].deptId}
+              // 查询市级
+              this.$get('/dept/queryDeptChile', rank).then((e) => {
+                let province = e.data.data
+                for (let i = 0; i < 14; i++) {
+                  this.provinceData[i] = province[i]
+                }
+              })
+            })
+          } else if (this.userRank === 2 && this.userParRank === 1) {
+            // 如果是区县用户
+            this.$get('/dept/queryDeptChile').then((r) => {
+              console.log('区县用户：')
+              this.provinceData = r.data.data
+              this.cities = this.provinceData
+            })
+          } else if (this.userRank === 0 || this.userRank === 4 || (this.userRank === 2 && this.userParRank === 4)) {
+            // 如果是公安处/省办/派出所
+            this.$get('/dept/queryDeptChileByPrize').then((r) => {
+              console.log('公安处查询', r.data.data)
+              this.provinceData = r.data.data
+            })
+          } else if (this.userRank === 3) {
+            this.$get('/dept/queryDeptChile').then((r) => {
+              console.log('乡镇街道查询：', r)
+              this.streets = r.data.data
+              this.cities = r.data.data
+              let param = {parentId: r.data.data[0].parentId, rank: 3}
+              this.$get('/dept/findRankOne', param).then((r) => {
+                this.provinceData = [r.data]
+                this.provincePlace = r.data.deptName
+              })
+            })
+          } else {
+            console.log('您没有权限创建一事一奖！')
+          }
+        })
+      })
+    },
     onChange (date, dateString) {
       this.happenTime = dateString
     },
     onChange2 (value) {
     },
-    // 选择市级事件
+    // 选择市级查询区县
     handleProv (value, Array) {
       this.provincePlace = value
       let rank = {prentId: Array.key}
       this.placeIds = Array.key
-      // 如果是省级或市级用户
-      if (this.userRank <= 1) {
+      // 如果是市级+省办用户
+      if (this.userRank === 1 || this.userRank === 0) {
         // 查询区县
         this.$get('/dept/queryDeptChile', rank).then((r) => {
+          // console.log('市级单位或省办查询区县')
+          this.cities = r.data.data
+        })
+      } else if (this.userRank === 4 || this.userParRank === 4) {
+        // 如果是公安处或派出所，查询区县
+        this.$get('/dept/queryDeptChileByPrize', rank).then((r) => {
+          // console.log('公安处查询区县', r)
           this.cities = r.data.data
         })
       }
@@ -352,15 +403,25 @@ export default {
         streetPlace: ''
       })
     },
+    // 选择区县查询乡镇
     handleCitie (value, Array) {
-      console.log(value, Array)
+      // console.log(value, Array)
       this.citiePlace = value
       this.placeIdq = Array.key
       // 查询乡镇
       let rank = {prentId: Array.key}
-      this.$get('/dept/queryDeptChile', rank).then((r) => {
-        this.streets = r.data.data
-      })
+      if (this.userRank === 4 || this.userParRank === 4) {
+        // 如果是公安处+派出所查询乡镇
+        this.$get('/dept/queryDeptChileByPrize', rank).then((r) => {
+          console.log('公安处查询区县', r)
+          this.streets = r.data.data
+        })
+      } else if (this.userRank === 0 || this.userParRank === 1 || this.userRank === 1) {
+        // 如果是省、市、区查询街道
+        this.$get('/dept/queryDeptChile', rank).then((r) => {
+          this.streets = r.data.data
+        })
+      }
       // 选中后乡镇街道
       this.form.setFieldsValue({
         streetPlace: ''

@@ -6,8 +6,8 @@ import db from './localstorage'
 moment.locale('zh-cn')
 
 // const constURL = 'http://127.0.0.1:9527/'
-// const constURL = 'http://192.168.10.104:19527/'
-const constURL = 'http://114.115.147.159:19527/'
+const constURL = 'http://192.168.10.104:19527/'
+// const constURL = 'http://114.115.147.159:19527/'
 // 统一配置
 let JIEBAO_REQUEST = axios.create({
   baseURL: constURL,

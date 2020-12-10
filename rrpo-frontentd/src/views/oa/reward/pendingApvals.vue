@@ -14,20 +14,14 @@
     >
       <a slot="content" slot-scope="text,record" style="color:#6290FF" @click="look(record)">{{ text.slice(0,30) }}</a>
       <template slot="idMoney" slot-scope="text, record, index">
-        <a-input type="number" v-model="moneyData[index]" @blur="e => test(e.target.value, record, index)"/>
+        <a-input type="number" @blur="e => test(e.target.value, record, index)"/>
       </template>
       <template slot="status" slot-scope="text, record">
         <a-tag v-if="record.status === 3" color="#DEE1E6">未审批</a-tag>
-        <a-tag v-else-if="record.status === 5 && ranks===2" color="#87d068" >已审批</a-tag>
-        <a-tag v-else-if="record.status === 6 && ranks===2" color="#87d068" >已审批</a-tag>
-        <a-tag v-else-if="record.status === 7 && ranks===2" color="#87d068" >已审批</a-tag>
         <a-tag v-else-if="record.status === 6 && ranks===1" color="#87d068" >已审批</a-tag>
-        <a-tag v-else-if="record.status === 7 && ranks===1" color="#87d068" >已审批</a-tag>
         <a-tag v-else-if="record.status === 7 && ranks===4" color="#87d068" >已审批</a-tag>
         <a-tag v-else-if="record.status === 6 && ranks===4" color="#DEE1E6" >未审批</a-tag>
-        <a-tag v-else-if="record.status === 5 && ranks===1" color="#DEE1E6" >未审批</a-tag>
-        <a-tag v-else-if="record.status === 7 && ranks===0" color="#DEE1E6" >未审批</a-tag>
-        <a-tag v-else-if="record.status === 6 && ranks===0" color="#DEE1E6" >未审批</a-tag>
+        <a-tag v-else-if="record.status === 7 && ranks===1" color="#DEE1E6" >未审批</a-tag>
         <a-tag v-else-if="record.status === 8" color="#87d068" >已完结</a-tag>
         <a-tag v-else-if="record.status === 2" color="#FF0033">被驳回</a-tag>
       </template>
@@ -36,49 +30,7 @@
       </template>
     </a-table>
     <a-form :form="form" style="padding-bottom: 50px">
-<!--如果是市级是上报到公安处或者派出所上报到公安处的需要选择提交的公安处-->
-      <a-row v-if="ranks===1 || userParRank === 4">
-        <a-col :span="24">
-          <a-form-item
-            :label-col="{span: 4}"
-            :wrapper-col="{span: 18}"
-            label="选择提交单位:"
-          >
-            <a-select
-              v-decorator="[
-                'deptName',
-                { rules: [{ required: true, message: '请选择提交单位!' }] },
-              ]"
-            >
-              <a-select-option v-for="item in deptNames" :key="item.deptId" :value="item.deptId">
-                  {{item.deptName}}
-              </a-select-option>
-            </a-select>
-          </a-form-item>
-        </a-col>
-      </a-row>
-      <!-- 如果是公安处提交给市级的需要选择市级 -->
-      <a-row v-else-if="ranks===4">
-        <a-col :span="24">
-          <a-form-item
-            :label-col="{span: 4}"
-            :wrapper-col="{span: 18}"
-            label="选择提交市级单位:"
-          >
-            <a-select
-              v-decorator="[
-                'deptName',
-                { rules: [{ required: true, message: '请选择提交的市级单位!' }] },
-              ]"
-            >
-              <a-select-option v-for="item in deptNames" :key="item.deptId" :value="item.deptId">
-                {{item.deptName}}
-              </a-select-option>
-            </a-select>
-          </a-form-item>
-        </a-col>
-      </a-row>
-<!--      填写审批意见-->
+      <!--      填写审批意见-->
       <a-row>
         <a-col :span="24">
           <a-form-item
@@ -186,13 +138,12 @@ export default {
   },
   methods: {
     setTableValues (user) {
-      console.log('------', user)
       if (user instanceof Array) {
         this.dataSource = user
       } else {
         this.dataSource = [user]
       }
-      if (this.ranks === 1) {
+      if (this.ranks !== 4) {
         // 获取所有公安处
         this.$get('/dept/findRankFour').then(res => {
           this.deptNames = res.data.data
@@ -206,14 +157,15 @@ export default {
     },
     deletes (index) {
       this.dataSource.splice(index, 1)
-      this.moneyData.splice(index, 1)
-      console.log('金额列表', this.moneyData)
-      console.log('数据列表', this.dataSource)
     },
     test (value, key, index) {
-      console.log(value, '--', key, '++', index)
-      this.moneyData[index] = value
-      console.log(this.moneyData)
+      if ((this.ranks === 1 && (key.status === 6 || key.status === 8)) || key.status === 2 || (this.ranks === 4 && (key.status === 8 || key.status === 7))) {
+        this.$message.error('已审批/驳回数据不可再次审批')
+      } else if (value === '') {
+        this.$message.error('审批金额不得为空')
+      } else {
+        this.moneyData[index] = value
+      }
     },
     // 提交审批意见
     submitApval () {
@@ -222,23 +174,13 @@ export default {
         apvalStus[index] = key.status
         this.prizeIds[index] = key.id
       })
-      if ((apvalStus.includes(6) && this.ranks === 1) ||
-          (apvalStus.includes(7) && this.ranks === 1) ||
-          (apvalStus.includes(8) && this.ranks === 1) ||
-          (apvalStus.includes(7) && this.ranks === 4) ||
-          (apvalStus.includes(8) && this.ranks === 4) ||
-          (apvalStus.includes(5) && this.ranks === 2) ||
-          (apvalStus.includes(6) && this.ranks === 2) ||
-          (apvalStus.includes(7) && this.ranks === 2) ||
-          (apvalStus.includes(8) && this.ranks === 2) ||
-          (apvalStus.includes(8) && this.ranks === 0)) {
+      console.log('apvalStus', apvalStus)
+      if ((apvalStus.includes(6) && this.ranks === 1) || (apvalStus.includes(8) && this.ranks === 1) || (apvalStus.includes(7) && this.ranks === 4) || (apvalStus.includes(7) && this.ranks === 4)) {
         this.$message.error('存在已审批数据,请移除后再提交')
       } else if (apvalStus.includes(2)) {
         this.$message.error('存在被驳回数据,请移除后再提交')
       } else {
-        console.log(this.prizeIds, '+++', this.prizeIds.length, '----', this.moneyData.length)
         if (this.prizeIds.length !== this.moneyData.length) {
-          console.log('ID列表', this.prizeIds, '金额列表', this.moneyData)
           this.$message.error('存在金额缺失,请核对后审批')
         } else {
           this.prizeIds.forEach((key, index) => {
@@ -248,35 +190,18 @@ export default {
             this.moneys.push(money)
           })
           this.form.validateFields((err, values) => {
-            let sendDeptId = ''
-            let sendCityId = ''
-            if (this.ranks === 1 || this.userParRank === 4) {
-              // 如果是市级单位或者派出所审批需要提交选择公安处
-              sendDeptId = values.deptName
-            } else if (this.ranks === 4) {
-              // 如果是公安处需要审批提交选择市级单位
-              sendCityId = values.deptName
-            }
             this.dataSource.forEach((key, index) => {
               apvalStus[index] = key.status
             })
             let param = {
               auditOpinion: values.auditOpinion,
               moneys: JSON.stringify(this.moneys),
-              sendDeptId: sendDeptId,
-              prizeIds: this.prizeIds,
-              sendCityId: sendCityId
+              prizeIds: this.prizeIds
             }
             if (!err) {
               this.loading = true
               console.log('提交给到后台的数据', param)
               this.$post('prize/report', param).then(() => {
-                let status = {prizeIds: this.prizeIds, value: 1}
-                if (this.ranks === 1) {
-                  this.$put('prize/updateCityStatus', status).then(() => {})
-                } else if (this.ranks === 4) {
-                  this.$put('prize/updateGongStatus', status).then(() => {})
-                }
                 this.reset()
                 this.$emit('success')
               }).catch(() => {

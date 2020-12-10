@@ -14,14 +14,21 @@
       <a slot="content" slot-scope="text,record" style="color:#6290FF" @click="look(record)">{{ text }}</a>
       <template slot="status" slot-scope="text, record">
         <a-tag v-if="record.status === 3" color="#DEE1E6">未审批</a-tag>
-        <a-tag v-else-if="record.status === 5 && ranks===1" color="#87d068" >已审批</a-tag>
         <a-tag v-else-if="record.status === 6 && ranks===1" color="#87d068" >已审批</a-tag>
         <a-tag v-else-if="record.status === 7 && ranks===1" color="#87d068" >已审批</a-tag>
-        <a-tag v-else-if="record.status === 5 && ranks===4" color="#DEE1E6" >未审批</a-tag>
-        <a-tag v-else-if="record.status === 6 && ranks===4" color="#87d068" >已审批</a-tag>
+        <a-tag v-else-if="record.status === 8 && ranks===1" color="#87d068" >已审批</a-tag>
+        <a-tag v-else-if="record.status === 8 && ranks===0" color="#87d068" >已审批</a-tag>
         <a-tag v-else-if="record.status === 7 && ranks===4" color="#87d068" >已审批</a-tag>
+        <a-tag v-else-if="record.status === 8 && ranks===4" color="#87d068" >已审批</a-tag>
+        <a-tag v-else-if="record.status === 5 && ranks===2" color="#87d068" >已审批</a-tag>
+        <a-tag v-else-if="record.status === 6 && ranks===2" color="#87d068" >已审批</a-tag>
+        <a-tag v-else-if="record.status === 7 && ranks===2" color="#87d068" >已审批</a-tag>
+        <a-tag v-else-if="record.status === 8 && ranks===2" color="#87d068" >已审批</a-tag>
+        <a-tag v-else-if="record.status === 5 && ranks===1" color="#DEE1E6" >未审批</a-tag>
+        <a-tag v-else-if="record.status === 6 && ranks===4" color="#DEE1E6" >未审批</a-tag>
+        <a-tag v-else-if="record.status === 7 && ranks===0" color="#DEE1E6" >未审批</a-tag>
         <a-tag v-else-if="record.status === 6 && ranks===0" color="#DEE1E6" >未审批</a-tag>
-        <a-tag v-else-if="record.status === 7 && ranks===0" color="#87d068" >已完结</a-tag>
+        <a-tag v-else-if="record.status === 8" color="#87d068" >已完结</a-tag>
         <a-tag v-else-if="record.status === 2" color="#FF0033">被驳回</a-tag>
       </template>
       <template slot="operation" slot-scope="text, record, index">
@@ -140,7 +147,16 @@ export default {
       this.dataSource.forEach((key, index) => {
         apvalStus[index] = key.status
       })
-      if ((apvalStus.includes(5) && this.ranks === 1) || (apvalStus.includes(6) && this.ranks === 1) || (apvalStus.includes(7) && this.ranks === 1) || (apvalStus.includes(6) && this.ranks === 4) || (apvalStus.includes(7) && this.ranks === 4) || (apvalStus.includes(7) && this.ranks === 0)) {
+      if ((apvalStus.includes(6) && this.ranks === 1) ||
+        (apvalStus.includes(7) && this.ranks === 1) ||
+        (apvalStus.includes(8) && this.ranks === 1) ||
+        (apvalStus.includes(7) && this.ranks === 4) ||
+        (apvalStus.includes(5) && this.ranks === 2) ||
+        (apvalStus.includes(6) && this.ranks === 2) ||
+        (apvalStus.includes(7) && this.ranks === 2) ||
+        (apvalStus.includes(8) && this.ranks === 2) ||
+        (apvalStus.includes(8) && this.ranks === 4) ||
+        (apvalStus.includes(8) && this.ranks === 0)) {
         this.$message.error('存在已审批数据,请移除后再提交')
       } else if (apvalStus.includes(2)) {
         this.$message.error('存在已驳回数据,请移除后再提交')

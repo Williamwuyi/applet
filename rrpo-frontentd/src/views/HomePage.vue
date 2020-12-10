@@ -152,6 +152,7 @@ export default {
       ysyjData: [], // 一事一奖数据
       tzggData: [], // 通知公告数据
       hljbData: [], // 护路简报数据
+      ranks: 0,
       chartOptions: {
         chart: {
           toolbar: {
@@ -274,10 +275,23 @@ export default {
         this.loading = false
       })
     },
-    // 获取一事一奖的未读信息
+    // 判断获取查询一事一奖
     ysyj () {
+      let param = {}
+      if (this.ranks === 4) {
+        param.cityStatus = 0
+        this.getYsyj(param)
+      } else if (this.ranks === 1) {
+        param.gongStatus = 0
+        this.getYsyj(param)
+      } else {
+        this.getYsyj(param)
+      }
+    },
+    // 获取一事一奖的未读信息
+    getYsyj (param) {
       this.loading = true
-      this.$get('/prize/inbox').then(res => {
+      this.$get('/prize/inbox', param).then(res => {
         let data = res.data.data.rows
         let ysyj = []
         for (let key in data) {
@@ -285,6 +299,18 @@ export default {
             ysyj.push(data[key])
           }
           if (data[key].status === 2) {
+            ysyj.push(data[key])
+          }
+          if (data[key].status === 6 && this.ranks === 4) {
+            ysyj.push(data[key])
+          }
+          if (data[key].status === 5 && this.ranks === 1) {
+            ysyj.push(data[key])
+          }
+          if (data[key].status === 7 && this.ranks === 0) {
+            ysyj.push(data[key])
+          }
+          if (data[key].status === 6 && this.ranks === 0) {
             ysyj.push(data[key])
           }
         }
@@ -326,8 +352,12 @@ export default {
     }
   },
   mounted () {
+    // 获取当前用户的rank
+    this.$get('/dept/findRank').then(res => {
+      this.ranks = res.data.data.rank
+      this.ysyj()
+    })
     this.xxhd()
-    this.ysyj()
     this.tzgg()
     this.hljb()
     this.rollFun()

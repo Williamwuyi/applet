@@ -2,7 +2,7 @@
   <div style="width: 100%">
     <a-row style="padding: 10px 0px">
       <a-col span="8">
-        <a-button @click="reportformone">生成报表</a-button>
+        <a-button @click="reportformone"  v-hasPermission="'reward:generate'">生成报表</a-button>
       </a-col>
       <a-col span="16">
         <a-form layout="horizontal" :form="form">
@@ -36,7 +36,7 @@
       <span slot="perNums" slot-scope="text">{{text}}期</span>
       <template slot="operation" slot-scope="text, record">
         <a-icon type="cloud-download" style="color:#0000FF; margin-right: 3px" @click="download(record)" twoToneColor="#4a9ff5" title="下载"></a-icon>
-        <a-icon type="delete" theme="twoTone" twoToneColor="#FF0000" @click="deletes(record)" style="color:#FF0000;margin:0;"  title="删除" />
+        <a-icon type="delete" theme="twoTone" twoToneColor="#FF0000" @click="deletes(record)" style="color:#FF0000;margin:0;" v-hasPermission="'reward:dlgenerate'"  title="删除" />
       </template>
     </a-table>
     <!-- 生成报表-->
@@ -80,13 +80,11 @@ export default {
           title: '期数',
           dataIndex: 'perNum',
           width: '10%',
-          scopedSlots: { customRender: 'perNums' },
-          align: 'center'
+          scopedSlots: { customRender: 'perNums' }
         },
         {
           title: '文件名',
-          dataIndex: 'oldName',
-          align: 'center'
+          dataIndex: 'oldName'
         },
         {
           title: '创建时间',

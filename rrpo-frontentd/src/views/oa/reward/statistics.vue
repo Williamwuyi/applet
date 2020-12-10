@@ -4,7 +4,7 @@
       <a-row>
         <a-col :span="15">
           <h4 style="text-align: center;font-size: 28px;font-weight: bold;color: #0d487b">
-            湖南省{{thisStartYear}}年{{thisStartMonth}}月{{thisStartDate}}日至{{thisEndYear}}年{{thisEndMonth}}月{{thisEndDate}}日发布情况统计
+            {{thisStartYear}}年{{thisStartMonth}}月{{thisStartDate}}日至{{thisEndYear}}年{{thisEndMonth}}月{{thisEndDate}}日发布情况统计
           </h4>
         </a-col>
         <a-col :span="6">
@@ -41,7 +41,7 @@ import RangeDate from '@/components/datetime/RangeDate'
 // 各市州上报情况统计
 const cityState = {
   title: {
-    text: '各市州上报情况统计'
+    text: '上报情况统计'
   },
   tooltip: {
     trigger: 'axis',
@@ -128,7 +128,7 @@ const option1 = {
 // 全省事件类型分析
 const eventType = {
   title: {
-    text: '全省事件类型统计'
+    text: '事件类型统计'
   },
   tooltip: {
     trigger: 'item',
@@ -153,7 +153,7 @@ const eventType = {
 // 各市州审批通过金额统计
 const anyMoney = {
   title: {
-    text: '各市州审批通过金额统计'
+    text: '审批通过金额统计'
   },
   tooltip: {
     trigger: 'axis'
@@ -230,33 +230,52 @@ export default {
     initialize () {
       // 初始化发件情况统计
       this.$get('/prize/countRelease', this.character).then((r) => {
-        let totalAndPass = JSON.parse(r.data.data)
+        console.log('发件情况统计', r)
         let passNum = []
         let totals = []
         let ciTys = []
-        for (let i in totalAndPass) {
-          ciTys.push(totalAndPass[i].name)
-          totals.push(JSON.parse(totalAndPass[i].not)[0])
-          passNum.push(JSON.parse(totalAndPass[i].pass)[0])
-        }
-        this.cityState.xAxis[0].data = ciTys
-        this.cityState.series[0].data = totals
-        this.cityState.series[1].data = passNum
-        this.statistic()
+        // 查询是否是省办
+        this.$get('/dept/findRank').then(res => {
+          let userRank = res.data.data.rank
+          if (userRank === 0) {
+            let totalAndPass = JSON.parse(r.data.data)
+            for (let i in totalAndPass) {
+              ciTys.push(totalAndPass[i].name)
+              totals.push(JSON.parse(totalAndPass[i].not)[0])
+              passNum.push(JSON.parse(totalAndPass[i].pass)[0])
+            }
+          } else {
+            let all = r.data.data.all
+            let done = r.data.data.done
+            for (let i in all) {
+              ciTys.push(all[i].dept_name)
+              totals.push(all[i].count)
+            }
+            for (let i in done) {
+              passNum.push(done[i].count)
+            }
+          }
+          this.cityState.xAxis[0].data = ciTys
+          this.cityState.series[0].data = totals
+          this.cityState.series[1].data = passNum
+          this.statistic()
+        })
       })
       // 初始化金额统计
       this.$get('/prize/countMoney', this.character).then((r) => {
+        console.log('初始化金额统计', r)
         let moneyData = r.data.data
         this.anyMoney.xAxis.data = []
         this.anyMoney.series[0].data = []
         for (let i in moneyData) {
-          this.anyMoney.xAxis.data.push(moneyData[i].city)
+          this.anyMoney.xAxis.data.push(moneyData[i].dept_name)
           this.anyMoney.series[0].data.push(moneyData[i].money)
         }
         this.statistic1()
       })
       // 初始化事件类型统计
       this.$get('/prize/countType', this.character).then((e) => {
+        console.log('事件类型', e)
         let eList = e.data.data
         if (eList[0] === undefined) {
           this.eventType.series[0].data = [{value: 1, name: '该时间段暂无数据。。。'}]

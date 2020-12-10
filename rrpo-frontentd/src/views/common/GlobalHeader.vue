@@ -33,8 +33,9 @@
 <!--  </div>-->
       <!--帮助文档-->
       <div style="float:right; margin-top:2px; font-size: 24px;">
-        <a v-if="loading"><a-icon style="font-size:22px;" @click="download" type="question-circle" title="帮助文档"/></a>
-        <a-spin v-if="!loading" :indicator="indicator" />
+<!--        <a v-if="loading"><a-icon style="font-size:22px;" @click="download" type="question-circle" title="帮助文档"/></a>-->
+<!--        <a-spin v-if="!loading" :indicator="indicator" />-->
+        <a href="http://114.115.147.159:19527/jbx/cdn/image/2020-11-04/湖南铁护办系统平台使用手册.pdf" target="_blank"><a-icon style="font-size:22px;" type="question-circle" title="帮助文档"/></a>
       </div>
     </div>
 <!-- 查看 -->
@@ -51,9 +52,9 @@ import HeaderAvatar from './HeaderAvatar'
 import IMenu from '@/components/menu/menu'
 import { mapState } from 'vuex'
 // import Noticelook from './Noticelook'
-import axios from 'axios'
-import store from '../../store'
-import {notification} from 'ant-design-vue'
+// import axios from 'axios'
+// import store from '../../store'
+// import {notification} from 'ant-design-vue'
 
 export default {
   name: 'GlobalHeader',
@@ -116,56 +117,55 @@ export default {
     // 查看
     hanleNoticelookclose () {
       this.NoticelookVisiable = false
-    },
-    // 文件下载
-    download () {
-      this.loading = false
-      let record = {
-        file: {
-          fileId: '8ba8403e99102d79528eaba5fcd3020e',
-          oldName: '湖南铁护办系统平台使用手册.pdf'
-        }
-      }
-      axios({
-        method: 'post',
-        url: this.$constURL + 'file/downloadFile',
-        headers: {
-          'Authentication': store.state.account.token
-        },
-        params: {
-          fileId: record.file.fileId
-        },
-        responseType: 'blob'
-      }).then(res => {
-        this.loading = true
-        console.log(res)
-        const content = res.data
-        const blob = new Blob([content])
-        if ('download' in document.createElement('a')) {
-          const link = document.createElement('a')
-          link.download = record.file.oldName
-          link.style.display = 'none'
-          link.href = URL.createObjectURL(blob)
-          document.body.appendChild(link)
-          link.click()
-          URL.revokeObjectURL(link.href)
-          document.body.removeChild(link)
-        } else {
-          navigator.msSaveBlob(blob, record.file.oldName)
-        }
-        notification.success({
-          message: '系统提示',
-          description: '文件下载成功！',
-          duration: 4
-        })
-      }).catch(() => {
-        notification.error({
-          message: '系统提示',
-          description: '文件传输失败！',
-          duration: 4
-        })
-      })
     }
+    // 文件下载
+    // download () {
+    //   this.loading = false
+    //   let record = {
+    //     file: {
+    //       fileId: '8ba8403e99102d79528eaba5fcd3020e',
+    //       oldName: '湖南铁护办系统平台使用手册.pdf'
+    //     }
+    //   }
+    //   axios({
+    //     method: 'post',
+    //     url: this.$constURL + 'file/downloadFile',
+    //     headers: {
+    //       'Authentication': store.state.account.token
+    //     },
+    //     params: {
+    //       fileId: record.file.fileId
+    //     },
+    //     responseType: 'blob'
+    //   }).then(res => {
+    //     this.loading = true
+    //     const content = res.data
+    //     const blob = new Blob([content])
+    //     if ('download' in document.createElement('a')) {
+    //       const link = document.createElement('a')
+    //       link.download = record.file.oldName
+    //       link.style.display = 'none'
+    //       link.href = URL.createObjectURL(blob)
+    //       document.body.appendChild(link)
+    //       link.click()
+    //       URL.revokeObjectURL(link.href)
+    //       document.body.removeChild(link)
+    //     } else {
+    //       navigator.msSaveBlob(blob, record.file.oldName)
+    //     }
+    //     notification.success({
+    //       message: '系统提示',
+    //       description: '文件下载成功！',
+    //       duration: 4
+    //     })
+    //   }).catch(() => {
+    //     notification.error({
+    //       message: '系统提示',
+    //       description: '文件传输失败！',
+    //       duration: 4
+    //     })
+    //   })
+    // }
   }
 }
 </script>
