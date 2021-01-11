@@ -1,0 +1,12 @@
+<!--pages/others/others.wxml-->
+<cu-custom bgColor="{{isStuff ? 'bg-gradual-blue':'bg-gtadual-bluestone'}}" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content">其他</view>
+</cu-custom>
+  <view class='nav-list margin-top'>
+    <navigator open-type="navigate" hover-class='none'  class="nav-li bg-{{item.color}}" wx:for="{{elements}}" wx:key>
+      <view class="nav-title">{{item.title}}</view>
+      <view class="nav-name">  </view>
+      <text class='cuIcon-{{item.icon}}'></text>
+    </navigator>
+  </view>

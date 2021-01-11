@@ -1,0 +1,10 @@
+<!--pages/workAttendance/attendanceTable/attendanceTable.wxml-->
+<cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content">考勤报表</view>
+</cu-custom>
+<!-- 考勤报表 消息列表 -->
+<view class="intro "  > 
+<s-table  hasBorder='no' tdWidth='{{attendanceTdWidth}}'  headers='{{headers}}' attendanceDate='{{attendanceDate}}' list='{{row}}'  hasdata='{{hasdata}}' bind:lastMonth="lastMonth" bind:nextMonth="nextMonth" bind:changeDate="changeDate"></s-table>
+</view>
+<attendance-date-picker showmodal='{{showmodal}}' bind:hidemodal="hidemodal" bind:confirmDate="confirmDate" attendanceDate='{{attendanceDate}}'></attendance-date-picker>

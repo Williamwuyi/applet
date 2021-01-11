@@ -1,0 +1,110 @@
+<cu-custom isBack="{{true}}" bgColor="bg-gradual-blue">
+  <view slot="backText">返回</view>
+  <view slot="content">注册-个人信息</view>
+</cu-custom>
+<form bindsubmit="formSubmit" bindreset="reset">
+  <view class="bg-grey-lighter margin-xs align-center cu-form-group">
+    <view class="personnal_icon padding grid col-4 grid-square flex-sub">
+      <view class="bg-img" bindtap="ViewImage" data-url="{{imgList}}" wx:if="{{imgList.length!=0}}">
+        <image src='{{imgList}}' mode='aspectFill'></image>
+        <view class="cu-tag bg-red" catchtap="DelImg">
+          <text class="cuIcon-close"></text>
+        </view>
+      </view>
+      <view class="solids" bindtap="ChooseImage" wx:if="{{imgList.length==0}}">
+        <text class="cuIcon-cameraadd"></text>
+      </view>
+
+      <view class="name_class padding-top padding-bottom">
+        <text class="text-lg">上传照片</text>
+      </view>
+    </view>
+  </view>
+  <!-- 隐藏的input,图片地址和角色信息 -->
+  <input name="imgPaths" hidden disabled value="{{service_imgurl}}" />
+  <!-- <input name="role_id" hidden disabled value="{{0}}" /> -->
+
+  <view class="  bg-grey-lighter flex   margin-top-l solid-bottom">
+    <view class="flex-sub padding-sm margin-xs ">
+      <text class="iconfont icon-worker ">
+</text>
+      <text class="text-lg">用户名</text>
+    </view>
+    <view class="flex-twice   padding-sm margin-xs text-lg  ">
+      <input class="text-lg" placeholder="username" name="username"  bindblur="checkUserName"/>
+    </view>
+    <view class=" padding-sm margin-xs  text-lg ">
+      <button class=" cu-btn sm {{usernameMessage == '用户名可使用' ? 'bg-green':'bg-red'}}"  >{{usernameMessage}}</button>
+    </view>
+  </view>
+  <view class="  bg-grey-lighter flex   margin-top-l solid-bottom">
+    <view class="flex-sub padding-sm margin-xs ">
+      <text class="iconfont icon-worker ">
+</text>
+      <text class="text-lg">密码</text>
+    </view>
+    <view class="flex-twice padding-sm margin-xs  text-lg  ">
+      <input class="text-lg" placeholder="密码" type="" password="true" name="password" />
+    </view>
+  </view>
+  <view class="  bg-grey-lighter flex   margin-top-l solid-bottom">
+    <view class="flex-sub padding-sm margin-xs ">
+      <text class="iconfont icon-worker ">
+</text>
+      <text class="text-lg">确认密码</text>
+    </view>
+    <view class="flex-twice padding-sm margin-xs  text-lg  ">
+      <input class="text-lg" placeholder="确认密码" type="" password="true" name="checkPassword" />
+    </view>
+  </view>
+  <view class="  bg-grey-lighter flex solid-bottom">
+    <view class="flex-sub padding-sm margin-xs ">
+      <text class="iconfont icon-phone">
+</text>
+      <text class="text-lg">姓名</text>
+    </view>
+    <view class="flex-twice padding-sm margin-xs  text-lg {{updateInfo ? 'update_border':'' }}">
+      <input class="text-lg" placeholder="姓名" name="personName" />
+    </view>
+  </view>
+  <!-- 占位 -->
+  <view class="  bg-grey-lighter flex   margin-top-l solid-bottom">
+    <view class="flex-sub padding-sm margin-xs ">
+      <text class="iconfont icon-worker ">
+</text>
+      <text class="text-lg">性别</text>
+    </view>
+    <view class="flex-twice padding-sm margin-xs  text-lg {{updateInfo ? 'update_border':'' }} ">
+      <picker range="{{sex}}" value="{{picker_index}}" name="personSex" bindchange="bindPickerChange">
+        <view>{{sex[picker_index]}}</view>
+      </picker>
+    </view>
+  </view>
+  <!-- 占位 -->
+  <view class="  bg-grey-lighter flex solid-bottom">
+    <view class="flex-sub padding-sm margin-xs ">
+      <text class="iconfont icon-phone">
+</text>
+      <text class="text-lg">手机</text>
+    </view>
+    <view class="flex-twice padding-sm margin-xs  text-lg {{updateInfo ? 'update_border':'' }}">
+      <input class="text-lg" placeholder="手机号码" name="personPhone" />
+    </view>
+  </view>
+  <view class="  bg-grey-lighter flex solid-bottom" hidden>
+    <view class="flex-sub padding-sm margin-xs ">
+      <text class="iconfont icon-phone">
+</text>
+      <text class="text-lg">公司名称</text>
+    </view>
+    <view class="flex-twice padding-sm margin-xs  text-lg {{updateInfo ? 'update_border':'' }}">
+      <input class="text-lg" placeholder="请输入公司名称" name="comUnikey" value="{{companyId}}" />
+    </view>
+  </view>
+  <view>
+  </view>
+  <view class="bg-white " style="text-align:center; line-height:100rpx;">
+    <button class="cu-btn bg-green shadow margin-right " form-type="submit" hidden="{{registButton}}">完成注册</button>
+    <view class="cu-load bg-green loading" hidden="{{!registButton}}"></view>
+  </view>
+</form>

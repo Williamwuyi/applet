@@ -1,0 +1,36 @@
+<!--pages/guest/postName/postName.wxml-->
+<cu-custom isBack="{{true}}" bgColor="bg-gtadual-bluestone">
+  <view slot="backText">返回</view>
+  <view slot="content">拜访对象</view>
+</cu-custom>
+<view class="bg-gradual-blue-login padding" style="height:{{CuscreenHeight-CustomBar}}px">
+  <!-- logo页面 -->
+
+  <!-- 选择公司 -->
+  <form bindsubmit="getPersonByName">
+    <view class="margin-top " style="">
+      <view class="cu-form-group">
+        <label class="title">请输入名称</label>
+        <input style="border:1px solid #b5b5b5" placeholder="请输入拜访对象的全名" name="personName"></input>
+        <button class="cu-btn round sm  bg-green margin-left" form-type="submit">搜索</button>
+      </view>
+    </view>
+  </form>
+  <view class="cu-load  loading" wx:if="{{! receiveResult}}" hidden="{{! sendName}}" ></view>
+  <block wx:else>
+<scroll-view  scroll-with-animation="true" scroll-y  >
+  <view class='cu-list menu-avatar'>
+    <view class="cu-item "   wx:for="{{person.length}}" wx:key="{{inedx}}" >
+      <view class='cu-avatar round lg'>
+        <image  style="width:100rpx;height:100rpx;" src="{{imagesUrl}}{{person[index].imgPaths}}"></image>
+      </view>
+      <view class='content'><view class=''>{{person[index].personName}}</view><view class=''>前端开发工程师</view></view>
+      
+      <button class="pick_button cu-btn round m bg-blue" data-target="{{index}}" bindtap="showYourData" >拜访</button>
+    </view>
+  </view>
+</scroll-view>
+</block>
+<!-- <button bindtap="test1">test1</button>
+<button bindtap="test2">test2</button> -->
+</view>

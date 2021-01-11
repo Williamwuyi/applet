@@ -1,0 +1,32 @@
+<!--components/menu_manage/menu-manage.wxml-->
+<view class="function bg-white shadow margin-top">
+  <!-- <view class='cu-bar bg-white margin-top solid-bottom time'>
+    <text class="text-black">{{time_today}}</text>
+  </view> -->
+  <view class='bg-white  grid col-4 grid-square cu-list no-border'>
+    <view class="padding" data-target="0" bindtap="navigateTo">
+      <view class="wd_icon margin-bottom" style="width:60rpx;height:60rpx; margin: 0 auto;">
+        <image src="../../images/guestManagement_1.png" style="width:60rpx;height:60rpx;"></image>
+      </view>
+      <view class="wd_text margin-top">访客管理</view>
+    </view>
+    <view class="padding" data-target="1" bindtap="navigateTo">
+      <view class="wd_icon margin-bottom" style="width:60rpx;height:60rpx; margin: 0 auto;">
+        <image src="../../images/eventManegement_1.png" style="width:60rpx;height:60rpx;"></image>
+      </view>
+      <view class="wd_text margin-top">事件处理</view>
+    </view>
+    <view class="padding" data-target="2" bindtap="navigateTo">
+      <view class="wd_icon margin-bottom" style="width:60rpx;height:60rpx; margin: 0 auto;">
+        <image src="../../images/attendanceManagement_1.png" style="width:60rpx;height:60rpx;"></image>
+      </view>
+      <view class="wd_text margin-top">考勤处理</view>
+    </view>
+    <view class="padding" data-target="3" bindtap="navigateTo">
+      <view class="wd_icon margin-bottom" style="width:60rpx;height:60rpx; margin: 0 auto;">
+        <image src="../../images/others_1.png" style="width:60rpx;height:60rpx;"></image>
+      </view>
+      <view class="wd_text margin-top">其他操作</view>
+    </view>
+  </view>
+</view>

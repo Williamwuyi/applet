@@ -1,0 +1,40 @@
+/* pages/guestManagement/guestStarting/guestStarting.wxss */
+.cu-form-group .title {
+  min-width: calc(4em + 30rpx);
+}
+.cancel_reason{
+  height: 80rpx;
+  line-height: 80rpx;
+}
+ /* radio 和pop弹窗的z-index值一致导致显示bug */
+radio{
+  z-index: 99 !important;
+}
+.change_time{
+  text-align: center;
+  line-height: 80rpx;
+}
+/* 底部按钮 */
+.cu-bar-text{
+  font-size: 1.2em;
+  margin-left: 30rpx;
+  color: black;
+}
+.bottom-bar{
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background: white;
+  line-height: 100rpx;
+  text-align: center;
+  z-index: 100;
+}
+.bottom-bar button{
+  margin-right: 30rpx;
+}
+.unshow{
+  display: none;
+}
+.scrollPage_80{
+  height: 81vh;
+}

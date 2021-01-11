@@ -1,0 +1,44 @@
+<!--pages/personInfo/personInfo.wxml-->
+<scroll-view scroll-y class="">
+	<view class="UCenter-bg">
+		<view class="round" style="width:120px;height:120px;overflow:hidden; border:1px solid; border-radius:50%;">
+			<image src="{{person.headImage}}" class="png" style="width:120px;height:120px;"></image>
+		</view>
+
+		<view class="margin-top-sm" style="margin-top:15px;">
+			<text style="font-size:20px;">{{person.name}}</text>
+		</view>
+		<view class="margin-top-sm" style="margin-top:15px;">
+			<text style="font-size:20px;">{{person.phoneNumber}}</text>
+		</view>
+	</view>
+
+	<!-- arrow -->
+	<view class=" menu-list">
+		<view class="arrow" bindtap="jumpTo" data-target="1">
+			<view class="content">
+				<text class="cuIcon-peoplefill text-grey" ></text>
+				<text class="content_text">修改个人信息</text>
+			</view>
+		</view>
+		<view class="arrow">
+			<view class="content">
+				<text class="cuIcon-favorfill text-green" ></text>
+				<text  class="content_text">关于我们</text>
+			</view>
+		</view>
+		<view class="arrow">
+			<view class="content">
+				<text class="cuIcon-emoji text-red" ></text>
+				<text class="content_text">投诉建议</text>
+			</view>
+		</view>
+		<view class="arrow" bindtap="jumpTo" data-target="4">
+			<view class="content">
+				<text class="cuIcon-form text-orange" ></text>
+				<text class="content_text">版本更新</text>
+			</view>
+		</view>
+	</view>
+
+</scroll-view>

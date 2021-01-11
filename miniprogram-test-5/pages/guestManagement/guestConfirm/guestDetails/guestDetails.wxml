@@ -1,0 +1,130 @@
+<!--pages/guestManagement/guestComfirm/guestDetails/guestDetails.wxml-->
+<!-- 未通过已通过已审核的细节页面 -->
+<cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content">预约详情</view>
+</cu-custom>
+<!-- 已完成预约的详细信息 -->
+<!--  -->
+<!-- 使用卡片式布局 -->
+
+  <view class='cu-bar bg-white '>
+    <text class='cu-bar-text'>发起人</text>
+  </view>
+  <view class="cu-card  no-card solid-bottom">
+    <view class='cu-list menu-avatar'>
+      <view class='cu-item'>
+        <view class='cu-avatar round lg bg-white' style="background-image:url({{imagesUrl}}{{personImage}})"></view>
+        <view class='content flex-sub'>
+          <view class='text-gray'>
+            <text> </text>
+            <text class='margin-left'>{{details.visitorName}}</text>
+          </view>
+          <!-- <view class='text-gray'>湖南捷报科技有限公司</view> -->
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="cu-card  no-card solid-bottom">
+    <view class='cu-list menu-avatar'>
+      <view class='cu-item'>
+        <view class='cu-avatar-text bg-white '>
+          <text>拜访人职位</text>
+        </view>
+        <view class='content flex-sub'>
+          <view class='text-gray'>
+            <text>{{details.appellation}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="cu-card  no-card solid-bottom">
+    <view class='cu-list menu-avatar'>
+      <view class='cu-item'>
+        <view class='cu-avatar-text bg-white '>
+          <text>拜访人公司</text>
+        </view>
+        <view class='content flex-sub'>
+          <view class='text-gray'>
+            <text>{{details.company}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class='cu-bar bg-white '>
+    <text class='cu-bar-text'>拜访对象</text>
+  </view>
+  <view class="cu-card  no-card solid-bottom">
+    <view class='cu-list menu-avatar'>
+      <view class='cu-item'>
+        <view class='cu-avatar round lg bg-white' style="background-image:url({{imagesUrl}}{{details.person.imgPaths}})">
+        </view>
+        <view class='content flex-sub'>
+          <view class='text-gray'>
+            <text></text>
+            <text class='margin-left'>{{details.person.personName}}</text>
+          </view>
+          <view class='text-gray'></view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="cu-card  no-card solid-bottom">
+    <view class='cu-list menu-avatar'>
+      <view class='cu-item'>
+        <view class='cu-avatar-text bg-white '>
+          <text>拜访时间</text>
+        </view>
+        <view class='content flex-sub'>
+          <view class='text-gray'>
+            <!-- <text>2019年10月1号下午三点</text> -->
+            <view class='margin-left'>{{details.startTime}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="cu-card  no-card solid-bottom">
+    <view class='cu-list menu-avatar'>
+      <view class='cu-item'>
+        <view class='cu-avatar-text bg-white '>
+          <text>结束时间</text>
+        </view>
+        <view class='content flex-sub'>
+          <view class='text-gray'>
+            <!-- <text>2019年10月1号下午三点</text> -->
+            <view class='margin-left' >{{details.endTime}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+  
+
+  <view class="cu-card  no-card solid-bottom">
+    <view class='cu-list menu-avatar'>
+      <view class='cu-item'>
+        <view class='cu-avatar-text bg-white '>
+          <text>拜访事由</text>
+        </view>
+        <view class='content flex-sub'>
+          <view class='text-gray'>
+            <text>{{details.reason}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class='bottom-bar margin-top'>
+    <text class='cu-btn  bg-red button-hover'>{{status}}</text>
+  </view>
+
+

@@ -1,0 +1,23 @@
+<!--components/menu-guest/menu-guest.wxml-->
+<view class="function bg-white shadow margin-top">
+	<view class='bg-white  grid col-3 grid-square cu-list no-border'>
+		<view class="padding" data-target="0" bindtap="navigateTo">
+			<view class="wd_icon margin-bottom" style="width:60rpx;height:60rpx; margin: 0 auto;">
+				<image src="../../images/guestManagement_2.png" style="width:60rpx;height:60rpx;"></image>
+			</view>
+			<view class="wd_text margin-top">预约申请</view>
+		</view>
+		<view class="padding" data-target="1" bindtap="navigateTo">
+			<view class="wd_icon margin-bottom" style="width:60rpx;height:60rpx; margin: 0 auto;">
+				<image src="../../images/eventManegement_2.png" style="width:60rpx;height:60rpx;"></image>
+			</view>
+			<view class="wd_text margin-top">预约记录</view>
+		</view>
+		<view class="padding" data-target="2" bindtap="navigateTo">
+			<view class="wd_icon margin-bottom" style="width:60rpx;height:60rpx; margin: 0 auto;">
+				<image src="../../images/others_1.png" style="width:60rpx;height:60rpx;"></image>
+			</view>
+			<view class="wd_text margin-top">其他操作</view>
+		</view>
+	</view>
+</view>

@@ -1,0 +1,102 @@
+<!--pages/guestManagement/guestfinished/guestFinished.wxml-->
+<cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content">已完成预约</view>
+</cu-custom>
+<!-- 已完成预约的详细信息 -->
+
+<!-- 使用卡片式布局 -->
+<view class='cu-bar bg-white '>
+  <text class='cu-bar-text'>发起人</text>
+</view>
+<view class="cu-card  no-card solid-bottom">
+  <view class='cu-list menu-avatar'>
+    <view class='cu-item'>
+      <view class='cu-avatar round lg bg-white' style="background-image:url(../../../images/avatar.png)"></view>
+      <view class='content flex-sub'>
+        <view class='text-gray'>
+          <text>李大强</text>
+          <text class='margin-left'>前端开发工程师</text>
+        </view>
+        <view class='text-gray'>湖南捷报科技有限公司</view>
+      </view>
+    </view>
+  </view>
+</view>
+
+<view class="cu-card  no-card solid-bottom">
+  <view class='cu-list menu-avatar'>
+    <view class='cu-item'>
+      <view class='cu-avatar-text bg-white '>
+        <text>拜访时间</text>
+      </view>
+      <view class='content flex-sub'>
+        <view class='text-gray'>
+          <text>2019年10月1号下午三点</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+
+<view class="cu-card  no-card solid-bottom">
+  <view class='cu-list menu-avatar'>
+    <view class='cu-item'>
+      <view class='cu-avatar-text bg-white '>
+        <text>拜访事由</text>
+      </view>
+      <view class='content flex-sub'>
+        <view class='text-gray'>
+          <text>整合资源,开发客户</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+
+<view class='cu-bar bg-white '>
+  <text class='cu-bar-text'>随行人员</text>
+</view>
+<view class="cu-card  no-card solid-bottom">
+  <view class='cu-list menu-avatar'>
+
+    <view class='cu-item solid-bottom'>
+      <view class='cu-avatar round lg bg-white' style="background-image:url(../../../images/avatar.png)"></view>
+      <view class='content flex-sub'>
+        <view class='text-gray'>
+          <text>李中强</text>
+          <text class='margin-left'>前端开发工程师</text>
+        </view>
+        <view class='text-gray'>湖南捷报科技有限公司</view>
+      </view>
+    </view>
+
+    <view class='cu-item solid-bottom'>
+      <view class='cu-avatar round lg bg-white' style="background-image:url(../../../images/avatar.png)"></view>
+      <view class='content flex-sub'>
+        <view class='text-gray'>
+          <text>李小强</text>
+          <text class='margin-left'>前端开发工程师</text>
+        </view>
+        <view class='text-gray'>湖南捷报科技有限公司</view>
+      </view>
+    </view>
+
+  </view>
+
+</view>
+<!-- 开门记录 -->
+<view class="cu-card  no-card solid-bottom">
+  <view class='cu-list menu-avatar'>
+    <view class='cu-item'>
+      <view class='cu-avatar-text bg-white '>
+        <text>开门记录</text>
+      </view>
+      <view class='content flex-sub'>
+        <view class='text-gray'>
+          <text>2019年10月1号下午三点</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

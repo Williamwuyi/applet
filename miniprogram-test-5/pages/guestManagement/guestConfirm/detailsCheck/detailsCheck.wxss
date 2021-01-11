@@ -1,0 +1,32 @@
+/* pages/guestManagement/guestComfirm/detailsCheck/detailsCheck.wxss */
+.cu-bar-text{
+  font-size: 1.2em;
+  margin-left: 30rpx;
+  color: black;
+}
+.bottom-bar{
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background: white;
+  line-height: 100rpx;
+  text-align: center;
+}
+.bottom-bar button{
+  margin-right: 30rpx;
+}
+.scrollSelected{
+  height: 190rpx;
+}
+.grid.col-4>view {
+  border:.1rpx dashed;
+  text-align: center;
+}
+.grid.col-4>checkbox-group >view{
+  padding-top: 10rpx;
+  overflow: hidden;
+  height: 105rpx;
+}
+.inputCount{
+  width: 230rpx;
+}

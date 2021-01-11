@@ -1,0 +1,75 @@
+/* pages/workAttendance/attendanceTable/attendanceTable.wxss */
+.hidden {
+  display: none !important;
+}
+
+.cu-list.menu-avatar>.cu-item .content {
+  left: 140rpx;
+}
+
+.clearfix::after {
+  display: block;
+  content: " ";
+  clear: both;
+}
+
+.menu {
+  position: fixed;
+  width: 100%;
+  z-index: 1024;
+  box-shadow: 0 1rpx 6rpx rgba(0, 0, 0, 0.1);
+}
+
+.cu-load.over::after {
+  content: "没有数据";
+}
+
+.VerticalNav.nav {
+  width: 200rpx;
+  white-space: initial;
+}
+
+.VerticalNav.nav .cu-item {
+  width: 100%;
+  text-align: center;
+  background-color: #fff;
+  margin: 0;
+  border: none;
+  height: 50px;
+  position: relative;
+}
+
+.VerticalNav.nav .cu-item.cur {
+  background-color: #209ae0;
+  color: #fff;
+}
+
+.VerticalNav.nav .cu-item.cur::after {
+  content: "";
+  width: 8rpx;
+  height: 30rpx;
+  border-radius: 10rpx 0 0 10rpx;
+  position: absolute;
+  background-color: currentColor;
+  top: 0;
+  right: 0rpx;
+  bottom: 0;
+  margin: auto;
+}
+
+.VerticalBox {
+  display: flex;
+}
+
+.VerticalMain {
+  background-color: #f1f1f1;
+}
+
+.cu-list.menu-avatar>.cu-item>.wd-content {
+  position: absolute;
+  left: 20rpx;
+}
+.intro {
+  text-align: center;
+  overflow: scroll;
+}

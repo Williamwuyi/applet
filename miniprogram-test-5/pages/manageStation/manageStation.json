@@ -1,0 +1,7 @@
+{
+  "component": true,
+  "usingComponents": {
+      "menu_manage":"../../components/menu-manage/menu-manage",
+      "menu_guest":"../../components/menu-guest/menu-guest"
+  }
+}

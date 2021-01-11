@@ -1,0 +1,11 @@
+<!--pages/login.wxml-->
+<view class="bg-gradual-blue-login padding" style="height:calc(100vh);">
+	<!-- logo页面 -->
+	<view class="bg-img padding-tb-xl " style="width:460rpx; margin:auto;margin-top: 100rpx;">
+		<image src="https://rlsb.youhuan.net:8003/small/person/show?fileName=/images/jiebaoLogo3.jpg"></image>
+	</view>
+
+	<view class="bg-img padding-tb-xl " style="width:200px;margin:auto;margin-top:10px;"bindtap="login_information" >
+		<image style="height:56px;width:200px;" src="https://rlsb.youhuan.net:8003/small/person/show?fileName=/images/login_button.jpg"></image>
+	</view>
+</view>

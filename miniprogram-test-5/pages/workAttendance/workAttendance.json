@@ -1,0 +1,6 @@
+{
+  "usingComponents": {
+    "s-table": "../../../components/table/index",
+    "attendance-date-picker": "../../../components/attendanceDatePicker/index"
+  }
+}

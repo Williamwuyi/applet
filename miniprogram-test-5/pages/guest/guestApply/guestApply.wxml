@@ -1,0 +1,166 @@
+<!--pages/guest/guestApply/guestApply.wxml-->
+<cu-custom bgColor="bg-gtadual-bluestone" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content">新建预约</view>
+</cu-custom>
+<!-- 已完成预约的详细信息 -->
+<!--  -->
+<!-- 使用卡片式布局 -->
+<form bindsubmit="formSubmit">
+  <view class='cu-bar bg-white '>
+    <text class='cu-bar-text'>发起人</text>
+  </view>
+  <view class="cu-card  no-card solid-bottom">
+    <view class='cu-list menu-avatar'>
+      <view class='cu-item'>
+        <view class='cu-avatar round lg bg-white' style="background-image:url({{imagesUrl}}{{person.imgPaths}})"></view>
+        <view class='content flex-sub'>
+          <view class='text-gray'>
+            <text> </text>
+            <text class='margin-left'>{{person.personName}}</text>
+          </view>
+          <!-- <view class='text-gray'>湖南捷报科技有限公司</view> -->
+        </view>
+      </view>
+    </view>
+  </view>
+  <!-- 拜访者的信息 -->
+  <!-- <input hidden value="{{person.personId}}" name="visitorId"></input> -->
+  <input hidden value="{{person.personUnikey}}" name="visitorUnikey"></input>
+  <input hidden value="{{person.personName}}" name="visitorName"></input>
+  <!-- 受访者的信息 -->
+  <input hidden value="{{interviewee.personId}}" name="personId"></input>
+  <input hidden value="{{interviewee.personUnikey}}" name="personUnikey"></input>
+
+
+  <view class="cu-card  no-card solid-bottom">
+    <view class='cu-list menu-avatar'>
+      <view class='cu-item'>
+        <view class='cu-avatar-text bg-white '>
+          <text>拜访人职位</text>
+        </view>
+        <view class='content flex-sub'>
+          <view class='text-gray'>
+            <input name="appellation"></input>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="cu-card  no-card solid-bottom">
+    <view class='cu-list menu-avatar'>
+      <view class='cu-item'>
+        <view class='cu-avatar-text bg-white '>
+          <text>拜访人公司</text>
+        </view>
+        <view class='content flex-sub'>
+          <view class='text-gray'>
+            <input name="company"></input>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class='cu-bar bg-white '>
+    <text class='cu-bar-text'>拜访对象</text>
+  </view>
+  <view class="cu-card  no-card solid-bottom">
+    <view class='cu-list menu-avatar'>
+      <view class='cu-item'>
+        <view class='cu-avatar round lg bg-white' style="background-image:url({{imagesUrl}}{{interviewee.imgPaths}})">
+        </view>
+        <view class='content flex-sub'>
+          <view class='text-gray'>
+            <text></text>
+            <text class='margin-left'>{{interviewee.personName}}</text>
+          </view>
+          <view class='text-gray'></view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="cu-card  no-card solid-bottom">
+    <view class='cu-list menu-avatar'>
+      <view class='cu-item'>
+        <view class='cu-avatar-text bg-white '>
+          <text>拜访时间</text>
+        </view>
+        <view class='content flex-sub'>
+          <view class='text-gray'>
+            <!-- <text>2019年10月1号下午三点</text> -->
+            <!-- <view class='margin-left' data-target="visitTime"> -->
+            <picker mode="date"  data-target="currentVisiteDate" value="{{date}}" start="2019-10-01" end="2090-10-01" bindchange="bindDateChange">
+              <view class="picker">
+                日期: {{currentVisiteDate}}
+              </view>
+            </picker>
+            <picker mode="time"  data-target="currentVisiteTime" value="{{time}}" start="09:01" end="21:01" bindchange="bindTimeChange">
+              <view class="picker margin-left">
+                时间: {{currentVisiteTime}}
+              </view>
+            </picker>
+            <!-- </view> -->
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="cu-card  no-card solid-bottom">
+    <view class='cu-list menu-avatar'>
+      <view class='cu-item'>
+        <view class='cu-avatar-text bg-white '>
+          <text>结束时间</text>
+        </view>
+        <view class='content flex-sub'>
+          <view class='text-gray'>
+            <!-- <text>2019年10月1号下午三点</text> -->
+            <!-- <view class='margin-left' data-target="endTime" > -->
+            <picker mode="date" data-target="currentEndDate" value="{{date}}" start="2019-10-01" end="2090-10-01" bindchange="bindDateChange">
+              <view class="picker">
+                日期: {{currentEndDate}}
+              </view>
+            </picker>
+            <picker mode="time" data-target="currentEndTime" value="{{time}}" start="09:01" end="21:01" bindchange="bindTimeChange">
+              <view class="picker margin-left">
+                时间: {{currentEndTime}}
+              </view>
+            </picker>
+          </view>
+          <!-- </view> -->
+        </view>
+      </view>
+    </view>
+  </view>
+  <!-- 时间 -->
+  <input hidden value="{{currentVisiteDate +' '+ currentVisiteTime +':00'}}" name="startTime"></input>
+  <input hidden value="{{currentEndDate +' '+ currentEndTime+':00'}}" name="endTime"></input>
+
+  <view class="bg-white solid change_time ">
+    <van-popup show="{{show}}" bind:close="onClose" position="bottom">
+      <van-datetime-picker type="datetime" data-type="datetime" loading="{{ loading }}" value="{{ currentDate1 }}" min-date="{{ minDate }}" bind:input="onInput" bind:cancel="onCancel" bind:confirm="onConfirm" />
+    </van-popup>
+  </view>
+
+  <view class="cu-card  no-card solid-bottom">
+    <view class='cu-list menu-avatar'>
+      <view class='cu-item'>
+        <view class='cu-avatar-text bg-white '>
+          <text>拜访事由</text>
+        </view>
+        <view class='content flex-sub'>
+          <view class='text-gray'>
+            <input name="reason"></input>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class='bottom-bar margin-top'>
+    <button class='cu-btn  bg-blue button-hover' form-type="submit">提交申请</button>
+  </view>
+</form>

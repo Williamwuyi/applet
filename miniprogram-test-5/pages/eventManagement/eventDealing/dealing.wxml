@@ -1,0 +1,110 @@
+<!--pages/eventManagement/eventDealing/dealing.wxml-->
+<!-- 访客预约申请处理页面,未审核的消息详情 -->
+<cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content">事件处理中</view>
+</cu-custom>
+<!-- 使用卡片式布局 -->
+
+<view>
+  <view class='cu-bar bg-white '>
+    <text class='cu-bar-text'>疑似人员信息</text>
+  </view>
+  <view class="cu-card  no-card solid-bottom">
+    <view class='cu-list menu-avatar'>
+      <view class='cu-item'>
+        <view class='cu-avatar round lg bg-white'><image style="height:100rpx;width:100rpx;" src="{{imagesUrl}}"></image></view>
+        <view class='content flex-sub'>
+          <view class='text-gray'>
+            <text> </text>
+            <text class='margin-left'>张三</text>
+            <text class='margin-left'>一类人员</text>
+            <!-- <text class='margin-left'>430121199300192881</text> -->
+          </view>
+          <view class='text-gray'>
+            <text class='margin-left'>430121199300192881</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="cu-card  no-card solid-bottom">
+    <view class='cu-list menu-avatar'>
+      <view class='cu-item'>
+        <view class='cu-avatar-text bg-white '>
+          <text>报警位置</text>
+        </view>
+        <view class='content flex-sub'>
+          <view class='text-gray'>
+            <text>园区1号门</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+  <view class="cu-card  no-card solid-bottom">
+    <view class='cu-list menu-avatar'>
+      <view class='cu-item'>
+        <view class='cu-avatar-text bg-white '>
+          <text>报警时间</text>
+        </view>
+        <view class='content flex-sub'>
+          <view class='text-gray'>
+            <text>2019年10月1日10点30分</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+
+  <view class="cu-card  no-card solid-bottom">
+    <view class='cu-list menu-avatar'>
+      <view class='cu-item'>
+        <view class='cu-avatar-text bg-white '>
+          <text>应处理人</text>
+        </view>
+        <view class='content flex-sub'>
+          <view class='text-gray'>
+            <text>王武</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+  <view class="cu-card  no-card solid-bottom">
+    <view class='cu-list menu-avatar'>
+      <view class='cu-item'>
+        <view class='cu-avatar-text bg-white '>
+          <text>实际处理人</text>
+        </view>
+        <view class='content flex-sub'>
+          <view class='text-gray'>
+            <text>王武</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="cu-card  no-card solid-bottom">
+    <view class='cu-list menu-avatar'>
+      <view class='cu-item'>
+        <view class='cu-avatar-text bg-white '>
+          <text>处理结果</text>
+        </view>
+        <view class='content flex-sub'>
+          <view class='text-gray'>
+            <input value="驱离"></input>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+<!-- 底部操作条 -->
+<view class='bottom-bar'>
+  <button class='cu-btn  bg-blue button-hover' bindtap="deal" disabled="{{confirmButton}}">处理完毕</button>
+</view>
+<!-- 同意的底部窗口 -->

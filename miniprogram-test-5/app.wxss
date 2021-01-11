@@ -1,0 +1,32 @@
+/**app.wxss**/
+@import "colorui/main.wxss";
+@import "colorui/icon.wxss";
+.scrollPage{
+  height: 100vh;
+}
+.cu-avatar-text {
+	font-variant: small-caps;
+	margin: 0;
+	padding: 0;
+	display: inline-flex;
+	text-align: center;
+	justify-content: center;
+	align-items: center;
+	background-color: white;
+	color: var(--black);
+	white-space: nowrap;
+	position: relative;
+	background-size: cover;
+	background-position: center;
+	vertical-align: middle;
+	font-size: 1.2em;
+  margin-right: 30rpx;
+}
+.cu-list.menu-avatar>.cu-item>.cu-avatar-text {
+position:absolute;
+left:30rpx;
+}
+.cu-list.menu-avatar>.cu-item .content {
+  left:220rpx;
+}
+

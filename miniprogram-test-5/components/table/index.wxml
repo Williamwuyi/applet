@@ -1,0 +1,26 @@
+<!--components/table/index.wxml-->
+<view style="position:relative;width:{{selectWidth}}px;border:1px solid #ccc;box-shadow:1px;height:80rpx; background:#fff;">
+<view style="position:absolute;left:30px;width:60rpx; height:80rpx;" bindtap="_lastMonth"><image style="width: 30px;height: 40px;" src="../../images/lastMonth.png"></image></view>
+<view style="position:absolute;right:30px;width:60rpx; height:80rpx;" bindtap="_nextMonth"><image style="width: 30px;height: 40px;" src="../../images/nextMonth.png"></image></view>
+<view style="width:20%;margin:0 auto;min-width:100rpx;line-height:80rpx;" bindtap="_changeDate"> <text>{{attendanceDate}}</text></view>
+</view>
+<scroll-view scroll-x="true" enable-flex='true' style="width:{{scrolWidth}}px;" class="table table-noborder">
+<!-- 表头 -->
+  <view class="tr thead s-class-header" style='width:{{theadWidth}}px;'>
+  <!-- 表头单个元素 -->
+    <view wx:for="{{headers}}" class="td td-{{hasBorder}}border" style='width:{{tdWidth}}px;'>{{item.display}}</view>
+  </view>
+  <!-- 表格主体 -->
+  <scroll-view scroll-y="true" style="width:{{theadWidth}}px;height:{{height}}px;">
+    <block wx:for-item='i' wx:for="{{list}}">
+      <view class="tr s-class-row" style='width:{{theadWidth}}px;'>
+      <!-- for-item相当于当先循环到的元素的别名 -->
+        <view wx:for-item='j' wx:for="{{headers}}" class="td td-{{hasBorder}}border" style='width:{{tdWidth}}px;'>
+          <!-- {{i[j]}} -->
+          {{i[j['text']]}}
+        </view>
+      </view>
+    </block>
+    <view wx:if="{{!hasdata}}" style="  border-top: 1px solid #ccc;">暂无数据</view>
+  </scroll-view>
+</scroll-view>

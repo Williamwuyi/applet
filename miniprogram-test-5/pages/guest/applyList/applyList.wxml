@@ -1,0 +1,49 @@
+ <!--pages/guest/applyList/applyList.wxml-->
+<cu-custom bgColor="bg-gtadual-bluestone" isBack="{{true}}" needTab="{{true}}" tabInfo="{{[{name:'未通过'},{name:'未审核'},{name:'已通过'},{name:'已拜访'}]}}" bind:tabSelect="tabSelect">
+  <view slot="backText">返回</view>
+  <view slot="content">预约记录</view>
+</cu-custom>
+<!-- 0 消息列表 -->
+<scroll-view scroll-y style="height:calc(100vh  - 260rpx)" class="{{0 == TabCur ? '':'hidden'}} margin-top" scroll-with-animation="true">
+  <view class='cu-list menu-avatar '>
+      <view  hover-class="none"  class="cu-item" wx:for='{{summary.length}}' wx:key="{{index}}">
+        <view class="cu-avatar round " style="width:66rpx;"><text class="cu-text" style="font-size:15px">{{index+1}}</text></view> 
+        <text class='content'>{{summary[index]}}</text>
+        <text class="cu-tag bg-blue" data-target="{{index}}" bindtap="navigateToDetailPage">详情</text>
+      </view>
+  </view>
+<view class="cu-load  {{isLoad?'loading':'over'}}" hidden="{{hasData}}"></view>
+</scroll-view>
+<!-- 1 消息列表 -->
+<scroll-view scroll-y style="height:calc(100vh  - 260rpx)" class="{{1 == TabCur ? '':'hidden'}} margin-top" scroll-with-animation="true">
+  <view class='cu-list menu-avatar '>
+      <view  hover-class="none"  class="cu-item" wx:for='{{summary.length}}' wx:key="{{index}}">
+        <view class="cu-avatar round " style="width:66rpx;"><text class="cu-text" style="font-size:15px">{{index+1}}</text></view> 
+        <text class='content'>{{summary[index]}}</text>
+        <text class="cu-tag bg-blue" data-target="{{index}}" bindtap="navigateToDetailPage">详情</text>
+      </view>
+  </view>
+  <view class="cu-load  {{isLoad?'loading':'over'}}" hidden="{{hasData}}"></view>
+</scroll-view>
+<!-- 2 消息列表 -->
+<scroll-view scroll-y style="height:calc(100vh  - 260rpx)" class="{{2 == TabCur ? '':'hidden'}} margin-top" scroll-with-animation="true">
+  <view class='cu-list menu-avatar '>
+      <view  hover-class="none"  class="cu-item" wx:for='{{summary.length}}' wx:key="{{index}}">
+        <view class="cu-avatar round " style="width:66rpx;"><text class="cu-text" style="font-size:15px">{{index+1}}</text></view> 
+        <text class='content'>{{summary[index]}}</text>
+        <text class="cu-tag bg-blue" data-target="{{index}}" bindtap="navigateToDetailPage">详情</text>
+      </view>
+  </view>
+<view class="cu-load  {{isLoad?'loading':'over'}}" hidden="{{hasData}}"></view>
+</scroll-view>
+<!-- 3 消息列表 -->
+<scroll-view scroll-y style="height:calc(100vh  - 260rpx)" class="{{3 == TabCur ? '':'hidden'}} margin-top" scroll-with-animation="true">
+  <view class='cu-list menu-avatar '>
+      <view  hover-class="none"  class="cu-item" wx:for='{{summary.length}}' wx:key="{{index}}">
+        <view class="cu-avatar round " style="width:66rpx;"><text class="cu-text" style="font-size:15px">{{index+1}}</text></view> 
+        <text class='content'>{{summary[index]}}</text>
+        <text class="cu-tag bg-blue" data-target="{{index}}" bindtap="navigateToDetailPage">详情</text>
+      </view>
+  </view>
+<view class="cu-load  {{isLoad?'loading':'over'}}" hidden="{{hasData}}"></view>
+</scroll-view>

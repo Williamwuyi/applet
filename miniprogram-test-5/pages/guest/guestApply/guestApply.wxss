@@ -1,0 +1,17 @@
+/* pages/guest/guestApply/guestApply.wxss */
+.cu-bar-text{
+  font-size: 1.2em;
+  margin-left: 30rpx;
+  color: black;
+}
+.bottom-bar{
+
+  width: 100%;
+  background: white;
+  line-height: 100rpx;
+  text-align: center;
+  z-index: 100;
+}
+.bottom-bar button{
+  margin-right: 30rpx;
+}

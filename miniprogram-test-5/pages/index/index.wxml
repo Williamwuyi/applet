@@ -1,0 +1,4 @@
+<!--index.wxml-->
+<manage-station wx:if="{{0 == currentTabbar}}"></manage-station>
+<person-info  wx:if="{{1 == currentTabbar}}"></person-info>
+<mp-tabbar style="position:fixed;bottom:0;width:100%;left:0;right:0;" list="{{list}}" current="{{currentTabbar}}" bindchange="bottomTabChange"></mp-tabbar> 

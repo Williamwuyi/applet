@@ -1,0 +1,82 @@
+<!--pages/person/person.wxml-->
+<cu-custom isBack="{{true}}" bgColor="{{whoUseThis == 'guest'? 'bg-gradual-red':'bg-gradual-blue'}}">
+  <view slot="backText">返回</view>
+  <view slot="content">个人中心</view>
+</cu-custom>
+<form bindsubmit="updateInfomation">
+  <view class="bg-white " style="text-align:right; line-height:100rpx;">
+    <button class="cu-btn bg-green shadow margin-right" bindtap="updateInfo">{{updateInfo ? "取消修改":"修改个人信息"}}</button>
+    <button class="cu-btn bg-green shadow margin-right" wx:if="{{updateInfo}}" form-type="submit">确认</button>
+    <view class='cu-load load-modal' wx:if="{{loadModal}}">
+      <view class='gray-text'>修改中...</view>
+    </view>
+
+    <!-- updateInfob,布尔变量,true允许修改,false不能修改 -->
+  </view>
+  <view class="bg-grey-lighter margin-xs align-center cu-form-group">
+    <view class="personnal_icon padding grid col-4 grid-square flex-sub">
+      <view class="bg-img" bindtap="ViewImage" data-url="{{imgList[0]}}" wx:if="{{imgList[0]}}">
+        <image src='{{imgList[0]}}' mode='aspectFill'></image>
+        <view class="cu-tag bg-red" catchtap="DelImg" wx:if="{{updateInfo}}">
+          <text class="cuIcon-close"></text>
+        </view>
+      </view>
+      <view class="solids" bindtap="ChooseImage" wx:if="{{!imgList[0]}}">
+        <text class="cuIcon-cameraadd"></text>
+      </view>
+
+      <view class="name_class padding-top padding-bottom">
+        <text class="text-lg">个人头像</text>
+      </view>
+    </view>
+  </view>
+  <!-- 隐藏,personId  图片地址-->
+  <input name="imgPaths" hidden disabled value="{{imgList[1]}}" />
+  <input hidden name="personId" value="{{person.personId}}" disabled />
+  <input hidden name="personUnikey" value="{{person.personUnikey}}" disabled />
+
+  <view class="  bg-grey-lighter flex   margin-top-l solid-bottom">
+    <view class="flex-sub padding-sm margin-xs ">
+      <!-- <text class="iconfont icon-worker ">
+</text> -->
+      <text class="text-lg">姓名</text>
+    </view>
+    <view class="flex-twice padding-sm margin-xs  text-lg {{updateInfo ? 'update_border':'' }} ">
+      <input class="text-lg" name="personName" value="{{person.personName}}" disabled="{{!updateInfo}}" />
+    </view>
+  </view>
+
+  <view class="  bg-grey-lighter flex solid-bottom">
+    <view class="flex-sub padding-sm margin-xs ">
+      <!-- <text class="iconfont icon-phone">
+</text> -->
+      <text class="text-lg">性别</text>
+    </view>
+    <view class="flex-twice padding-sm margin-xs  text-lg {{updateInfo ? 'update_border':'' }}">
+      <!-- <input class="text-lg" placeholder="{{cellphoneNumber}}" disabled="{{!updateInfo}}" /> -->
+
+      <picker range="{{sex}}" value="{{picker_index}}" name="personSex" disabled="{{!updateInfo}}" bindchange="bindPickerChange">
+        <view>{{sex[picker_index]}}</view>
+      </picker>
+
+    </view>
+  </view>
+  <view class="  bg-grey-lighter flex solid-bottom">
+    <view class="flex-sub padding-sm margin-xs ">
+      <!-- <text class="iconfont .icon-phone1">
+</text> -->
+      <text class="text-lg">手机</text>
+    </view>
+    <view class="flex-twice padding-sm margin-xs  text-lg {{updateInfo ? 'update_border':'' }}">
+      <input class="text-lg" type="cellphoneNumber" name="personPhone" value="{{person.personPhone}}" disabled="{{!updateInfo}}"></input>
+    </view>
+  </view>
+</form>
+<!-- <view class="  bg-grey-lighter flex solid-bottom">
+  <view class="flex-sub padding-sm margin-xs ">
+    <text class="text-lg">公司名称</text>
+  </view>
+  <view class="flex-twice padding-sm margin-xs  text-lg textarea_width_limit {{updateInfo ? 'update_border':''}}">
+    <input class="text-lg" value="{{person.company}}" disabled="{{!updateInfo}}"></input>
+  </view>
+</view> -->

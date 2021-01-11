@@ -1,0 +1,8 @@
+{
+  "usingComponents": {
+    "manage-station":"../manageStation/manageStation",
+    "person-info":"../personInfo/personInfo",
+    "mp-tabbar": "../../components/tabbar/tabbar"
+  },
+   "navigationBarTitleText": "UI组件库"
+} 

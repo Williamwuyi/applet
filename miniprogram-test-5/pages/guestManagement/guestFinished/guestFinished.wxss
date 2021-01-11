@@ -1,0 +1,6 @@
+/* pages/guestManagement/guestfinished/guestFinished.wxss */
+.cu-bar-text{
+  font-size: 1.2em;
+  margin-left: 30rpx;
+  color: black;
+}

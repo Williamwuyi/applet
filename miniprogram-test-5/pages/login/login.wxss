@@ -1,0 +1,20 @@
+/* pages/login.wxss */
+.login_label{
+  width: 470rpx;
+  margin: 0 auto;
+}
+.login_title{
+  min-width: 120rpx;
+}
+.login_button{
+  background-color: transparent;
+  width: 410rpx;
+  height: 100rpx;
+  border: 0px !important;
+}
+.bg-gradual-blue-login{
+  background-image: url('https://rlsb.youhuan.net:8003/small/person/show?fileName=/images/loginBackground.jpg');
+  /* background-size:100%,100%;
+   */
+  background-size: cover;
+}

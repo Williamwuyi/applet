@@ -1,0 +1,19 @@
+/* pages/workAttendance/checkIn/checkIn.wxss */
+.cu-bar-text{
+  font-size: 1.2em;
+  margin-left: 30rpx;
+  color: black;
+}
+.bottom-bar{
+  bottom: 0;
+  width: 100%;
+  background: white;
+  line-height: 100rpx;
+  text-align: center;
+}
+.bottom-bar button{
+  margin-right: 30rpx;
+}
+.unshow{
+  display: none;
+}

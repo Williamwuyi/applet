@@ -1,0 +1,40 @@
+
+.text-sl{
+  font-size: 50rpx;
+}
+.bg-grey-lighter{
+  background:#ffffff;
+  color: #8699a4;
+}
+.iconfont{
+  padding-right: 20rpx;
+  color: #0090ed;
+}
+.cuIcon-myfill{
+  color: #0090ed;
+  padding-right: 10rpx;
+  font-size: 55rpx;
+}
+.icon-phone1{
+  font-size: 14px;
+}
+.textarea_width_limit{
+  width: 300rpx;
+  height: 120rpx;
+}
+.update_border{
+  border: 1rpx solid #8699a4;
+}
+.cu-form-group .title {
+  min-width: calc(4em + 30rpx);
+}
+.personnal_icon{
+  height: 200rpx;
+}
+.personnal_icon image{
+  max-height: 150rpx;
+  max-width: 150rpx;
+}
+.cu-load.loading::after {
+content:"注册中";
+}

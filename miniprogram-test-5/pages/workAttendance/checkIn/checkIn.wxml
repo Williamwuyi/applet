@@ -1,0 +1,54 @@
+<!--pages/workAttendance/checkIn/checkIn.wxml-->
+<cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content">补卡</view>
+</cu-custom>
+<view>
+  <view class="cu-card  no-card solid-bottom">
+    <view class='cu-list menu-avatar'>
+      <view class='cu-item'>
+        <view class='cu-avatar-text bg-white '>
+          <text>补卡时间</text>
+        </view>
+        <view class='content flex-sub'>
+          <view class='text-gray'>
+            <text>2019年10月1日10点30分</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+  <view class="cu-card  no-card solid-bottom">
+    <view class='cu-list menu-avatar'>
+      <view class='cu-item'>
+        <view class='cu-avatar-text bg-white '>
+          <text>审批人</text>
+        </view>
+        <view class='content flex-sub'>
+          <view class='text-gray'>
+            <text>陈章</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+
+<view class="cu-card  no-card solid-bottom">
+    <view class='cu-list menu-avatar'>
+      <view class='cu-item'>
+        <view class='cu-avatar-text bg-white '>
+          <text>补卡原因</text>
+        </view>
+        <view class='content flex-sub'>
+          <view class='text-gray'>
+            <input placeholder="请输入原因"></input>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+<!-- 底部操作条 -->
+<view class='bottom-bar'>
+  <button class='cu-btn  bg-blue button-hover' bindtap="deal" disabled="{{confirmButton}}">提交</button>
+</view>

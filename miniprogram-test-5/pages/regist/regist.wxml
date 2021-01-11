@@ -1,0 +1,19 @@
+<!--pages/regist/regist.wxml-->
+<cu-custom isBack="{{true}}" bgColor="bg-gradual-blue">
+  <view slot="backText">返回</view>
+  <view slot="content">公司名称</view>
+</cu-custom>
+<view class="bg-gradual-blue-login padding" style="height:{{CuscreenHeight-CustomBar}}px">
+  <!-- logo页面 -->
+
+  <!-- 选择公司 -->
+  <form bindsubmit="company_check" >
+    <view class="margin-top " style="">
+      <view class="cu-form-group">
+        <label class="title">公司名称</label>
+        <input style="border:1px solid #b5b5b5" placeholder="请输入公司全称" name="comName"></input>
+        <button class="cu-btn round sm  bg-green margin-left" form-type="submit">下一步</button>
+      </view>
+    </view>
+  </form>
+</view>

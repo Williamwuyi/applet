@@ -1,0 +1,81 @@
+<!--pages/guestManagement/guestComfirm/detailsCheck/detailsCheck.wxml-->
+<!-- 通过申请 -->
+<cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content">申请通过</view>
+</cu-custom>
+<!-- 使用卡片式布局 -->
+<view class='cu-bar bg-white solid-bottom '>
+  <text class='cu-bar-text'>门禁权限</text>
+</view>
+<!-- 实用scroll作为门禁选择列表,可以复用,扩展性高 -->
+<scroll-view scroll-y class='scrollSelected'>
+  <view class="cu-card  no-card solid-bottom">
+    <view class='cu-list menu-avatar bg-white'>
+      <view class='flex-sub content'>
+        <checkbox-group class='grid col-4 grid-square' bindchange="checkboxChange">
+          <view wx:for="{{doorRule.length}}" wx:key="{{index}}">
+              <view class="margin-bottom">{{doorRule[index].ruleName}}</view>
+              <checkbox value="{{doorRule[index].ruleId}}" checked="" />
+          </view>
+        </checkbox-group>
+      </view>
+    </view>
+  </view>
+</scroll-view>
+
+<form bindsubmit="accept">
+<view class="cu-card  no-card solid-bottom">
+  <view class='cu-list menu-avatar'>
+    <view class='cu-item'>
+      <view class='cu-avatar-text bg-white '>
+        <text>有效次数</text>
+      </view>
+      <view class='content flex-sub'>
+        <view class='text-gray'>
+          <input class='inputCount' name="times" placeholder='请输入有效次数'></input>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+<!--  选择的门禁ID和访客事件ID-->
+<!-- <input value="{{ruleList}}" hidden name="ruleIdList"></input> -->
+<!-- <input value="{{dataFromLast.visitorId}}" hidden name="visitorId"></input> -->
+<input value="{{currentDate +' '+ currentTime +':00'}}" hidden name="failureTime"></input>
+
+<view class="cu-card  no-card solid-bottom">
+  <view class='cu-list menu-avatar'>
+    <view class='cu-item'>
+      <view class='cu-avatar-text bg-white '>
+        <text>有效日期</text>
+      </view>
+      <view class='content flex-sub'>
+        <view class='text-gray' >
+          <!-- <view bindtap='popTime' >{{currentDate}}</view> -->
+
+ <picker mode="date" value="{{date}}" start="2019-10-01" end="2090-10-01" bindchange="bindDateChange">
+    <view class="picker">
+      日期: {{currentDate}}
+    </view>
+  </picker>
+  <picker mode="time" value="{{time}}" start="09:01" end="21:01" bindchange="bindTimeChange">
+    <view class="picker margin-left">
+      时间: {{currentTime}}
+    </view>
+  </picker>
+
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+<!-- <van-popup show="{{show}}" bind:close="onClose" position="bottom"> 
+  <van-datetime-picker type="datetime" data-type="datetime" loading="{{ loading }}" value="{{ currentDate1 }}" min-date="{{ minDate }}" bind:input="onInput"  />
+</van-popup> -->
+
+<!-- 底部操作条 -->
+<view class='bottom-bar'>
+  <button class='cu-btn  bg-blue button-hover' form-type="submit" >同意</button>
+</view>
+</form>

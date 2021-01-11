@@ -1,0 +1,48 @@
+<!--pages/eventManagement/eventManagement.wxml-->
+<!-- 访客管理页面 -->
+<cu-custom bgColor="bg-gradual-blue" isBack="{{true}}" needTab="{{true}}" tabInfo="{{[{name:'待处理'},{name:'处理中'},{name:'已处理'}]}}" bind:tabSelect="tabSelect">
+  <view slot="backText">返回</view>
+  <view slot="content">事件管理</view>
+</cu-custom>
+  <!-- 待处理 消息列表 -->
+  <scroll-view scroll-y style="height:calc(100vh  - CustomBar -CustomBar -30rpx) " class="{{0 == TabCur ? '':'hidden'}} margin-top" scroll-with-animation="true">
+    <!-- url='../guestManagement/guestComfirm/guestComfirm'  -->
+    <view class='cu-list menu-avatar '>
+      <view hover-class="none" class="cu-item" wx:for='{{summary.length}}' wx:key="{{index}}">
+        <view class="cu-avatar round " style="width:66rpx;">
+          <text class="cu-text" style="font-size:15px">{{index+1}}</text>
+        </view>
+        <text class='content'>{{summary[index]}}</text>
+        <text class="cu-tag bg-blue" data-target="{{index}}" bindtap="navigateToDetailPage">详情</text>
+      </view>
+    </view>
+    <view class="cu-load  loading" hidden="{{hasData}}"></view>
+  </scroll-view>
+  <!-- 处理中 消息列表 -->
+  <scroll-view scroll-y style="height:calc(100vh  - CustomBar -CustomBar -30rpx)" class="{{1 == TabCur ? '':'hidden'}} margin-top" scroll-with-animation="true">
+    <!-- url='../guestManagement/guestStarting/guestStarting' -->
+    <view class='cu-list menu-avatar '>
+      <view hover-class="none" class="cu-item" wx:for='{{summary.length}}' wx:key="{{index}}">
+        <view class="cu-avatar round " style="width:66rpx;">
+          <text class="cu-text" style="font-size:15px">{{index+1}}</text>
+        </view>
+        <text class='content'>{{summary[index]}}</text>
+        <text class="cu-tag bg-blue" data-target="{{index}}" bindtap="navigateToDetailPage">详情</text>
+      </view>
+    </view>
+    <view class="cu-load  loading" hidden="{{hasData}}"></view>
+  </scroll-view>
+  <!-- 已处理 消息列表 -->
+  <scroll-view scroll-y style="height:calc(100vh  - CustomBar -CustomBar -30rpx)" class="{{2 == TabCur ? '':'hidden'}} margin-top" scroll-with-animation="true">
+    <!-- url='../guestManagement/guestFinished/guestFinished'  -->
+    <view class='cu-list menu-avatar '>
+      <view hover-class="none" class="cu-item" wx:for='{{summary.length}}' wx:key="{{index}}">
+        <view class="cu-avatar round " style="width:66rpx;">
+          <text class="cu-text" style="font-size:15px">{{index+1}}</text>
+        </view>
+        <text class='content'>{{summary[index]}}</text>
+        <text class="cu-tag bg-blue" data-target="{{index}}" bindtap="navigateToDetailPage">详情</text>
+      </view>
+    </view>
+    <view class="cu-load  loading" hidden="{{hasData}}"></view>
+  </scroll-view>

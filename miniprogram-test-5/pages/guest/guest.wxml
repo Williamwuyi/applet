@@ -1,0 +1,73 @@
+<!--pages/guest/guest.wxml-->
+<!-- 头部 -->
+<cu-custom bgColor="bg-gradual-greenStone">
+  <view slot="content">访客</view>
+</cu-custom>
+<!-- 头部 -->
+
+<!-- 头像展示 -->
+<view class="container bg-white shadow ">
+  <view class="userinfo flex solid-bottom padding align-start">
+    <!-- <button wx:if="{{!hasUserInfo && canIUse}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo"> 获取头像昵称 </button> -->
+    <block>
+      <view>
+        <image class='cu-avatar xl  round margin-left margin-right' bindtap="bindViewTap" mode="cover" src="{{imagesUrl}}{{person.imgPaths}}"></image>
+      </view>
+      <view class='user-detail margin-left  margin-right margin-top' style="min-width:350rpx;">
+      <view class="text-grey  text-xl"> 你好,{{person.personName}}</view>
+      </view>
+      <view class="margin-left margin-top" bindtap="personCenter">
+        <text class="lg text-cyan cuIcon-roundright" style="font-size:56rpx;"></text>
+      </view>
+    </block>
+  </view>
+</view>
+<!-- 时间和功能菜单 -->
+<view class="function bg-white shadow">
+  <view class='cu-bar bg-white margin-top solid-bottom time'>
+    <text class="text-black">{{time_today}}</text>
+  </view>
+  <view class='bg-white  grid col-3  cu-list no-border'>
+    <navigator open-type="navigate" hover-class="none" url='../guest/postName/postName'>
+      <view class="padding ">
+        <view class="wd_icon margin-bottom" style="width:60rpx;height:60rpx; margin: 0 auto;">
+          <image src="../../images/guestManagement_2.png" style="width:60rpx;height:60rpx; margin: 0 auto;"></image>
+        </view>
+        <view class="wd_text margin-top">预约申请</view>
+      </view>
+    </navigator>
+    <navigator open-type="navigate" hover-class="none" url='../guest/applyList/applyList'>
+      <view class="padding ">
+        <view class="wd_icon margin-bottom" style="width:60rpx;height:60rpx; margin: 0 auto;">
+          <image src="../../images/eventManegement_2.png" style="width:60rpx;height:60rpx; margin: 0 auto;"></image>
+        </view>
+        <view class="wd_text margin-top">预约记录</view>
+      </view>
+    </navigator>
+ 
+      <view class="padding"  bindtap="navigateToOthers">
+        <view class="wd_icon margin-bottom" style="width:60rpx;height:60rpx; margin: 0 auto;">
+          <image src="../../images/others_1.png" style="width:60rpx;height:60rpx; margin: 0 auto;"></image>
+        </view>
+        <view class="wd_text margin-top" style="padding-left: 20rpx;">其他操作</view>
+      </view>
+
+  </view>
+</view>
+
+<!-- 时间和功能菜单 -->
+<view class='cu-bar bg-white solid-bottom margin-top'><text style="width:90%; text-align:center;" class=" margin text-black" >最新消息</text></view>
+<scroll-view style="height:calc(50vh  - 145rpx)" scroll-with-animation="true" scroll-y>
+  <view class='cu-list menu-avatar'>
+    <view class="cu-item {{modalName== 'move-box-'+ index? 'move-cur':'' }}" data-target="move-box-{{index}}" wx:for='{{summary.length}}' wx:key="{{index}}">
+      <view class='cu-avatar round lg'>
+        <text class='cu-text'>提醒</text>
+      </view>
+      <text class='content'>{{summary[index]}}</text>
+      <view class="move">
+        <!-- <view class="bg-grey">置顶</view> -->
+        <!-- <view class="bg-red">删除</view> -->
+      </view>
+    </view>
+  </view>
+</scroll-view>

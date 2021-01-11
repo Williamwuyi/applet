@@ -1,0 +1,8 @@
+/* pages/guest/postName/postName.wxss */
+.bg-gradual-blue-login{
+  background-image: white;
+}
+.pick_button{
+  position: absolute;
+  right: 30rpx;
+}

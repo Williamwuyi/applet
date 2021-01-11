@@ -1,0 +1,35 @@
+/* pages/guestManagement/guestManagement.wxss */
+.hidden{
+  display: none;
+}
+.cu-list.menu-avatar>.cu-item .content {
+  left:140rpx;
+}
+.clearfix::after {
+    display: block;
+    content: " ";
+    clear: both;
+}
+.menu{
+	position: fixed;
+	width: 100%;
+	z-index: 1024;
+	box-shadow: 0 1rpx 6rpx rgba(0, 0, 0, 0.1);
+}
+.cu-load.over::after{
+  content:"没有数据"
+}
+.cu-item:after {
+	position: absolute;
+	top: 0;
+	left: 0;
+	box-sizing: border-box;
+	width: 200%;
+	height: 200%;
+	border-bottom: 1rpx solid #ddd;
+	border-radius: inherit;
+	content: " ";
+	transform: scale(.5);
+	transform-origin: 0 0;
+	pointer-events: none
+}

@@ -1,0 +1,2 @@
+/* components/menu_manage/menu-manage.wxss */
+@import '../../app.wxss';

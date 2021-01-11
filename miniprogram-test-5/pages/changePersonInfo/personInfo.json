@@ -1,0 +1,6 @@
+{
+  "usingComponents": {
+    "mp-tabbar": "../../components/tabbar/tabbar"
+  },
+   "navigationBarTitleText": "UI组件库"
+} 

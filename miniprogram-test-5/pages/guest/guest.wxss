@@ -1,0 +1,31 @@
+/* pages/guest/guest.wxss */
+
+@import '../../app.wxss';
+/* @import '../../colorui/icon.wxss';
+@import '../../colorui/main.wxss'; */
+.time{
+  text-align: center;
+}
+.time text{
+  width: 100%;
+}
+.function-cu-item{
+  border: 0rpx;
+}
+.grid.col-4.grid-square>view {
+  height: 130rpx;
+}
+.cu-text{
+  font-size: 40rpx;
+}
+.button_open_door{
+  margin-top: 20rpx;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  line-height: 100rpx;
+}
+.wd_text{
+  width: 160rpx;
+}

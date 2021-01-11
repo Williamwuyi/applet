@@ -1,0 +1,123 @@
+<!--pages/guestManagement/guestStarting/guestStarting.wxml-->
+<cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content">取消或变更预约</view>
+</cu-custom>
+
+<!-- 使用卡片式布局 -->
+<scroll-view scroll-y >
+  <view class='cu-bar bg-white '>
+    <text class='cu-bar-text'>发起人</text>
+  </view>
+  <view class="cu-card  no-card solid-bottom">
+    <view class='cu-list menu-avatar'>
+      <view class='cu-item'>
+        <view class='cu-avatar round lg bg-white' style="background-image:url(../../../images/avatar.png)"></view>
+        <view class='content flex-sub'>
+          <view class='text-gray'>
+            <text>李大强</text>
+            <text class='margin-left'>前端开发工程师</text>
+          </view>
+          <view class='text-gray'>湖南捷报科技有限公司</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="cu-card  no-card solid-bottom">
+    <view class='cu-list menu-avatar'>
+      <view class='cu-item'>
+        <view class='cu-avatar-text bg-white '>
+          <text>拜访时间</text>
+        </view>
+        <view class='content flex-sub'>
+          <view class='text-gray'>
+            <text>2019年10月1号下午三点</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+
+  <view class="cu-card  no-card solid-bottom">
+    <view class='cu-list menu-avatar'>
+      <view class='cu-item'>
+        <view class='cu-avatar-text bg-white '>
+          <text>拜访事由</text>
+        </view>
+        <view class='content flex-sub'>
+          <view class='text-gray'>
+            <text>整合资源,开发客户</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class='cu-bar bg-white '>
+    <text class='cu-bar-text'>随行人员</text>
+  </view>
+  <view class="cu-card  no-card solid-bottom">
+    <view class='cu-list menu-avatar'>
+
+      <view class='cu-item solid-bottom'>
+        <view class='cu-avatar round lg bg-white' style="background-image:url(../../../images/avatar.png)"></view>
+        <view class='content flex-sub'>
+          <view class='text-gray'>
+            <text>李中强</text>
+            <text class='margin-left'>前端开发工程师</text>
+          </view>
+          <view class='text-gray'>湖南捷报科技有限公司</view>
+        </view>
+      </view>
+
+      <view class='cu-item solid-bottom'>
+        <view class='cu-avatar round lg bg-white' style="background-image:url(../../../images/avatar.png)"></view>
+        <view class='content flex-sub'>
+          <view class='text-gray'>
+            <text>李小强</text>
+            <text class='margin-left'>前端开发工程师</text>
+          </view>
+          <view class='text-gray'>湖南捷报科技有限公司</view>
+        </view>
+      </view>
+
+    </view>
+
+  </view>
+
+  <!-- 变更选项 -->
+  <!-- 取消预约 -->
+
+  <radio-group class="block" bindchange="radioChange">
+    <view class="cu-form-group">
+      <view class="title">取消预约</view>
+      <radio class="radio" value='cancel'></radio>
+    </view>
+    <view class="bg-white solid cancel_reason solid-bottom ">
+      <input class='margin-left cancel_reason' placeholder='请输入取消原因'></input>
+    </view>
+    <!-- 变更预约时间 -->
+    <view class="cu-form-group  solid-bottom">
+      <view class="title">变更预约时间</view>
+      <radio class="radio" value='change'></radio>
+    </view>
+    <view class="bg-white solid change_time ">
+      <view class='margin-left' bindtap='popTime'>{{changeDate ? changeDate :'请修改变更时间'}}</view>
+
+      <van-popup show="{{show}}" bind:close="onClose" position="bottom">
+        <van-datetime-picker type="datetime" data-type="datetime" loading="{{ loading }}" value="{{ currentDate1 }}" min-date="{{ minDate }}" bind:input="onInput" bind:cancel="onCancel" bind:confirm="onConfirm" />
+      </van-popup>
+    </view>
+  </radio-group>
+
+  <view class='cu-tabbar-height'></view>
+
+</scroll-view>
+<!-- 底部操作条 -->
+<view class='bottom-bar margin-top'>
+  <button wx:if="{{!radioCurrentValue ? true:false}}" class='cu-btn  bg-blue button-hover'>返回首页</button>
+  <button wx:if="{{radioCurrentValue == 'cancel'? true:false}}" class='cu-btn  bg-blue button-hover'>取消预约</button>
+  <button wx:if="{{radioCurrentValue == 'change'? true:false}}" class='cu-btn  bg-blue button-hover'>变更时间</button>
+</view>

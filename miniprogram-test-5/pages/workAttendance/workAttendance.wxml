@@ -1,0 +1,46 @@
+<!--pages/workAttendance/workAttendance.wxml-->
+<cu-custom bgColor="bg-gradual-blue" isBack="{{true}}" needTab="{{true}}" tabInfo="{{[{name:'考勤通知'},{name:'考勤报表'}]}}" bind:tabSelect="mainTabSelect">
+  <view slot="backText">返回</view>
+  <view slot="content">考勤管理</view>
+</cu-custom>
+
+<!-- 考勤通知 消息列表 -->
+<scroll-view scroll-y style="height:calc(100vh  - CustomBar -CustomBar -100rpx) " class="todayAttendance {{0 == mainTabCur ? '':'hidden'}} margin-top" scroll-with-animation="true">
+  <!-- url='../guestManagement/guestComfirm/guestComfirm'  -->
+  <view class='cu-list menu-avatar '>
+    <view hover-class="none" class="cu-item" wx:for='{{summary.length}}' wx:key="{{index}}">
+      <view class="cu-avatar round " style="width:66rpx;">
+        <text class="cu-text" style="font-size:15px">{{index+1}}</text>
+      </view>
+      <text class='content'>{{summary[index]}}</text>
+      <!-- <text class="cu-tag bg-blue" data-target="{{index}}" bindtap="checkIn" wx:if="{{!summary[index].status}}">补卡</text> -->
+    </view>
+  </view>
+</scroll-view>
+
+<view class="cu-list menu-avatar {{1 == mainTabCur ? '':'hidden'}}">
+  <view class="cu-item">
+    <view class="wd-content ">今日考勤</view>
+    <view class="content">
+      <!-- <view class="text-grey">李四</view> -->
+      <view class="text-gray text-sm flex">
+        <view class="text-grey text-df padding-left">上班 {{workTimeBegin}}</view>
+        <view class="text-grey text-df padding-left">下班 {{workTimeEnd}}</view>
+      </view>
+    </view>
+    <view class="action">
+      <text class="text-cut">
+				<text class="cuIcon-roundcheckfill text-green  margin-right-xs"></text> 正常
+      </text>
+    </view>
+  </view>
+</view>
+<!-- <view class="margin" wx:if="{{mainTabCur == 1 ? true:false}}" style="border:1px solid #ccc;" bindtap="navigateToTable"> 考勤报表</view> -->
+  <view class="cu-list menu card-menu margin-top-xl margin-bottom-xl shadow-lg radius" wx:if="{{mainTabCur == 1 ? true:false}}">
+    <view class="cu-item arrow">
+      <view class="content"  bindtap="navigateToTable" data-link="https://github.com/weilanwl/ColorUI">
+        <text class="cuIcon-form text-grey"></text>
+        <text class="text-grey">考勤报表</text>
+      </view>
+    </view>
+  </view>

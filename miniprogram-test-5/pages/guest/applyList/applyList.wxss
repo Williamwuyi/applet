@@ -1,0 +1,10 @@
+/* pages/guest/applyList/applyList.wxss */
+.hidden{
+  display: none;
+}
+.cu-list.menu-avatar>.cu-item .content {
+  left:140rpx;
+}
+.cu-load.over::after{
+  content:"没有数据"
+}

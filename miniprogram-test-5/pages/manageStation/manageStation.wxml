@@ -1,0 +1,28 @@
+<!--pages/manageStation/manageStation.wxml-->
+<!-- 头部 -->
+<cu-custom bgColor="{{isStuff ? 'bg-gradual-blue':'bg-gtadual-bluestone'}}">
+	<view slot="content">{{isStuff ? '管理工作台':'访客工作台'}} </view>
+</cu-custom>
+<swiper class="screen-swiper round-dot" indicator-dots="true" circular="true" autoplay="true" interval="5000" duration="500" indicator-active-color="#fff">
+	<swiper-item wx:for="{{swiperList}}" wx:key>
+		<image  src="{{item.url}}" mode="aspectFill" wx:if="{{item.type=='image'}}"></image>
+		<video src="{{item.url}}" autoplay loop muted show-play-btn="{{false}}" controls="{{false}}" objectFit="cover" wx:if="{{item.type=='video'}}"></video>
+	</swiper-item>
+</swiper>
+<menu_manage wx:if="{{isStuff}}"></menu_manage>
+<menu_guest  wx:if="{{!isStuff}}"></menu_guest>
+<!-- 时间和功能菜单 -->
+<view class='cu-bar bg-white solid-bottom margin-top latestNews'>
+	<text style="width:90%; text-align:center;" class="text-black margin">最新消息</text>
+</view>
+<scroll-view style="height:{{calculateScrollViewHeight}}px" scroll-with-animation="true" scroll-y>
+	<view class='cu-list menu-avatar'>
+
+		<view class="cu-item " data-target="move-box-{{index}}" wx:for='{{summary.length}}' wx:key="{{index}}" bindtap="newsDetail">
+			<!-- <view class='cu-avatar round lg' style="background-image:url(../../images/news_clock.png);">
+			</view> -->
+			<image class='cu-avatar round lg' src="../../images/news_clock.png"></image>
+			<text class='content'>{{summary[index]}}</text>
+		</view>
+	</view>
+</scroll-view>

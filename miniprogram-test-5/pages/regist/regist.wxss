@@ -1,0 +1,4 @@
+/* pages/resign/resign.wxss */
+.bg-gradual-blue-login{
+  background-image: white;
+}
