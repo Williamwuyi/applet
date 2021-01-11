@@ -1,0 +1,95 @@
+package com.jiebao.platfrom.railway.controller;
+
+
+import com.jiebao.platfrom.common.annotation.Log;
+import com.jiebao.platfrom.common.authentication.JWTUtil;
+import com.jiebao.platfrom.common.controller.BaseController;
+import com.jiebao.platfrom.common.domain.JiebaoResponse;
+import com.jiebao.platfrom.common.exception.JiebaoException;
+import com.jiebao.platfrom.railway.dao.PrizeIdentityMapper;
+import com.jiebao.platfrom.railway.domain.PrizeIdentity;
+import com.jiebao.platfrom.railway.service.PrizeIdentityService;
+import com.jiebao.platfrom.system.domain.User;
+import com.jiebao.platfrom.system.service.UserService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.SecurityUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+
+/**
+ * @author yf
+ */
+@Slf4j
+@RestController
+@RequestMapping(value = "/prizeIdentity")
+@Api(tags = "railWay-一事一奖自定义身份")   //swagger2 api文档说明示例
+public class PrizeIdentityController extends BaseController {
+
+
+    private String message;
+
+    @Autowired
+    private PrizeIdentityService prizeIdentityService;
+
+
+    @PostMapping
+    @Log("新增身份")
+    @ApiOperation(value = "新增身份", notes = "新增身份", response = JiebaoResponse.class, httpMethod = "POST")
+    @Transactional(rollbackFor = Exception.class)
+    public JiebaoResponse addPrizeIdentity(@Valid PrizeIdentity prizeIdentity) {
+        prizeIdentityService.save(prizeIdentity);
+        return new JiebaoResponse().message("成功");
+    }
+
+    @DeleteMapping("/{ids}")
+    @Log("删除身份")
+    @ApiOperation(value = "批量删除身份", notes = "批量删除身份", response = JiebaoResponse.class, httpMethod = "DELETE")
+    @Transactional(rollbackFor = Exception.class)
+    public JiebaoResponse delete(@PathVariable String[] ids) throws JiebaoException {
+        try {
+            Arrays.stream(ids).forEach(id -> {
+                prizeIdentityService.removeById(id);
+            });
+        } catch (Exception e) {
+            throw new JiebaoException("删除失败");
+        }
+        return new JiebaoResponse().message("删除成功");
+    }
+
+    @PutMapping
+    @Log("修改身份")
+    @Transactional(rollbackFor = Exception.class)
+    @ApiOperation(value = "修改身份", notes = "修改身份", response = JiebaoResponse.class, httpMethod = "PUT")
+    public void updatePrizeIdentity(@Valid PrizeIdentity prizeIdentity) throws JiebaoException {
+        try {
+            this.prizeIdentityService.updateById(prizeIdentity);
+        } catch (Exception e) {
+            message = "修改失败";
+            log.error(message, e);
+            throw new JiebaoException(message);
+        }
+    }
+
+
+    /**
+     * 使用Mapper操作数据库
+     *
+     * @return JiebaoResponse 标准返回数据类型
+     */
+    @GetMapping(value = "/getInformListByMapper")
+    @ApiOperation(value = "查询数据List", notes = "查询数据List列表", response = JiebaoResponse.class, httpMethod = "GET")
+    public List<PrizeIdentity> getPrizeIdentityListByMapper() {
+        List<PrizeIdentity> list = prizeIdentityService.list();
+        return list;
+    }
+}

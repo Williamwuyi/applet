@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jiebao.platfrom.railway.dao.AddressMapper">
+
+    <select id="getAddressList" resultType="address">
+        select * from rail_address r join sys_dept d on r.dept_id = d.dept_id
+        <where>
+            <if test="deptId != null">
+                r.dept_id = #{deptId}
+            </if>
+
+        </where>
+    </select>
+
+
+    <select id="selectUser" resultType="java.lang.Integer">
+      select count(*) from rail_address where user_name=#{userName}
+  </select>
+
+
+    <select id="getAddressByCondition" resultType="address">
+        select * from rail_address r
+        <where>
+            1=1
+            <if test="userName != null">
+                and r.user_name like CONCAT('%', #{userName},'%')
+            </if>
+            <if test="phone != null">
+                and (r.phone like CONCAT('%', #{phone},'%')
+                or r.tel_phone like CONCAT('%', #{phone},'%'))
+            </if>
+            <if test="deptId != null">
+                and r.dept_id = #{deptId}
+            </if>
+        </where>
+    </select>
+
+
+</mapper>
